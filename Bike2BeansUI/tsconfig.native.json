@@ -1,0 +1,39 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "module": "node16",
+    "moduleResolution": "node16",
+    "moduleSuffixes": [
+      ".ios",
+      ".android",
+      ".native",
+      ".web",
+      ""
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-native"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "src/**/*",
+    "index.js",
+    "index.web.js",
+    "App.tsx"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/Pods",
+    "dist",
+    "build",
+    "ios/build",
+    "android/app/build"
+  ]
+}
