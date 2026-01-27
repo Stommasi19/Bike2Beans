@@ -33,7 +33,7 @@ public class CoffeeShopController : ControllerBase
     {
 
         var created = await _create.Handle(cmd, ct);
-        Console.WriteLine("POST /api/coffeeshops hit");
+        // Console.WriteLine("POST /api/coffeeshops hit");
         return Ok(created);
     }
 }
