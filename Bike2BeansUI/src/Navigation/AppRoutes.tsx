@@ -3,8 +3,8 @@ import { View } from "react-native";
 import { Routes, Route } from "react-router-dom";
 
 import CoffeeShops from "../Pages/CoffeeShops";
-import Login from "../Pages/Login";
 import Map from "../Pages/Map";
+import Login from "../Pages/login";
 
 export default function AppRoutes() {
     return (
