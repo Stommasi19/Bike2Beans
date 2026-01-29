@@ -27,7 +27,8 @@ public class CoffeeShop
     [BsonElement("rating")]
     public double? Rating { get; set; }
 
-
+    [BsonElement("userRatingTotal")]
+    public int? UserRatingsTotal { get; set; }
 
 
 }

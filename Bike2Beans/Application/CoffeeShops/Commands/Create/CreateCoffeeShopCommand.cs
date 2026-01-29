@@ -7,5 +7,6 @@ public record CreateCoffeeShopCommand(
     string? Address,
     double? Lat,
     double? Lng,
-    double? Rating
+    double? Rating,
+    int? UserRatingsTotal
 );
