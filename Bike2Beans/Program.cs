@@ -4,6 +4,9 @@ using Bike2Beans.Application.CoffeeShops.Commands.Create;
 using Google.Api.Gax.Grpc;
 using Google.Api.Gax.Grpc.Rest;
 using Google.Maps.Places.V1;
+using Bike2Beans.Options;
+using Microsoft.Extensions.Options;
+using Bike2Beans.Infrastructure;
 
 
 
@@ -25,24 +28,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDBSettings"));
 
+
+
+
+builder.Services.AddGooglePlaces(builder.Configuration);
+
 // Services
 builder.Services.AddScoped<CoffeeShopRepository>();
 builder.Services.AddScoped<GetAllCoffeeShopHandler>();
 builder.Services.AddScoped<CreateCoffeeShopHandler>();
-builder.Services.AddSingleton(sp =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-    var apiKey = (config["GooglePlaces:ApiKey"] ?? "").Trim();
-
-    if (string.IsNullOrWhiteSpace(apiKey))
-        throw new InvalidOperationException("Missing GooglePlaces:ApiKey in configuration.");
-
-    return new PlacesClientBuilder
-    {
-        ApiKey = apiKey,
-        GrpcAdapter = RestGrpcAdapter.Default
-    }.Build();
-});
 builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
 
 
