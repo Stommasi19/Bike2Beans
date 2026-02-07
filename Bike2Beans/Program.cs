@@ -38,6 +38,7 @@ builder.Services.AddScoped<CoffeeShopRepository>();
 builder.Services.AddScoped<GetAllCoffeeShopHandler>();
 builder.Services.AddScoped<CreateCoffeeShopHandler>();
 builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
+builder.Services.AddScoped<GetCoffeeShopByIdHandler>();
 
 
 var app = builder.Build();

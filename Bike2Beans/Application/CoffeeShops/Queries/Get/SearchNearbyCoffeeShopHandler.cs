@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Bike2Beans.Infrastructure;
+
 
 
 namespace Bike2Beans.Application.CoffeeShops.Queries.Get;
@@ -51,14 +53,14 @@ public class SearchNearbyCoffeeShopHandler
         var response = await _places.SearchNearbyAsync(request, callSettings);
 
         var result = response.Places.Select(p => new CoffeeShopDto(
-            Id: p.Id,
-            Name: p.DisplayName?.Text ?? "",
-            Address: p.FormattedAddress,
-            Rating: p.Rating,
-            UserRatingsTotal: p.UserRatingCount,
-            Lat: p.Location?.Latitude,
-            Lng: p.Location?.Longitude
-        )).ToList();
+            p.Id,
+            p.DisplayName?.Text ?? "",
+            p.FormattedAddress,
+            p.Rating,
+            p.UserRatingCount,
+            p.Location.Latitude,
+            p.Location.Longitude
+            )).ToList();
         return result;
     }
 }
