@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using Bike2Beans.Application.CoffeeShops.Queries.Search;
+using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
 
 
 
@@ -20,16 +21,19 @@ public class PlacesController : ControllerBase
     private readonly SearchNearbyCoffeeShopHandler _searchNearby;
     private readonly SearchCoffeeShopByIdHandler _searchById;
     private readonly SearchCoffeeShopByTextHandler _searchByText;
+    private readonly AutocompleteHandler _autocompleteSearch;
 
     public PlacesController(
         SearchNearbyCoffeeShopHandler searchNearby,
         SearchCoffeeShopByIdHandler SearchById,
-        SearchCoffeeShopByTextHandler SearchByText
+        SearchCoffeeShopByTextHandler SearchByText,
+        AutocompleteHandler AutocompleteSearch
     )
     {
         _searchNearby = searchNearby;
         _searchById = SearchById;
         _searchByText = SearchByText;
+        _autocompleteSearch = AutocompleteSearch;
     }
 
     [HttpGet("Nearby")]
@@ -64,5 +68,16 @@ public class PlacesController : ControllerBase
         var shops = await _searchByText.Handle(query);
 
         return Ok(shops);
+    }
+
+    [HttpGet("Autocomplete")]
+    public async Task<IActionResult> AutocompleteText(
+        [FromQuery] string text = ""
+    )
+    {
+        var query = new AutocompleteQuery(text);
+        var response = await _autocompleteSearch.Handle(query);
+
+        return Ok(response);
     }
 }

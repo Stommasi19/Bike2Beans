@@ -2,6 +2,7 @@ using Bike2Beans.Data;
 using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using Bike2Beans.Application.CoffeeShops.Commands.Create;
 using Bike2Beans.Application.CoffeeShops.Queries.Search;
+using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
 using Google.Api.Gax.Grpc;
 using Google.Api.Gax.Grpc.Rest;
 using Google.Maps.Places.V1;
@@ -41,6 +42,8 @@ builder.Services.AddScoped<CreateCoffeeShopHandler>();
 builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
 builder.Services.AddScoped<SearchCoffeeShopByIdHandler>();
 builder.Services.AddScoped<SearchCoffeeShopByTextHandler>();
+builder.Services.AddScoped<AutocompleteHandler>();
+
 
 
 var app = builder.Build();

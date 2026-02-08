@@ -25,8 +25,7 @@ public class SearchCoffeeShopByTextHandler
         CancellationToken ct = default
     )
     {
-        var fieldMask = "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount";
-        var callSettings = CallSettings
+        var fieldMask = "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,nextPageToken"; var callSettings = CallSettings
         .FromHeader("X-Goog-FieldMask", fieldMask);
 
 
@@ -54,6 +53,6 @@ public class SearchCoffeeShopByTextHandler
             )).ToList();
 
         return result;
-        // return new PagedResult<CoffeeShopDto>(result, response.nextPageToken ?? null);
+        // return new PagedResult<CoffeeShopDto>(result, response.NextPageToken ?? null);
     }
 }
