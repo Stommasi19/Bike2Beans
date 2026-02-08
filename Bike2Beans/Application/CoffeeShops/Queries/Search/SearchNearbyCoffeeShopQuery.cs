@@ -1,6 +1,6 @@
 
 
-namespace Bike2Beans.Application.CoffeeShops.Queries.Get;
+namespace Bike2Beans.Application.CoffeeShops.Queries.Search;
 
 public record SearchNearbyCoffeeShopQuery(
     double Lat,

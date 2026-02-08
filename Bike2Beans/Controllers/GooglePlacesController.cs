@@ -7,6 +7,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Application.CoffeeShops.Queries.Get;
+using Bike2Beans.Application.CoffeeShops.Queries.Search;
+
 
 
 namespace Bike2Beans.Controllers;
@@ -16,19 +18,22 @@ namespace Bike2Beans.Controllers;
 public class PlacesController : ControllerBase
 {
     private readonly SearchNearbyCoffeeShopHandler _searchNearby;
-    private readonly GetCoffeeShopByIdHandler _searchById;
+    private readonly SearchCoffeeShopByIdHandler _searchById;
+    private readonly SearchCoffeeShopByTextHandler _searchByText;
 
     public PlacesController(
         SearchNearbyCoffeeShopHandler searchNearby,
-        GetCoffeeShopByIdHandler SearchById
+        SearchCoffeeShopByIdHandler SearchById,
+        SearchCoffeeShopByTextHandler SearchByText
     )
     {
         _searchNearby = searchNearby;
         _searchById = SearchById;
+        _searchByText = SearchByText;
     }
 
-    [HttpGet("nearby")]
-    public async Task<IActionResult> Nearby(
+    [HttpGet("Nearby")]
+    public async Task<IActionResult> SearchNearby(
         [FromQuery] double lat = 42.4370,
         [FromQuery] double lng = -71.5056,
         [FromQuery] int radiusMeters = 5000,
@@ -41,12 +46,23 @@ public class PlacesController : ControllerBase
         return Ok(shops);
     }
     [HttpGet("Id")]
-    public async Task<IActionResult> GetPlaceById(
+    public async Task<IActionResult> SearchPlaceById(
         [FromQuery] string id = "ChIJ-cPHe4xrkFQRMvbH8nZG-nc"
     )
     {
-        var query = new GetCoffeeShopByIdQuery(id);
+        var query = new SearchCoffeeShopByIdQuery(id);
         var shop = await _searchById.Handle(query);
         return Ok(shop);
+    }
+
+    [HttpGet("Text")]
+    public async Task<IActionResult> SearchPlaceByText(
+        [FromQuery] string text = "URL Coffee Seattle"
+    )
+    {
+        var query = new SearchCoffeeShopByTextQuery(text);
+        var shops = await _searchByText.Handle(query);
+
+        return Ok(shops);
     }
 }

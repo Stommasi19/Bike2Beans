@@ -11,7 +11,7 @@ using Bike2Beans.Infrastructure;
 
 
 
-namespace Bike2Beans.Application.CoffeeShops.Queries.Get;
+namespace Bike2Beans.Application.CoffeeShops.Queries.Search;
 
 
 

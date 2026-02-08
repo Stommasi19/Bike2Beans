@@ -10,19 +10,19 @@ using System.Text.Json;
 using Bike2Beans.Infrastructure;
 
 
-namespace Bike2Beans.Application.CoffeeShops.Queries.Get;
+namespace Bike2Beans.Application.CoffeeShops.Queries.Search;
 
-public class GetCoffeeShopByIdHandler
+public class SearchCoffeeShopByIdHandler
 {
     private readonly PlacesClient _places;
 
-    public GetCoffeeShopByIdHandler(PlacesClient places)
+    public SearchCoffeeShopByIdHandler(PlacesClient places)
     {
         _places = places;
     }
 
     public async Task<ExpandedCoffeeShopDto> Handle(
-        GetCoffeeShopByIdQuery query,
+        SearchCoffeeShopByIdQuery query,
         CancellationToken ct = default
         )
     {
@@ -33,7 +33,7 @@ public class GetCoffeeShopByIdHandler
 
         var request = new GetPlaceRequest
         {
-            Name = $"places/{query.id}"
+            Name = $"places/{query.Id}"
         };
 
         var response = await _places.GetPlaceAsync(request, callSettings);
