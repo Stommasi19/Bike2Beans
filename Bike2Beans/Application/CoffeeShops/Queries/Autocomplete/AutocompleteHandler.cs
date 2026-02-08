@@ -27,10 +27,10 @@ public class AutocompleteHandler
     {
         AutocompletePlacesRequest request = new AutocompletePlacesRequest
         {
-            Input = query.Text
+            Input = query.Text,
             // LocationBias = new AutocompletePlacesRequest.Types.LocationBias(),
             // LocationRestriction = new AutocompletePlacesRequest.Types.LocationRestriction(),
-            // IncludedPrimaryTypes = { "", },
+            IncludedPrimaryTypes = { "cafe" },
             // IncludedRegionCodes = { "", },
             // LanguageCode = "",
             // RegionCode = "",

@@ -24,7 +24,7 @@ public class GetAllCoffeeShopHandler
             Lng: s.Lng,
             Rating: s.Rating,
             UserRatingsTotal: s.UserRatingsTotal
-        )).ToList();
+            )).ToList();
     }
 
 
