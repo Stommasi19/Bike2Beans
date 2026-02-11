@@ -27,7 +27,7 @@ public class SearchCoffeeShopByTextHandler
     )
     {
 
-        var response = await _placesRest.SearchPlacesByTextAsync(query);
+        var response = await _placesRest.SearchPlacesByTextAsync(query, ct);
 
         var result = response.Places.Select(p => new CoffeeShopDto(
             p.Id,
