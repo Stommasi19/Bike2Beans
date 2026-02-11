@@ -14,33 +14,20 @@ namespace Bike2Beans.Application.CoffeeShops.Queries.Search;
 
 public class SearchCoffeeShopByTextHandler
 {
-    private readonly PlacesClient _places;
-    public SearchCoffeeShopByTextHandler(PlacesClient places)
+    private readonly IPlacesRestGateway _placesRest;
+
+    public SearchCoffeeShopByTextHandler(IPlacesRestGateway placesRest)
     {
-        _places = places;
+        _placesRest = placesRest;
     }
 
-    public async Task<List<CoffeeShopDto>> Handle(
+    public async Task<PagedResult<CoffeeShopDto>> Handle(
         SearchCoffeeShopByTextQuery query,
         CancellationToken ct = default
     )
     {
-        var fieldMask = "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,nextPageToken"; var callSettings = CallSettings
-        .FromHeader("X-Goog-FieldMask", fieldMask);
 
-
-
-
-        var request = new SearchTextRequest
-        {
-            TextQuery = query.Text,
-            // PageToken = query.PageToken ?? "",
-            MaxResultCount = query.PageSize,
-            IncludedType = "cafe",
-            StrictTypeFiltering = true
-        };
-
-        var response = await _places.SearchTextAsync(request, callSettings);
+        var response = await _placesRest.SearchPlacesByTextAsync(query);
 
         var result = response.Places.Select(p => new CoffeeShopDto(
             p.Id,
@@ -52,7 +39,6 @@ public class SearchCoffeeShopByTextHandler
             p.Location.Longitude
             )).ToList();
 
-        return result;
-        // return new PagedResult<CoffeeShopDto>(result, response.NextPageToken ?? null);
+        return new PagedResult<CoffeeShopDto>(result, response.NextPageToken ?? null);
     }
 }

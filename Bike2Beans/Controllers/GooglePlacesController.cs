@@ -61,11 +61,19 @@ public class PlacesController : ControllerBase
 
     [HttpGet("Text")]
     public async Task<IActionResult> SearchPlaceByText(
-        [FromQuery] string text = "URL Coffee Seattle"
+        [FromQuery] string Text = "URL Coffee Seattle",
+        [FromQuery] int PageSize = 10,
+        [FromQuery] string? PageToken = null
     )
     {
-        var query = new SearchCoffeeShopByTextQuery(text);
+        var query = new SearchCoffeeShopByTextQuery(
+            Text,
+            PageSize,
+            PageToken
+            );
         var shops = await _searchByText.Handle(query);
+
+
 
         return Ok(shops);
     }
