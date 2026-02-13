@@ -35,8 +35,8 @@ public class SearchCoffeeShopByTextHandler
             p.FormattedAddress,
             p.Rating,
             p.UserRatingCount,
-            p.Location.Latitude,
-            p.Location.Longitude
+            p.Location?.Latitude,
+            p.Location?.Longitude
             )).ToList();
 
         return new PagedResult<CoffeeShopDto>(result, response.NextPageToken ?? null);

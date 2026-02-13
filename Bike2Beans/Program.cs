@@ -12,7 +12,6 @@ using Bike2Beans.Infrastructure;
 
 
 
-
 var builder = WebApplication.CreateBuilder(args);
 // Console.WriteLine(builder.Configuration["Google:PlacesApiKey"] is null
 //     ? "Missing Google Places key"
