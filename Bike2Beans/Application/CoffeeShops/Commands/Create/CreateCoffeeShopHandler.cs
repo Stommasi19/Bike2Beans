@@ -19,7 +19,8 @@ public class CreateCoffeeShopHandler
             Address = cmd.Address,
             Lat = cmd.Lat,
             Lng = cmd.Lng,
-            Rating = cmd.Rating
+            Rating = cmd.Rating,
+            UserRatingsTotal = cmd.UserRatingsTotal
         };
         return await _repo.InsertAsync(shop, ct);
     }

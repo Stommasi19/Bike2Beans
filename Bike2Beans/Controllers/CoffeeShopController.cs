@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Bike2Beans.Application.CoffeeShops.Queries.GetAll;
+using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using Bike2Beans.Application.CoffeeShops.Commands.Create;
 
 namespace Bike2Beans.Controllers;
@@ -33,7 +33,6 @@ public class CoffeeShopController : ControllerBase
     {
 
         var created = await _create.Handle(cmd, ct);
-        // Console.WriteLine("POST /api/coffeeshops hit");
         return Ok(created);
     }
 }

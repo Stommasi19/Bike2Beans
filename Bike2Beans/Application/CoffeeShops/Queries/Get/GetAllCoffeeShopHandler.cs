@@ -1,6 +1,7 @@
 using Bike2Beans.Data;
+using Bike2Beans.Dtos;
 
-namespace Bike2Beans.Application.CoffeeShops.Queries.GetAll;
+namespace Bike2Beans.Application.CoffeeShops.Queries.Get;
 
 public class GetAllCoffeeShopHandler
 {
@@ -21,8 +22,9 @@ public class GetAllCoffeeShopHandler
             Address: s.Address,
             Lat: s.Lat,
             Lng: s.Lng,
-            Rating: s.Rating
-        )).ToList();
+            Rating: s.Rating,
+            UserRatingsTotal: s.UserRatingsTotal
+            )).ToList();
     }
 
 

@@ -10,6 +10,9 @@ public class CoffeeShop
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
+    [BsonElement("id")]
+    public string? PlaceId { get; set; }
+
     [BsonElement("name")]
     public string Name { get; set; } = null!;
 
@@ -27,7 +30,8 @@ public class CoffeeShop
     [BsonElement("rating")]
     public double? Rating { get; set; }
 
-
+    [BsonElement("userRatingsTotal")]
+    public int? UserRatingsTotal { get; set; }
 
 
 }
