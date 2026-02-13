@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Infrastructure;
+using Bike2Beans.Data;
 
 namespace Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
 
@@ -30,7 +31,7 @@ public class AutocompleteHandler
             Input = query.Text,
             // LocationBias = new AutocompletePlacesRequest.Types.LocationBias(),
             // LocationRestriction = new AutocompletePlacesRequest.Types.LocationRestriction(),
-            IncludedPrimaryTypes = { "cafe" },
+            IncludedPrimaryTypes = { DestinationTypes.IncludedTypes },
             // IncludedRegionCodes = { "", },
             // LanguageCode = "",
             // RegionCode = "",
