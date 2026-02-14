@@ -34,6 +34,7 @@ Create one markdown report in `agents/deliverables/ui-design/` with:
 4. Interaction Refinements
 5. Mobile and Accessibility Notes
 6. Decision Rationale (why each recommendation should be prioritized)
+7. Detailed Next Steps Checklist (prioritized UI refactoring and UX expansion steps)
 
 ## Worktree and PR Rules
 

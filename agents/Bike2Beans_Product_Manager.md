@@ -35,6 +35,7 @@ Create one markdown report in `agents/deliverables/product/` with:
 5. Monetization Path
 6. Metrics and Decision Checkpoints
 7. Decision Rationale (why each priority and metric choice is the right call)
+8. Detailed Next Steps Checklist (prioritized roadmap, validation, and expansion steps)
 
 ## Worktree and PR Rules
 

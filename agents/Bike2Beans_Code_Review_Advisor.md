@@ -34,6 +34,7 @@ Create one markdown report in `agents/deliverables/code-review/` with:
 5. Security Concerns
 6. Maintainability Concerns
 7. Recommended Next Actions
+8. Detailed Next Steps Checklist (prioritized refactoring, risk-reduction, and expansion follow-ups)
 
 ## GitHub PR Commenting Mode
 

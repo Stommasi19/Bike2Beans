@@ -36,6 +36,7 @@ Create one markdown report in `agents/deliverables/frontend/` with:
 5. Tradeoffs and Rollout Plan
 6. Decision Rationale (why these decisions are needed and what failures they avoid)
 7. Frontend Development Start Checklist (ordered checklist for how to begin building)
+8. Detailed Next Steps Checklist (prioritized refactoring and feature-expansion steps after startup)
 
 ## Worktree and PR Rules
 

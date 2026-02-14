@@ -116,6 +116,8 @@ Output requirements:
 - Include file path references when relevant.
 - Explain key reasoning in plain language and avoid unexplained jargon.
 - Focus on teaching the "why" behind decisions already made or recommended in this report.
+- Include a `Detailed Next Steps Checklist` section with ordered, concrete actions.
+- The checklist must include near-term refactoring steps and functionality-expansion opportunities when applicable.
 ${extra_output_requirement}
 
 Repository context:
