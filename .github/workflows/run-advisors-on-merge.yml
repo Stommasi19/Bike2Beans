@@ -1,0 +1,48 @@
+name: Run Advisors On Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  run-advisors:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        agent: [backend, frontend, ui-design, product]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate OpenAI secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "${OPENAI_API_KEY}" ]; then
+            echo "OPENAI_API_KEY secret is missing."
+            exit 1
+          fi
+
+      - name: Run advisor
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-5-mini
+        run: |
+          chmod +x scripts/run_agent.sh
+          scripts/run_agent.sh "${{ matrix.agent }}"
+
+      - name: Upload advisor output
+        uses: actions/upload-artifact@v4
+        with:
+          name: advisor-${{ matrix.agent }}-pr-${{ github.event.pull_request.number }}
+          path: agents/deliverables/${{ matrix.agent }}/*.md
+          if-no-files-found: error
