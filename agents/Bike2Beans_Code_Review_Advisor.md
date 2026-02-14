@@ -71,4 +71,3 @@ If PR commenting is requested but auth/tools are unavailable, produce the full m
 2. Branch format: `codex/code-review/<topic>`.
 3. If opening a PR, include review artifacts only unless a targeted fix is explicitly requested.
 4. Every finding should point to evidence (file path, behavior, or measurable risk).
-5. Prefer PR inline comments for review delivery when PR commenting mode preconditions are satisfied.
