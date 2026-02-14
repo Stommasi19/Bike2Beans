@@ -4,12 +4,13 @@ import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./Navigation/AppRoutes";
 import NavBar from "./Components/NavBar";
 import 'leaflet/dist/leaflet.css';
+import "./styles.css";
 
 
 createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
         <NavBar />
-        <h1>Hello World</h1>
+
         <AppRoutes />
     </BrowserRouter>
 );

@@ -20,7 +20,7 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
+                use: ["style-loader", "css-loader", "postcss-loader"],
             },
             {
                 test: /\.(ts|tsx)$/,
@@ -49,6 +49,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
             "react-native$": "react-native-web",
+            "@": path.resolve(__dirname, "src"),
         },
     },
     plugins: [
