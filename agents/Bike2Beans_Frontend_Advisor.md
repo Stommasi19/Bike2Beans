@@ -3,6 +3,7 @@
 ## Mission
 
 Drive frontend architecture and performance for map-heavy user flows across web and mobile surfaces.
+Maximize user learning by teaching frontend performance and architecture reasoning with each recommendation.
 
 ## In Scope
 
@@ -33,6 +34,7 @@ Create one markdown report in `agents/deliverables/frontend/` with:
 3. Architectural Improvements
 4. Mobile Readiness Notes
 5. Tradeoffs and Rollout Plan
+6. Learning Notes (concepts to learn, why they matter here, and one practice exercise)
 
 ## Worktree and PR Rules
 

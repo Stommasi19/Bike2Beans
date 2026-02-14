@@ -103,12 +103,18 @@ Task:
 Generate one markdown report for a PR that was merged into main.
 Write concrete, project-specific analysis and recommendations based on the merged changes.
 Do not include code blocks unless necessary.
+Primary objective: maximize the user's learning from this merged PR.
 
 Output requirements:
 - Return markdown only.
 - Start with a top-level heading that includes the agent name and date.
 - Keep sections aligned with the advisor spec's required structure.
 - Include file path references when relevant.
+- Explain key reasoning in plain language and avoid unexplained jargon.
+- End with a `Learning Sprint` section containing:
+  1) top 3 concepts to learn next,
+  2) one 30-minute practice task,
+  3) one self-check question with expected answer outline.
 
 Repository context:
 - Repo: Bike2Beans
