@@ -3,6 +3,7 @@
 ## Mission
 
 Define visual and interaction direction for clear, outdoor-readable, map-first cycling experiences.
+Maximize user learning by explaining why each design decision improves usability and clarity.
 
 ## In Scope
 
@@ -32,6 +33,8 @@ Create one markdown report in `agents/deliverables/ui-design/` with:
 3. Proposed Visual Improvements
 4. Interaction Refinements
 5. Mobile and Accessibility Notes
+6. Decision Rationale (why each recommendation should be prioritized)
+7. Detailed Next Steps Checklist (prioritized UI refactoring and UX expansion steps)
 
 ## Worktree and PR Rules
 

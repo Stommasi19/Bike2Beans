@@ -3,6 +3,7 @@
 ## Mission
 
 Drive frontend architecture and performance for map-heavy user flows across web and mobile surfaces.
+Maximize user learning by explaining why each frontend decision is needed before implementation.
 
 ## In Scope
 
@@ -33,6 +34,9 @@ Create one markdown report in `agents/deliverables/frontend/` with:
 3. Architectural Improvements
 4. Mobile Readiness Notes
 5. Tradeoffs and Rollout Plan
+6. Decision Rationale (why these decisions are needed and what failures they avoid)
+7. Frontend Development Start Checklist (ordered checklist for how to begin building)
+8. Detailed Next Steps Checklist (prioritized refactoring and feature-expansion steps after startup)
 
 ## Worktree and PR Rules
 
