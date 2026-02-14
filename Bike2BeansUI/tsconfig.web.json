@@ -2,6 +2,12 @@
     "extends": "./tsconfig.native.json",
     "compilerOptions": {
         "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        },
         "lib": [
             "DOM",
             "ES2020"

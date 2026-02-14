@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9ebff;
+  --color-brand-300: #8ebfff;
+  --color-brand-500: #2f7ae5;
+  --color-brand-700: #1f4f98;
+  --radius-panel: 1rem;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 min-h-screen text-slate-900 antialiased;
+    background:
+      radial-gradient(circle at 5% 0%, #eef6ff 0%, transparent 40%),
+      radial-gradient(circle at 95% 100%, #dff2e7 0%, transparent 45%),
+      #f8fafc;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  h1 {
+    @apply text-3xl font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  #navbar {
+    @apply sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur;
+  }
+
+  #navbar nav ul {
+    @apply m-0 flex list-none items-center gap-2 p-0;
+  }
+
+  #navbar nav ul li a {
+    @apply inline-flex rounded-full px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900;
+  }
+
+  .page-shell {
+    @apply mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6;
+  }
+
+  .panel {
+    @apply rounded-[--radius-panel] border border-slate-200 bg-white p-5 shadow-sm;
+  }
+
+  .section-title {
+    @apply mb-3 text-xl font-semibold text-slate-900;
+  }
+
+  .muted {
+    @apply text-sm text-slate-600;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-[--color-brand-500] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[--color-brand-700];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
+  }
+}
