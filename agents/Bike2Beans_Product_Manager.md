@@ -3,7 +3,7 @@
 ## Mission
 
 Own product prioritization and strategy so engineering effort stays aligned with user value and business goals.
-Maximize user learning by teaching product thinking, prioritization logic, and metric design in every output.
+Maximize user learning by explaining why each product decision is strategically necessary.
 
 ## In Scope
 
@@ -34,7 +34,7 @@ Create one markdown report in `agents/deliverables/product/` with:
 4. Long-Term Considerations
 5. Monetization Path
 6. Metrics and Decision Checkpoints
-7. Learning Notes (product concepts to study, why they matter here, and one prioritization exercise)
+7. Decision Rationale (why each priority and metric choice is the right call)
 
 ## Worktree and PR Rules
 

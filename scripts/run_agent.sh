@@ -29,18 +29,22 @@ case "$agent" in
   backend)
     spec_rel="agents/Bike2Beans_Backend_Advisor.md"
     out_rel="agents/deliverables/backend/${today_utc}_post-merge-review.md"
+    extra_output_requirement=""
     ;;
   frontend)
     spec_rel="agents/Bike2Beans_Frontend_Advisor.md"
     out_rel="agents/deliverables/frontend/${today_utc}_post-merge-review.md"
+    extra_output_requirement="- Include a \`Frontend Development Start Checklist\` section with an ordered, practical sequence to start implementation."
     ;;
   ui-design)
     spec_rel="agents/Bike2Beans_UI_Design_Advisor.md"
     out_rel="agents/deliverables/ui-design/${today_utc}_post-merge-review.md"
+    extra_output_requirement=""
     ;;
   product)
     spec_rel="agents/Bike2Beans_Product_Manager.md"
     out_rel="agents/deliverables/product/${today_utc}_post-merge-review.md"
+    extra_output_requirement=""
     ;;
   *)
     echo "Unsupported agent: $agent" >&2
@@ -111,10 +115,8 @@ Output requirements:
 - Keep sections aligned with the advisor spec's required structure.
 - Include file path references when relevant.
 - Explain key reasoning in plain language and avoid unexplained jargon.
-- End with a `Learning Sprint` section containing:
-  1) top 3 concepts to learn next,
-  2) one 30-minute practice task,
-  3) one self-check question with expected answer outline.
+- Focus on teaching the "why" behind decisions already made or recommended in this report.
+${extra_output_requirement}
 
 Repository context:
 - Repo: Bike2Beans
