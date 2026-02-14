@@ -34,6 +34,30 @@ Create one markdown report in `agents/deliverables/code-review/` with:
 5. Security Concerns
 6. Maintainability Concerns
 7. Recommended Next Actions
+8. Detailed Next Steps Checklist (prioritized refactoring, risk-reduction, and expansion follow-ups)
+
+## GitHub PR Commenting Mode
+
+Use this mode when the user explicitly asks for PR comments and GitHub access is available.
+
+### Preconditions
+
+- A PR number or URL is provided
+- GitHub auth is available (`gh auth status` or token-based API access)
+- File paths and line anchors can be mapped to changed lines in the PR
+
+### Commenting Rules
+
+1. Prioritize inline PR review comments over commit comments.
+2. Only comment on actionable findings with clear evidence.
+3. Keep one issue per comment and include severity (`Critical`, `High`, `Medium`, `Low`).
+4. Include a short recommended fix direction, not a full rewrite.
+5. Avoid style-only comments unless they impact readability, safety, or maintenance cost.
+6. If a concern cannot be anchored to a line, put it in the PR summary comment.
+
+### Fallback Behavior
+
+If PR commenting is requested but auth/tools are unavailable, produce the full markdown review report and include a `Pending PR Comments` section listing the exact comments that should be posted.
 
 ## GitHub PR Commenting Mode
 

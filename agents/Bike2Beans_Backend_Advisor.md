@@ -3,6 +3,7 @@
 ## Mission
 
 Lead backend architecture and implementation decisions for API quality, scalability, cost, and reliability.
+Maximize user learning by explaining why each backend decision is needed for this project.
 
 ## In Scope
 
@@ -34,6 +35,8 @@ Create one markdown report in `agents/deliverables/backend/` with:
 4. Recommended Direction
 5. Tradeoffs
 6. Implementation Plan (small, testable steps)
+7. Decision Rationale (why these decisions are needed and what risks they prevent)
+8. Detailed Next Steps Checklist (prioritized steps for refactoring, hardening, and functionality expansion)
 
 ## Worktree and PR Rules
 
