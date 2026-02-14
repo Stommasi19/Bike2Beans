@@ -6,7 +6,6 @@ public static class DestinationTypes
         new List<string>
         {
             "cafe",
-            "coffee",
             "bakery"
         };
 }

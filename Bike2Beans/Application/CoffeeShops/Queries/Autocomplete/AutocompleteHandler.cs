@@ -26,6 +26,10 @@ public class AutocompleteHandler
         CancellationToken ct = default
     )
     {
+        if (query.Text == "")
+        {
+            return null;
+        }
         AutocompletePlacesRequest request = new AutocompletePlacesRequest
         {
             Input = query.Text,
@@ -38,7 +42,7 @@ public class AutocompleteHandler
             // Origin = new LatLng(),
             // InputOffset = 0,
             // IncludeQueryPredictions = false,
-            // SessionToken = "",
+            // SessionToken = "",``
             // IncludePureServiceAreaBusinesses = false,
         };
 
