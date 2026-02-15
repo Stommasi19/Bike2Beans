@@ -5,6 +5,9 @@
  * @format
  */
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+import "mapbox-gl/dist/mapbox-gl.css";
 import { NewAppScreen } from '@react-native/new-app-screen';
 import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import {

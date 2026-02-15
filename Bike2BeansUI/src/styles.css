@@ -2,25 +2,70 @@
 
 @theme {
   --font-sans: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
-  --color-brand-50: #eef6ff;
-  --color-brand-100: #d9ebff;
-  --color-brand-300: #8ebfff;
-  --color-brand-500: #2f7ae5;
-  --color-brand-700: #1f4f98;
+  --color-latte-50: #fbf6f1;
+  --color-latte-100: #f3e8dd;
+  --color-latte-200: #e8d5c2;
+  --color-latte-300: #d8b89a;
+  --color-latte-400: #c19370;
+  --color-latte-500: #9f6f4c;
+  --color-latte-600: #835b3f;
+  --color-latte-700: #684732;
+  --color-brand-50: #f6eee6;
+  --color-brand-100: #e9d8c7;
+  --color-brand-300: #c8a98c;
+  --color-brand-500: #9a6f4d;
+  --color-brand-700: #6f4b33;
   --radius-panel: 1rem;
 }
 
 @layer base {
+  :root {
+    --ui-text: #2f2218;
+    --ui-muted: #5a4a3c;
+    --ui-bg-spot-1: #fff0e2;
+    --ui-bg-spot-2: #e5f0e5;
+    --ui-bg: #f8fafc;
+    --ui-navbar-bg: color-mix(in oklab, #fff 75%, var(--color-latte-50));
+    --ui-navbar-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
+    --ui-link: #5a4a3c;
+    --ui-link-hover-bg: color-mix(in oklab, #fff 70%, var(--color-latte-100));
+    --ui-panel-bg: color-mix(in oklab, #fff 88%, var(--color-latte-50));
+    --ui-panel-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
+    --ui-input-bg: #fff;
+    --ui-input-border: color-mix(in oklab, #cbd5e1 75%, var(--color-latte-200));
+    --ui-input-placeholder: color-mix(in oklab, #64748b 75%, var(--color-latte-300));
+  }
+
+  /* @media (prefers-color-scheme: dark) {
+    :root {
+      --ui-text: #f3e8dd;
+      --ui-muted: #d0bdab;
+      --ui-bg-spot-1: #3a281b;
+      --ui-bg-spot-2: #3a281b;
+      --ui-bg: #14100d;
+      --ui-navbar-bg: color-mix(in oklab, #18120e 78%, var(--color-latte-700));
+      --ui-navbar-border: color-mix(in oklab, #3f2f24 70%, var(--color-latte-600));
+      --ui-link: #ead8c6;
+      --ui-link-hover-bg: color-mix(in oklab, #2f2218 74%, var(--color-latte-700));
+      --ui-panel-bg: color-mix(in oklab, #1a140f 85%, var(--color-latte-700));
+      --ui-panel-border: color-mix(in oklab, #4a3728 75%, var(--color-latte-600));
+      --ui-input-bg: #1b1510;
+      --ui-input-border: color-mix(in oklab, #5b4332 80%, var(--color-latte-600));
+      --ui-input-placeholder: color-mix(in oklab, #c9b39f 75%, #fff);
+    }
+  } */
+
   * {
     @apply box-border;
   }
 
   body {
-    @apply m-0 min-h-screen text-slate-900 antialiased;
+    @apply m-0 min-h-screen antialiased;
+    color: var(--ui-text);
     background:
-      radial-gradient(circle at 5% 0%, #eef6ff 0%, transparent 40%),
-      radial-gradient(circle at 95% 100%, #dff2e7 0%, transparent 45%),
-      #f8fafc;
+      radial-gradient(circle at 5% 0%, var(--ui-bg-spot-1) 0%, transparent 40%),
+      radial-gradient(circle at 95% 100%, var(--ui-bg-spot-2) 0%, transparent 45%),
+      var(--ui-bg);
   }
 
   #root {
@@ -33,12 +78,56 @@
 
   h1 {
     @apply text-3xl font-bold tracking-tight;
+    color: var(--ui-text);
   }
 }
 
 @layer components {
+  .searchbar {
+    @apply flex items-center gap-3 rounded-xl border px-4 py-2 shadow-sm transition;
+    border: none;
+    background: var(--ui-bg);
+  }
+
+  .searchbar:focus-within {
+    border-color: var(--color-latte-200);
+    box-shadow: 0 0 0 2px var(--color-brand-100);
+  }
+
+  .searchbar-input {
+    @apply w-full bg-transparent text-sm outline-none;
+    color: var(--ui-text);
+  }
+
+  .searchbar-input::placeholder {
+    color: var(--ui-input-placeholder);
+  }
+
+  .searchbar-icon {
+    @apply text-sm;
+    color: var(--ui-muted);
+  }
+
+  .searchbar-clear {
+    @apply text-xs font-medium transition hover:opacity-70;
+    color: var(--ui-link);
+  }
+
+  .searchbar-results-card {
+    @apply rounded-xl border px-4 py-2 shadow-sm transition;
+    color: var(--ui-bg);
+    border: var(--ui-input-border);
+  }
+
+  .searchbar-result {
+    color: var(--color-latte-300);
+
+  }
+
   #navbar {
-    @apply sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur;
+    @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
+    border-color: var(--ui-navbar-border);
+    background: var(--ui-navbar-bg);
   }
 
   #navbar nav ul {
@@ -46,23 +135,38 @@
   }
 
   #navbar nav ul li a {
-    @apply inline-flex rounded-full px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900;
+    @apply inline-flex rounded-full px-4 py-2 text-sm font-semibold;
+    color: var(--ui-link);
   }
+
+  #navbar nav ul li a:hover {
+    background: var(--ui-link-hover-bg);
+    color: var(--ui-text);
+  }
+
+  .CoffeeShopList {
+    @apply w-20;
+  }
+
 
   .page-shell {
     @apply mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6;
   }
 
   .panel {
-    @apply rounded-[--radius-panel] border border-slate-200 bg-white p-5 shadow-sm;
+    @apply rounded-[--radius-panel] border p-5 shadow-sm;
+    border-color: var(--ui-panel-border);
+    background: var(--ui-panel-bg);
   }
 
   .section-title {
-    @apply mb-3 text-xl font-semibold text-slate-900;
+    @apply mb-3 text-xl font-semibold;
+    color: var(--ui-text);
   }
 
   .muted {
-    @apply text-sm text-slate-600;
+    @apply text-sm;
+    color: var(--ui-muted);
   }
 
   .btn {
@@ -74,10 +178,39 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50;
+    @apply inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold shadow-sm transition;
+    border-color: var(--ui-panel-border);
+    background: var(--ui-panel-bg);
+    color: var(--ui-link);
+  }
+
+  .btn-secondary:hover {
+    background: var(--ui-link-hover-bg);
+    color: var(--ui-text);
   }
 
   .input {
-    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
+    @apply w-full rounded-lg border px-3 py-2 text-sm focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
+    border-color: var(--ui-input-border);
+    background: var(--ui-input-bg);
+    color: var(--ui-text);
+  }
+
+  .input::placeholder {
+    color: var(--ui-input-placeholder);
+  }
+
+  @layer utilities {
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+      /* Chrome, Safari */
+    }
   }
 }

@@ -10,6 +10,7 @@ using Bike2Beans.Options;
 using Microsoft.Extensions.Options;
 using Bike2Beans.Infrastructure;
 
+var corsPolicyName = "Bike2BeansUI";
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,17 @@ builder.Services.AddSwaggerGen();
 // Mongo Settings
 builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDBSettings"));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") // your webpack dev server
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // only if you're using cookies/auth
+    });
+});
 
 
 
@@ -53,6 +65,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+app.UseCors(corsPolicyName);
 
 app.MapControllers();
 
