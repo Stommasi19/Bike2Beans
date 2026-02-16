@@ -1,9 +1,9 @@
-import { SearchCard } from "./SearchCard"
+import { SearchResultCard } from "./SearchCard"
 import { SearchState } from "../../Data/SearchState"
 import { useState } from "react"
 
 export function Search() {
-    var [searchState, setSearchState] = useState<SearchState>(SearchState.Active)
+    var [searchState, setSearchState] = useState<SearchState>(SearchState.Loading)
     const autocompleteresults: String[] = ["hello", "helllloo"]
     return (
         <div className="searchbox" data-state={searchState}>
@@ -16,15 +16,17 @@ export function Search() {
                     // onChange={handleSearch}
                     className="searchbar-input"
                 />
+                <button onClick={() => setSearchState(SearchState.Idle)}
+                    className="clear-search-button" >Clear</button>
             </form>
 
             <div className="searchbox-results-card">
                 {autocompleteresults.length > 0 ?
                     (autocompleteresults.map((result, i) => (
-                        <SearchCard key={i} text={result} />
+                        <SearchResultCard key={i} text={result} />
                     ))
                     ) : (
-                        <SearchCard text={"...searching"} />
+                        <SearchResultCard text={"...searching"} />
                     )}
             </div>
 

@@ -3,6 +3,7 @@ import { GetCoffeeShops } from "../Api/coffeeShops"
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
+import { RouteTable } from "../Features/Route/RouteTable";
 
 
 export function Home() {
@@ -41,12 +42,15 @@ export function Home() {
     navigator.geolocation.getCurrentPosition(success, error, options)
     return (
         <div className="relative h-screen w-screen" onClick={() => setActiveId(null)}>
-            <div className="absolute inset-0">
+            {/* <div className="absolute inset-0">
                 {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
                 ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
-            </div>
+            </div> */}
             <div className=" w-80 absolute top-0 inset-x-0">
                 <Search />
+            </div>
+            <div className="route-table">
+                <RouteTable />
             </div>
             <div className="absolute inset-x-0 bottom-0 z-20 pointer-events-none">
                 <div

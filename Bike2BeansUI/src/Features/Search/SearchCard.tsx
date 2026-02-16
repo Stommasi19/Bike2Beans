@@ -3,7 +3,7 @@ type Props = {
 }
 
 
-export function SearchCard({ text }: Props) {
+export function SearchResultCard({ text }: Props) {
     return (
         <div className="searchbox-result">
             {text}

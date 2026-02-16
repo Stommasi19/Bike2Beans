@@ -2,6 +2,7 @@ import Map, { Marker } from "react-map-gl/mapbox";
 import { CoffeeShopDto } from "../../Data/coffeeshopsDto";
 import { useEffect, useRef } from "react";
 import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards";
+import { GetDistance } from '../Map/GetDistance'
 type Props = {
     shops: CoffeeShopDto[],
     activeId: string | null,
@@ -20,13 +21,23 @@ export function MapView({ shops, activeId, setActiveId }: Props) {
         if (!selected) return;
 
         const map = mapRef.current.getMap();
-
-        map.easeTo({
-            center: [selected.lng, selected.lat],
-            zoom: 14,
-            duration: 800,
-        })
-    }, [activeId])
+        const center = map.getCenter();
+        const distance = GetDistance(center.lat, center.lng, selected.lat, selected.lng)
+        if (distance < 50) {
+            map.easeTo({
+                center: [selected.lng, selected.lat],
+                zoom: 14,
+                duration: 800,
+            })
+        }
+        else {
+            map.flyTo({
+                center: [selected.lng, selected.lat],
+                zoom: 14,
+                duration: 8000,
+            })
+        }
+    }, [activeId, shops])
 
 
     return (
