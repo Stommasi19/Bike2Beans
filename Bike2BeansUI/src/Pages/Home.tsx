@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { GetCoffeeShops } from "../Api/coffeeShops"
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
+
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -13,12 +14,36 @@ export function Home() {
             .catch(console.error);
     }, []);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    useEffect(() => {
+        if (!activeId) return;
+        const selectedShop = cardRefs.current[activeId];
 
-    const selectedShop = shops.find((s) => s.id === activeId)
+        selectedShop?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest"
+        })
+    }, [activeId])
+    function error(err: any) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+    const options = {
+        timeout: 5000,
+        maximumAge: 0,
+    };
+    const [userLocationLat, setUserLocationLat] = useState()
+    const [userLocationLng, setUserLocationLng] = useState()
+    function success(pos: any) {
+        setUserLocationLat(pos.latitude)
+        setUserLocationLng(pos.longitude)
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options)
     return (
         <div className="relative h-screen w-screen" onClick={() => setActiveId(null)}>
             <div className="absolute inset-0">
-                {/* <MapView /> */}
+                {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
+                ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
             </div>
             <div className=" w-80 absolute top-0 inset-x-0">
                 <Search />
@@ -34,7 +59,11 @@ export function Home() {
                     >
                         {shops.map((shop) => (
 
-                            <div key={shop.id}><CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} /></div>
+                            <div ref={(node) => {
+                                cardRefs.current[shop.id] = node;
+                            }}
+                                key={shop.id}>
+                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} /></div>
                         ))}
                     </div>
                 </div>

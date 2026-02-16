@@ -1,5 +1,5 @@
 export enum SearchState {
-    idle,
-    searching,
-    active
+    Idle = "idle",
+    Loading = 'loading',
+    Active = 'active'
 }

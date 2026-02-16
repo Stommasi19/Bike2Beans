@@ -5,7 +5,7 @@ type Props = {
 
 export function SearchCard({ text }: Props) {
     return (
-        <div className="searchbar-result">
+        <div className="searchbox-result">
             {text}
         </div>
     )

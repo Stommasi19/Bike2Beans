@@ -3,10 +3,10 @@ import { SearchState } from "../../Data/SearchState"
 import { useState } from "react"
 
 export function Search() {
-    var [state, setState] = useState<SearchState>(SearchState.idle)
+    var [searchState, setSearchState] = useState<SearchState>(SearchState.Active)
     const autocompleteresults: String[] = ["hello", "helllloo"]
     return (
-        <div className="relative w-fit">
+        <div className="searchbox" data-state={searchState}>
             <form action=""
                 className="searchbar"
                 onSubmit={(e) => e.preventDefault()}>
@@ -14,11 +14,11 @@ export function Search() {
                     placeholder="Search..."
                     // value={query}
                     // onChange={handleSearch}
-                    className="searchbar-input w-80"
+                    className="searchbar-input"
                 />
             </form>
 
-            <div className="searchbar-results-card">
+            <div className="searchbox-results-card">
                 {autocompleteresults.length > 0 ?
                     (autocompleteresults.map((result, i) => (
                         <SearchCard key={i} text={result} />

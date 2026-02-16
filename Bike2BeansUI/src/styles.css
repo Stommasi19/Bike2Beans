@@ -31,8 +31,9 @@
     --ui-link-hover-bg: color-mix(in oklab, #fff 70%, var(--color-latte-100));
     --ui-panel-bg: color-mix(in oklab, #fff 88%, var(--color-latte-50));
     --ui-panel-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
-    --ui-input-bg: #fff;
-    --ui-input-border: color-mix(in oklab, #cbd5e1 75%, var(--color-latte-200));
+    --ui-input-bg: var(--color-latte-50);
+    --ui-output-bg: var(--color-latte-100);
+    --ui-input-border: var(--color-latte-200);
     --ui-input-placeholder: color-mix(in oklab, #64748b 75%, var(--color-latte-300));
   }
 
@@ -83,46 +84,105 @@
 }
 
 @layer components {
+
+  .pin {
+    @apply h-3 w-3 rounded-full border-2 border-white shadow-md;
+    background: var(--color-latte-400);
+  }
+
+  .pin-active {
+    @apply h-7 w-7;
+    background: var(--color-brand-500);
+  }
+
+  /*    SEARCHBOX WRAPPER */
+
+  .searchbox {
+    position: relative;
+    width: 320px;
+  }
+
+
+  /*    SEARCH BAR */
+
   .searchbar {
-    @apply flex items-center gap-3 rounded-xl border px-4 py-2 shadow-sm transition;
+    width: 100%;
+    padding: 10px 14px;
+
+    border-radius: 16px 16px 0 0;
+    background: white;
+
+    transition:
+      border-radius 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .searchbar input {
+    width: 100%;
     border: none;
-    background: var(--ui-bg);
+    outline: none;
+    background: transparent;
   }
 
-  .searchbar:focus-within {
-    border-color: var(--color-latte-200);
-    box-shadow: 0 0 0 2px var(--color-brand-100);
+
+  /* RESULTS CONTAINER (DROPDOWN) */
+
+  .searchbox-results-card {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    border-top: var(--ui-input-border);
+    background: white;
+
+    border-radius: 0 0 16px 16px;
+
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-6px);
+
+    transition:
+      max-height 0.25s ease,
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
-  .searchbar-input {
-    @apply w-full bg-transparent text-sm outline-none;
-    color: var(--ui-text);
+
+  /* RESULT ROW*/
+
+  .searchbox-result {
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
   }
 
-  .searchbar-input::placeholder {
-    color: var(--ui-input-placeholder);
+  .searchbox-result:hover {
+    background: var(--ui-input-border);
+    opacity: 75%;
   }
 
-  .searchbar-icon {
-    @apply text-sm;
-    color: var(--ui-muted);
+
+  /* OPEN STATE (loading + active) */
+
+  .searchbox[data-state="loading"] .searchbar,
+  .searchbox[data-state="active"] .searchbar {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 0 0 2px rgba(100, 150, 255, 0.15);
   }
 
-  .searchbar-clear {
-    @apply text-xs font-medium transition hover:opacity-70;
-    color: var(--ui-link);
+  .searchbox[data-state="loading"] .searchbox-results-card,
+  .searchbox[data-state="active"] .searchbox-results-card {
+    max-height: 240px;
+    /* adjust as needed */
+    opacity: 1;
+    transform: translateY(0);
+    overflow-y: auto;
   }
 
-  .searchbar-results-card {
-    @apply rounded-xl border px-4 py-2 shadow-sm transition;
-    color: var(--ui-bg);
-    border: var(--ui-input-border);
-  }
-
-  .searchbar-result {
-    color: var(--color-latte-300);
-
-  }
 
   #navbar {
     @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
