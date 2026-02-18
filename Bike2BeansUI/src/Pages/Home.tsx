@@ -4,7 +4,8 @@ import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
 import { RouteTable } from "../Features/Route/RouteTable";
-
+import { CoffeeShopDto } from "../Data/coffeeshopsDto";
+import { RouteDto } from "../Data/RouteDto";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -39,18 +40,75 @@ export function Home() {
         setUserLocationLat(pos.latitude)
         setUserLocationLng(pos.longitude)
     }
+
+
     navigator.geolocation.getCurrentPosition(success, error, options)
+
+
+
+    const shop1: CoffeeShopDto = {
+        id: "697ff291aff3a6744d2cce76",
+        name: "McDonald's",
+        address: "4 Main St, Maynard, MA 01754, USA",
+        rating: 3.4,
+        userRatingsTotal: 850,
+        lat: 42.43253,
+        lng: -71.4500302,
+    };
+
+    const shop2: CoffeeShopDto = {
+
+        id: "697ff291aff3a6744d2cce77",
+        name: "Boston Bean House",
+        address: "102 Main St, Maynard, MA 01754, USA",
+        rating: 4.3,
+        userRatingsTotal: 211,
+        lat: 42.431794,
+        lng: -71.45446489999999
+
+    }
+
+
+
+
+
+
+
+
+    const [routeStops, setRouteStops] = useState<RouteDto[]>([{ stopId: "1", shop: shop1 }]);
+
+    function addShop(shop: CoffeeShopDto) {
+        setRouteStops(prev =>
+            [...prev,
+            { stopId: crypto.randomUUID(), shop }
+            ])
+    }
+    function removeStop(stopId: string) {
+
+        setRouteStops(prev => prev.filter(s => s.stopId !== stopId));
+
+
+    }
+    function reorderStops(next: RouteDto[]) {
+        setRouteStops(next);
+    }
+
+
+
     return (
         <div className="relative h-screen w-screen" onClick={() => setActiveId(null)}>
-            {/* <div className="absolute inset-0">
+            <div className="absolute inset-0">
                 {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
                 ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
-            </div> */}
+            </div>
             <div className=" w-80 absolute top-0 inset-x-0">
                 <Search />
             </div>
             <div className="route-table">
-                <RouteTable />
+                <RouteTable
+                    routeStops={routeStops}
+                    reorderStops={reorderStops}
+                    removeStop={removeStop} />
             </div>
             <div className="absolute inset-x-0 bottom-0 z-20 pointer-events-none">
                 <div
@@ -67,7 +125,7 @@ export function Home() {
                                 cardRefs.current[shop.id] = node;
                             }}
                                 key={shop.id}>
-                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} /></div>
+                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} addShop={() => addShop(shop)} /></div>
                         ))}
                     </div>
                 </div>

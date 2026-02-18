@@ -27,6 +27,7 @@
     --ui-bg: #f8fafc;
     --ui-navbar-bg: color-mix(in oklab, #fff 75%, var(--color-latte-50));
     --ui-navbar-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
+    --ui-hover-border: var(--color-latte-400);
     --ui-link: #5a4a3c;
     --ui-link-hover-bg: color-mix(in oklab, #fff 70%, var(--color-latte-100));
     --ui-panel-bg: color-mix(in oklab, #fff 88%, var(--color-latte-50));
@@ -84,6 +85,92 @@
 }
 
 @layer components {
+
+  .coffeeShopCard {
+    border-radius: 0.75rem;
+    border: 1px solid var(--ui-input-border);
+    padding: 0.75rem 1rem;
+    transition: all 200ms ease;
+    width: 305px;
+    background: var(--ui-bg);
+    border-color: var(--ui-input-border);
+    position: relative;
+
+  }
+
+  .coffeeShopCard:hover {
+    border-color: var(--ui-hover-border);
+  }
+
+  .coffeeShopCard[data-state=true] {
+    width: 355px;
+    height: 160px;
+    background-color: var(--color-latte-50);
+    border-color: var(--color-latte-400);
+    transition: width 200ms ease,
+      height 200ms ease,
+      background-color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .coffeeShopCardTitle {
+    @apply text-base font-semibold tracking-tight;
+    color: var(--ui-text)
+  }
+
+  .coffeeShopCardTitle[data-state=true] {
+    color: var(--color-latte-600);
+
+  }
+
+  .coffeeShopCardRating {
+    @apply mt-1 flex items-center gap-2 text-sm text-gray-600;
+    position: relative;
+    top: -2px;
+
+  }
+
+  .coffeeShopCardRating[data-state=true] {
+    color: var(--color-latte-400);
+    font-size: medium;
+
+  }
+
+  .coffeeShopCardRemainder {
+    @apply mt-2 text-xs uppercase tracking-wide text-gray-500;
+    position: relative;
+    bottom: -10px;
+  }
+
+
+  .coffeeShopCardDivider {
+    @apply mt-3 h-px bg-gray-100;
+    position: relative;
+    bottom: -10px;
+  }
+
+  .coffeeShopCardRemainder[data-state=true] {
+    bottom: -50px;
+    transform: 200ms ease
+  }
+
+
+  .coffeeShopCardDivider[data-state=true] {
+    bottom: -50px;
+    transform: 200ms ease
+  }
+
+  .coffeeShopCardAdd {
+    position: absolute;
+    top: 90px;
+    transform: 200ms ease
+  }
+
+  .coffeeShopCardDelete {
+    position: absolute;
+    top: 6px;
+    left: 200px;
+  }
 
   .pin {
     @apply h-3 w-3 rounded-full border-2 border-white shadow-md;
@@ -202,6 +289,33 @@
     color: var(--ui-text);
   }
 
+  .location-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 12px;
+    background: white;
+    margin-bottom: 10px;
+  }
+
+  .drag-handle {
+    user-select: none;
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--ui-input-border);
+    position: relative;
+    top: 30px;
+  }
+
+  .row-content {
+    display: grid;
+    gap: 4px;
+  }
+
+
+
 
   #navbar {
     @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
@@ -253,20 +367,30 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-[--color-brand-500] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[--color-brand-700];
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-white transition;
+    background: var(--color-brand-700);
+    box-shadow: 0 6px 16px rgba(47, 34, 24, 0.18);
   }
 
+  .btn-primary:hover {
+    background: var(--color-latte-700);
+    /* slightly warmer “pressed” */
+    transform: translateY(-1px);
+  }
+
+
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold shadow-sm transition;
-    border-color: var(--ui-panel-border);
-    background: var(--ui-panel-bg);
-    color: var(--ui-link);
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition;
+    background: var(--ui-input-border);
+    color: var(--ui-text);
   }
 
   .btn-secondary:hover {
     background: var(--ui-link-hover-bg);
-    color: var(--ui-text);
+    border-color: var(--color-latte-500);
+    transform: translateY(-1px);
   }
+
 
   .input {
     @apply w-full rounded-lg border px-3 py-2 text-sm focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];

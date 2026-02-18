@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "./Navigation/AppRoutes";
 import { NavBar } from "./components/NavBar";
-import 'leaflet/dist/leaflet.css';
 import "./styles.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 
