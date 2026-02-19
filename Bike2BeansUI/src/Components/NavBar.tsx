@@ -14,6 +14,10 @@ export function NavBar() {
                         <Link rel="" to="/Home"> Home </Link>
                     </li>
 
+                    <li>
+                        <Link rel="" to="/SavedRoutes"> Saved Routes</Link>
+                    </li>
+
                 </ul>
             </nav>
         </div>

@@ -49,7 +49,7 @@
       --ui-navbar-border: color-mix(in oklab, #3f2f24 70%, var(--color-latte-600));
       --ui-link: #ead8c6;
       --ui-link-hover-bg: color-mix(in oklab, #2f2218 74%, var(--color-latte-700));
-      --ui-panel-bg: color-mix(in oklab, #1a140f 85%, var(--color-latte-700));
+      --ui-panel-bg: color-mix(in oklab, #1a140f 85%, var(--color-laate-700));
       --ui-panel-border: color-mix(in oklab, #4a3728 75%, var(--color-latte-600));
       --ui-input-bg: #1b1510;
       --ui-input-border: color-mix(in oklab, #5b4332 80%, var(--color-latte-600));
@@ -168,7 +168,7 @@
 
   .coffeeShopCardDelete {
     position: absolute;
-    top: 6px;
+    top: 45px;
     left: 200px;
   }
 
@@ -218,6 +218,11 @@
     position: absolute;
     right: 8px;
     border-radius: 15px;
+  }
+
+  .clear-search-button:hover {
+    background: var(--ui-input-bg);
+
   }
 
 
@@ -314,6 +319,60 @@
     gap: 4px;
   }
 
+  .login-page {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: large;
+  }
+
+  .login {
+    width: 500px;
+    height: 400px;
+    background-color: var(--ui-input-bg);
+    border-radius: 20px;
+    border: 1px solid var(--ui-input-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    color: var(--ui-text);
+  }
+
+  .signup {
+    width: 550px;
+    height: 500px;
+    background-color: var(--ui-input-bg);
+    border-radius: 20px;
+    border: 1px solid var(--ui-input-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--ui-text);
+  }
+
+  .loginText {
+    position: relative;
+    right: -10px;
+    color: var(--ui-text);
+  }
+
+  .loginbtn {
+    display: flex;
+    gap: 40px;
+  }
+
+
+  .signin {
+    position: relative;
+    width: 80%;
+    height: auto;
+    padding: 10px;
+
+  }
 
 
 
@@ -364,6 +423,12 @@
 
   .btn {
     @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition;
+    border: 1px solid var(--ui-hover-border)
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+
   }
 
   .btn-primary {
