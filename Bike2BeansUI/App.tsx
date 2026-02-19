@@ -5,6 +5,7 @@
  * @format
  */
 
+import React from 'react';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import "mapbox-gl/dist/mapbox-gl.css";
