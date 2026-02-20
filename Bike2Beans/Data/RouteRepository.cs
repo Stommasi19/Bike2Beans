@@ -16,7 +16,7 @@ public class RouteRepository
         _routedetails = db.GetCollection<RouteDetails>("routedetails");
     }
 
-    public async Task<List<RouteDetails>> GetAllRouteDetailsAsync()
+    public async Task<List<RouteDetails>> GetAllRouteDetailsAsync(CancellationToken ct)
     => await _routedetails.Find(FilterDefinition<RouteDetails>.Empty).ToListAsync();
     public async Task<RouteDetails> InsertRouteDetailsAsync(RouteDetails route, CancellationToken ct = default)
     {

@@ -19,7 +19,7 @@ public class RouteController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
     {
-        var routeDetails = await _getAll.Handle(new GetRouteDetailsQuery());
+        var routeDetails = await _getAll.Handle(new GetRouteDetailsQuery(), ct);
         if (routeDetails == null)
         {
             return NotFound();

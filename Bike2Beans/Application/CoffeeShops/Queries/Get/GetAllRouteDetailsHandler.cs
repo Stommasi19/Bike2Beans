@@ -12,7 +12,7 @@ public class GetAllRouteDetailsHandler
     {
         _repo = repo;
     }
-    public async Task<List<RouteDetailsDto>> Handle(GetRouteDetailsQuery query)
+    public async Task<List<RouteDetailsDto>> Handle(GetRouteDetailsQuery query, CancellationToken ct)
     {
         var details = await _repo.GetAllRouteDetailsAsync();
 
