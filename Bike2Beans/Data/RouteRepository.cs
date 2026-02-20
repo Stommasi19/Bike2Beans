@@ -17,7 +17,7 @@ public class RouteRepository
     }
 
     public async Task<List<RouteDetails>> GetAllRouteDetailsAsync(CancellationToken ct)
-    => await _routedetails.Find(FilterDefinition<RouteDetails>.Empty).ToListAsync();
+    => await _routedetails.Find(FilterDefinition<RouteDetails>.Empty).ToListAsync(ct);
     public async Task<RouteDetails> InsertRouteDetailsAsync(RouteDetails route, CancellationToken ct = default)
     {
         await _routedetails.InsertOneAsync(route, new InsertOneOptions(), ct);

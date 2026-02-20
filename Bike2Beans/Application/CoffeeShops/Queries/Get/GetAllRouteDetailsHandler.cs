@@ -14,7 +14,7 @@ public class GetAllRouteDetailsHandler
     }
     public async Task<List<RouteDetailsDto>> Handle(GetRouteDetailsQuery query, CancellationToken ct)
     {
-        var details = await _repo.GetAllRouteDetailsAsync();
+        var details = await _repo.GetAllRouteDetailsAsync(ct);
 
         return details.Select(d => new RouteDetailsDto(
             Id: d.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),
