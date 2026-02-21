@@ -1,7 +1,7 @@
 import { CoffeeShopDto } from "../../Data/coffeeshopsDto";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards";
+import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";
 import { RouteDto } from "../../Data/RouteDto";
 type Props = {
     routeStop: RouteDto;

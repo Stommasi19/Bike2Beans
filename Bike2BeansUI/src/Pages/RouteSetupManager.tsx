@@ -1,7 +1,2 @@
-export function RouteSetupManager() {
-    return (
-        <div>
+export { RouteSetupManager } from "./RouteSetupManager.web";
 
-        </div>
-    )
-}

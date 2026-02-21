@@ -1,6 +1,2 @@
-export function SavedRoutes() {
-    return (
-        <div>
+export { SavedRoutes } from "./SavedRoutes.web";
 
-        </div>)
-}

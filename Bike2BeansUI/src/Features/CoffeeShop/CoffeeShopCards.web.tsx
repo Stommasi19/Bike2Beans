@@ -14,7 +14,7 @@ export function CoffeeShopCard({ shop, active = false, onSelect, addShop, remove
     return (
         <div
             onClick={onSelect}
-            className={"coffeeShopCard"}
+            className={"coffeeShopCard z-9999"}
             data-state={active}
         >
 

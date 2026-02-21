@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { GetCoffeeShops } from "../Api/coffeeShops"
-import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards";
+import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
 import { RouteTable } from "../Features/Route/RouteTable";
@@ -42,8 +42,9 @@ export function Home() {
     }
 
 
-    navigator.geolocation.getCurrentPosition(success, error, options)
-
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(success, error, options);
+    }, []);
 
 
     const shop1: CoffeeShopDto = {
@@ -93,10 +94,10 @@ export function Home() {
         setRouteStops(next);
     }
 
-
+    console.log("shops: ", shops)
 
     return (
-        <div className="relative h-screen w-screen" onClick={() => setActiveId(null)}>
+        <div className="absolute h-full w-full" onClick={() => setActiveId(null)}>
             <div className="absolute inset-0">
                 {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
                 ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
@@ -110,7 +111,7 @@ export function Home() {
                     reorderStops={reorderStops}
                     removeStop={removeStop} />
             </div>
-            <div className="absolute inset-x-0 bottom-0 z-20 pointer-events-none">
+            <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
                 <div
                     className="w-fit  px-4 pb-4 pointer-events-auto"
                     onClick={(e) => e.stopPropagation()}
@@ -119,6 +120,7 @@ export function Home() {
                         style={{ maxHeight: STACK_MAX_PX }}
                         className="no-scrollbar space-y-2 overflow-y-auto rounded-2xl"
                     >
+
                         {shops.map((shop) => (
 
                             <div ref={(node) => {

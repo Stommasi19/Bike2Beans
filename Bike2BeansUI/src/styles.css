@@ -85,6 +85,12 @@
 }
 
 @layer components {
+  .coffeeShopCardList {
+    gap: 20px;
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ui-input-border) transparent;
+  }
 
   .coffeeShopCard {
     border-radius: 0.75rem;
@@ -95,7 +101,6 @@
     background: var(--ui-bg);
     border-color: var(--ui-input-border);
     position: relative;
-
   }
 
   .coffeeShopCard:hover {
@@ -469,6 +474,7 @@
   }
 
   @layer utilities {
+
     .no-scrollbar {
       -ms-overflow-style: none;
       /* IE and Edge */
