@@ -48,12 +48,15 @@ builder.Services.AddGooglePlaces(builder.Configuration);
 
 // Services
 builder.Services.AddScoped<CoffeeShopRepository>();
+builder.Services.AddScoped<RouteRepository>();
 builder.Services.AddScoped<GetAllCoffeeShopHandler>();
 builder.Services.AddScoped<CreateCoffeeShopHandler>();
 builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
 builder.Services.AddScoped<SearchCoffeeShopByIdHandler>();
 builder.Services.AddScoped<SearchCoffeeShopByTextHandler>();
 builder.Services.AddScoped<AutocompleteHandler>();
+builder.Services.AddScoped<GetAllRouteDetailsHandler>();
+builder.Services.AddScoped<CreateRouteDetailsHandler>();
 
 
 
