@@ -28,7 +28,7 @@ public class AutocompleteHandler
     {
         if (query.Text == "")
         {
-            return null;
+            return new List<AutocompletePredictionDto>();
         }
         AutocompletePlacesRequest request = new AutocompletePlacesRequest
         {
