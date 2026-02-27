@@ -85,6 +85,55 @@
 }
 
 @layer components {
+
+  .saved_route_card {
+    @apply rounded-lg border p-4 shadow-sm;
+    border-color: var(--ui-input-border);
+    background: var(--ui-input-bg);
+    width: 360px;
+  }
+
+  .center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .element-header {
+    color: var(--ui-text);
+    display: grid;
+    place-items: center;
+    padding: 10px;
+  }
+
+  .route-table-container {
+    position: absolute;
+    right: 0;
+  }
+
+  .route-container {
+    height: auto;
+    padding: 15px;
+
+  }
+
+  .route-table {
+    position: absolute;
+    right: 0;
+    height: 60px;
+    width: 360px;
+    border-radius: 16px;
+    background-color: var(--ui-bg);
+    color: var(--ui-text);
+  }
+
+  .route-card {
+    transition: all 200ms ease;
+    width: 305px;
+    position: relative;
+  }
+
   .coffeeShopCardList {
     gap: 20px;
     padding: 10px;
@@ -289,15 +338,7 @@
     overflow-y: auto;
   }
 
-  .route-table {
-    position: absolute;
-    right: 0;
-    height: 60px;
-    width: 360px;
-    border-radius: 16px;
-    background-color: var(--ui-bg);
-    color: var(--ui-text);
-  }
+
 
   .location-row {
     display: flex;

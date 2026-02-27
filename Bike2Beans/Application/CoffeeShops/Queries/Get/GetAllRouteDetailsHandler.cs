@@ -19,7 +19,9 @@ public class GetAllRouteDetailsHandler
         return details.Select(d => new RouteDetailsDto(
             Id: d.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),
             Name: d.Name ?? "",
-            RouteStops: d.Stops ?? new List<RouteStop>(),
+            StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
+            EndLocation: d.EndLocation ?? null,
+            RouteStops: d.Stops ?? new List<CoffeeShopDto>(),
             Mileage: d.Mileage ?? 0
 
         )).ToList();

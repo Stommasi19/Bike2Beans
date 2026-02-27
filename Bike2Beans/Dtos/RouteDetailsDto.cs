@@ -6,7 +6,9 @@ namespace Bike2Beans.Dtos;
 public record RouteDetailsDto(
     string Id,
     string Name,
-    List<RouteStop> RouteStops,
+    List<double> StartLocation,
+    List<double>? EndLocation,
+    List<CoffeeShopDto> RouteStops,
     double Mileage
-// route
+// route?????
 );

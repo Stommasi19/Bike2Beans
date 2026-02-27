@@ -52,10 +52,10 @@ public sealed class GooglePlacesRestGateway : IPlacesRestGateway
 
         var responseJson = await response.Content.ReadAsStringAsync(ct);
 
-        var google = JsonSerializer.Deserialize<GoogleSearchTextResponse>(responseJson, JsonOptions)
+        var googleTextSearchResponse = JsonSerializer.Deserialize<GoogleSearchTextResponse>(responseJson, JsonOptions)
              ?? new GoogleSearchTextResponse();
 
-        return google;
+        return googleTextSearchResponse;
 
     }
 }

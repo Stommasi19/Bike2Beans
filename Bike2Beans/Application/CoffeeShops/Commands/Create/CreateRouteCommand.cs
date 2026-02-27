@@ -3,12 +3,13 @@ using Bike2Beans.Dtos;
 
 namespace Bike2Beans.Application.CoffeeShops.Commands.Create;
 
-public record CreateRouteDetailsCommand(
+public record CreateRouteCommand(
     string Id,
     string Name,
+    List<double> StartLocation,
+    List<double>? EndLocation,
     List<CoffeeShopDto> Stops,
     double Mileage
 // RouteDto Route
-
 
 );

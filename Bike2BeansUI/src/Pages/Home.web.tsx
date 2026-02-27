@@ -14,6 +14,8 @@ export function Home() {
         GetCoffeeShops()
             .then(setShops)
             .catch(console.error);
+
+
     }, []);
     const [activeId, setActiveId] = useState<string | null>(null);
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -42,32 +44,6 @@ export function Home() {
     }
 
 
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition(success, error, options);
-    }, []);
-
-
-    const shop1: CoffeeShopDto = {
-        id: "697ff291aff3a6744d2cce76",
-        name: "McDonald's",
-        address: "4 Main St, Maynard, MA 01754, USA",
-        rating: 3.4,
-        userRatingsTotal: 850,
-        lat: 42.43253,
-        lng: -71.4500302,
-    };
-
-    const shop2: CoffeeShopDto = {
-
-        id: "697ff291aff3a6744d2cce77",
-        name: "Boston Bean House",
-        address: "102 Main St, Maynard, MA 01754, USA",
-        rating: 4.3,
-        userRatingsTotal: 211,
-        lat: 42.431794,
-        lng: -71.45446489999999
-
-    }
 
 
 
@@ -76,7 +52,7 @@ export function Home() {
 
 
 
-    const [routeStops, setRouteStops] = useState<RouteDto[]>([{ stopId: "1", shop: shop1 }]);
+    const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
 
     function addShop(shop: CoffeeShopDto) {
         setRouteStops(prev =>
@@ -102,20 +78,22 @@ export function Home() {
                 {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
                 ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
             </div>
-            <div className=" w-80 absolute top-0 inset-x-0">
+            <div className=" absolute top-0 inset-x-0">
                 <Search />
             </div>
-            <div className="route-table">
+            <div className="route-table-container">
                 <RouteTable
                     routeStops={routeStops}
                     reorderStops={reorderStops}
                     removeStop={removeStop} />
             </div>
             <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
+
                 <div
-                    className="w-fit  px-4 pb-4 pointer-events-auto"
+                    className="w-fit   pointer-events-auto"
                     onClick={(e) => e.stopPropagation()}
                 >
+
                     <div
                         style={{ maxHeight: STACK_MAX_PX }}
                         className="no-scrollbar space-y-2 overflow-y-auto rounded-2xl"
@@ -127,7 +105,8 @@ export function Home() {
                                 cardRefs.current[shop.id] = node;
                             }}
                                 key={shop.id}>
-                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} addShop={() => addShop(shop)} /></div>
+                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} addShop={() => addShop(shop)} />
+                            </div>
                         ))}
                     </div>
                 </div>

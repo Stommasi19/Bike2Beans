@@ -10,11 +10,13 @@ public class RouteController : ControllerBase
 {
     private readonly GetAllRouteDetailsHandler _getAll;
     private readonly CreateRouteDetailsHandler _create;
+    private readonly GetRouteDetailsByIdHandler _getById;
 
-    public RouteController(GetAllRouteDetailsHandler getAll, CreateRouteDetailsHandler create)
+    public RouteController(GetAllRouteDetailsHandler getAll, CreateRouteDetailsHandler create, GetRouteDetailsByIdHandler getById)
     {
         _getAll = getAll;
         _create = create;
+        _getById = getById;
     }
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
@@ -26,10 +28,20 @@ public class RouteController : ControllerBase
         }
         return Ok(routeDetails);
     }
+    [HttpGet("{routeId}")]
+    public async Task<IActionResult> GetById(GetRouteDetailsByIdQuery routeId, CancellationToken ct)
+    {
+        var routeDetails = await _getById.Handle(routeId, ct);
+        if (routeDetails == null) return NotFound();
+
+        return Ok(routeDetails);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddNew([FromBody] CreateRouteDetailsCommand cmd, CancellationToken ct)
     {
         var created = await _create.Handle(cmd, ct);
         return Ok(created);
     }
+
 }

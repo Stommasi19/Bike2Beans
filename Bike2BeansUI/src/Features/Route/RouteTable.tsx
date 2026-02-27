@@ -10,11 +10,13 @@ type Props = {
 export function RouteTable({ routeStops, reorderStops, removeStop }: Props) {
 
     return (
-        <div className="route-table">
-            <div>
-                Create a Route
-            </div>
+        <div className="route-container center">
+            <h1 className="element-header">
+                Add Shops To A Route            </h1>
             <LocationBox routeStops={routeStops} reorderStops={reorderStops} removeStop={removeStop} />
+            {routeStops.length > 0 && (
+                <button className="btn-primary center"> Route Creation Mode</button>
+            )}
         </div>
     )
 }

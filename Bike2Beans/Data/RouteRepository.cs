@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Bike2Beans.Models;
+using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Bike2Beans.Data;
@@ -15,6 +16,9 @@ public class RouteRepository
         var db = client.GetDatabase(settings.Value.DatabaseName);
         _routedetails = db.GetCollection<RouteDetails>("routedetails");
     }
+
+    public async Task<RouteDetails> GetRouteDetailsByIdAsync(GetRouteDetailsByIdQuery query, CancellationToken ct)
+    => await _routedetails.Find(r => r.Id == query.Id).FirstOrDefaultAsync(ct);
 
     public async Task<List<RouteDetails>> GetAllRouteDetailsAsync(CancellationToken ct)
     => await _routedetails.Find(FilterDefinition<RouteDetails>.Empty).ToListAsync(ct);
