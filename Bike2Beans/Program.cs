@@ -3,11 +3,6 @@ using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using Bike2Beans.Application.CoffeeShops.Commands.Create;
 using Bike2Beans.Application.CoffeeShops.Queries.Search;
 using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
-using Google.Api.Gax.Grpc;
-using Google.Api.Gax.Grpc.Rest;
-using Google.Maps.Places.V1;
-using Bike2Beans.Options;
-using Microsoft.Extensions.Options;
 using Bike2Beans.Infrastructure;
 
 var corsPolicyName = "Bike2BeansUI";
@@ -31,7 +26,7 @@ builder.Services.AddSwaggerGen();
 
 // Mongo Settings
 builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
+    builder.Configuration.GetSection(MongoDBSettings.SectionName));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
