@@ -8,19 +8,19 @@ namespace Bike2Beans.Controllers;
 [Route("api/Route")]
 public class RouteController : ControllerBase
 {
-    private readonly ISender _sender;
+    private readonly IMeditator _mediator;
 
-    public RouteController(ISender sender) => _sender = sender;
+    public RouteController(IMeditator sender) => _mediator = sender;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
-    => Ok(await _sender.Send(new GetRouteDetailsQuery(), ct));
+    => Ok(await _mediator.Send(new GetRouteDetailsQuery(), ct));
     [HttpGet("{routeId}")]
     public async Task<IActionResult> GetById(GetRouteDetailsByIdQuery routeId, CancellationToken ct)
-    => Ok(await _sender.Send(routeId, ct));
+    => Ok(await _mediator.Send(routeId, ct));
 
     [HttpPost]
     public async Task<IActionResult> AddNew([FromBody] CreateRouteDetailsCommand cmd, CancellationToken ct)
-    => Ok(await _sender.Send(cmd, ct));
+    => Ok(await _mediator.Send(cmd, ct));
 
 }

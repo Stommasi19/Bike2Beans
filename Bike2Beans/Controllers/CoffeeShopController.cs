@@ -9,17 +9,17 @@ namespace Bike2Beans.Controllers;
 [Route("api/coffeeshops")]
 public class CoffeeShopController : ControllerBase
 {
-    private readonly ISender _sender;
+    private readonly IMeditator _mediator;
 
-    public CoffeeShopController(ISender sender) => _sender = sender;
+    public CoffeeShopController(IMeditator sender) => _mediator = sender;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
-    => Ok(await _sender.Send(new GetAllCoffeeShopQuery(), ct));
+    => Ok(await _mediator.Send(new GetAllCoffeeShopQuery(), ct));
 
 
 
     [HttpPost]
     public async Task<IActionResult> AddNew([FromBody] CreateCoffeeShopCommand cmd, CancellationToken ct)
-    => Ok(await _sender.Send(cmd, ct));
+    => Ok(await _mediator.Send(cmd, ct));
 }
