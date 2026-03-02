@@ -1,5 +1,6 @@
 
-
+using Bike2Beans.Dtos;
+using MediatR;
 namespace Bike2Beans.Application.CoffeeShops.Commands.Create;
 
 public record CreateCoffeeShopCommand(
@@ -9,4 +10,4 @@ public record CreateCoffeeShopCommand(
     double? Lng,
     double? Rating,
     int? UserRatingsTotal
-);
+) : IRequest<CoffeeShopDto>;

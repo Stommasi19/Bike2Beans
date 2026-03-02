@@ -1,9 +1,11 @@
-using Bike2Beans.Models;
 using Bike2Beans.Data;
+using Bike2Beans.Dtos;
+using Bike2Beans.Models;
+using MediatR;
 
 namespace Bike2Beans.Application.CoffeeShops.Commands.Create;
 
-public class CreateCoffeeShopHandler
+public class CreateCoffeeShopHandler : IRequestHandler<CreateCoffeeShopCommand, CoffeeShopDto>
 {
     private readonly CoffeeShopRepository _repo;
 
@@ -11,7 +13,7 @@ public class CreateCoffeeShopHandler
     {
         _repo = repo;
     }
-    public async Task<CoffeeShop> Handle(CreateCoffeeShopCommand cmd, CancellationToken ct = default)
+    public async Task<CoffeeShopDto> Handle(CreateCoffeeShopCommand cmd, CancellationToken ct)
     {
         var shop = new CoffeeShop
         {
@@ -22,6 +24,17 @@ public class CreateCoffeeShopHandler
             Rating = cmd.Rating,
             UserRatingsTotal = cmd.UserRatingsTotal
         };
-        return await _repo.InsertAsync(shop, ct);
+
+        var created = await _repo.InsertAsync(shop, ct);
+
+        return new CoffeeShopDto(
+            Id: created.Id,
+            Name: created.Name,
+            Address: created.Address,
+            Rating: created.Rating,
+            UserRatingsTotal: created.UserRatingsTotal,
+            Lat: created.Lat,
+            Lng: created.Lng
+        );
     }
 }

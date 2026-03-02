@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using Bike2Beans.Application.CoffeeShops.Commands.Create;
+using MediatR;
 
 namespace Bike2Beans.Controllers;
 
@@ -8,31 +9,17 @@ namespace Bike2Beans.Controllers;
 [Route("api/coffeeshops")]
 public class CoffeeShopController : ControllerBase
 {
-    private readonly GetAllCoffeeShopHandler _getAll;
-    private readonly CreateCoffeeShopHandler _create;
+    private readonly ISender _sender;
 
-    public CoffeeShopController(GetAllCoffeeShopHandler getAll, CreateCoffeeShopHandler create)
-    {
-        _getAll = getAll;
-        _create = create;
-    }
+    public CoffeeShopController(ISender sender) => _sender = sender;
+
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
-    {
-        var shops = await _getAll.Handle(new GetAllCoffeeShopQuery(), ct);
-        if (shops == null)
-        {
-            return NotFound();
-        }
-        return Ok(shops);
-    }
+    => Ok(await _sender.Send(new GetAllCoffeeShopQuery(), ct));
+
 
 
     [HttpPost]
     public async Task<IActionResult> AddNew([FromBody] CreateCoffeeShopCommand cmd, CancellationToken ct)
-    {
-
-        var created = await _create.Handle(cmd, ct);
-        return Ok(created);
-    }
+    => Ok(await _sender.Send(cmd, ct));
 }
