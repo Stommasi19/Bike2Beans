@@ -1,8 +1,0 @@
-
-
-namespace Bike2Beans.Dtos;
-
-public class CreatedRouteDto
-{
-
-}
