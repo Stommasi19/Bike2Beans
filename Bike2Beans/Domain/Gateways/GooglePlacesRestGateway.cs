@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Net.Http.Json;
 using Bike2Beans.Infrastructure.Responses;
 using Bike2Beans.Domain.Interfaces;
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Entities;
 
 namespace Bike2Beans.Domain.Gateways;
 
@@ -28,7 +30,7 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
     {
         PropertyNameCaseInsensitive = true
     };
-    public async Task<ILocationPaginatedResponse> SearchPlacesByTextAsync(
+    public async Task<LocationPaginatedResponse> SearchPlacesByTextAsync(
         string text,
         int pageSize,
         string? pageToken = null,
@@ -63,8 +65,20 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
         var googleTextSearchResponse = JsonSerializer.Deserialize<GoogleSearchTextResponse>(responseJson, JsonOptions)
              ?? new GoogleSearchTextResponse();
 
-        return googleTextSearchResponse;
-
+        var returnResponse = new LocationPaginatedResponse
+        {
+            NextPageToken = googleTextSearchResponse.NextPageToken,
+            Locations = googleTextSearchResponse.Places.Select(loc => new CoffeeshopDto(
+                loc.Id ?? "",
+                loc.DisplayName?.Text ?? "",
+                loc.FormattedAddress,
+                loc.Rating,
+                loc.UserRatingCount,
+                loc.Location?.Latitude ?? 0,
+                loc.Location?.Longitude ?? 0
+            )).ToList()
+        };
+        return returnResponse;
     }
 
 }

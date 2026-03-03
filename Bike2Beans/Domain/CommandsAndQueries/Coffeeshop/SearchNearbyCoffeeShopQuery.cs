@@ -1,8 +1,8 @@
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
-public record SearchNearbyCoffeeShopQuery(
+public record SearchNearbyCoffeeshopQuery(
     double Lat,
     double Lng,
     int RadiusMeters,

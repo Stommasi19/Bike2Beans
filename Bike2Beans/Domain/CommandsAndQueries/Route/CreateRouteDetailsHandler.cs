@@ -1,7 +1,7 @@
 using Bike2Beans.Models;
-using Bike2Beans.Data;
 using MediatR;
-using Bike2Beans.Dtos;
+using Bike2Beans.Domain.Entities;
+using Bike2Beans.Domain.Repositories;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 

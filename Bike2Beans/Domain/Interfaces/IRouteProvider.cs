@@ -10,7 +10,7 @@ public interface IRouteProvider
     Task<List<RouteOptionDto>> CreateRoute(
         List<double> StartLocation,
         List<double>? EndLocation,
-        List<ILocation> Stops,
+        List<CoffeeshopDto> Stops,
         CancellationToken ct = default
     );
 }

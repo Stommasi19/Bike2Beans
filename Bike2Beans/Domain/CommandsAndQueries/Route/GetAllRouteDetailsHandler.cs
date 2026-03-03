@@ -1,5 +1,6 @@
-using Bike2Beans.Dtos;
-using Bike2Beans.Data;
+
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Repositories;
 using Bike2Beans.Models;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
@@ -21,7 +22,7 @@ public class GetAllRouteDetailsHandler
             Name: d.Name ?? "",
             StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: d.EndLocation ?? null,
-            RouteStops: d.Stops ?? new List<CoffeeShopDto>(),
+            RouteStops: d.Stops,
             Mileage: d.Mileage ?? 0
 
         )).ToList();

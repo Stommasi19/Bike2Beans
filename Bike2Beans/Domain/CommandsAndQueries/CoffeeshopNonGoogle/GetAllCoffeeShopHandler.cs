@@ -5,13 +5,13 @@ using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
-public class GetAllCoffeeShopHandler : IRequestHandler<GetAllCoffeeShopQuery, List<DTOs.CoffeeshopDto>>
+public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, List<DTOs.CoffeeshopDto>>
 {
     private readonly CoffeeShopRepository _repo;
 
-    public GetAllCoffeeShopHandler(CoffeeShopRepository repo) => _repo = repo;
+    public GetAllCoffeeshopHandler(CoffeeShopRepository repo) => _repo = repo;
 
-    public async Task<List<DTOs.CoffeeshopDto>> Handle(GetAllCoffeeShopQuery query, CancellationToken ct = default)
+    public async Task<List<DTOs.CoffeeshopDto>> Handle(GetAllCoffeeshopQuery query, CancellationToken ct = default)
     {
         var shops = await _repo.GetAllAsync();
 

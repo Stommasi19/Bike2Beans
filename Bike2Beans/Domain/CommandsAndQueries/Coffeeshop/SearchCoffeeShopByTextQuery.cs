@@ -1,7 +1,7 @@
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
 
-public record SearchCoffeeShopByTextQuery(
+public record SearchCoffeeshopByTextQuery(
     string Text,
     int PageSize,
     string? PageToken

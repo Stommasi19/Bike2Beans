@@ -1,6 +1,6 @@
-using Bike2Beans.Dtos;
-using Bike2Beans.Data;
 using Bike2Beans.Models;
+using Bike2Beans.Domain.Repositories;
+using Bike2Beans.Domain.DTOs;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 

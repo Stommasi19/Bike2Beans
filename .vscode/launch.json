@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-api",
-            "program": "${workspaceFolder}/Api/bin/Debug/net9.0/Api.dll",
+            "program": "${workspaceFolder}/Bike2Beans/Api/bin/Debug/net9.0/Api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Api",
+            "cwd": "${workspaceFolder}/Bike2Beans/Api",
             "console": "internalConsole",
             "stopAtEntry": false,
             "launchSettingsProfile": "https"

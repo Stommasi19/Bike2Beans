@@ -7,9 +7,9 @@ public interface ILocation
 
     string Name { get; }
     public string? FormattedAddress { get; }
-
-    double Latitude { get; }
-    double Longitude { get; }
     public double? Rating { get; }
     public int? UserRatingCount { get; }
+    double Latitude { get; }
+    double Longitude { get; }
+
 }

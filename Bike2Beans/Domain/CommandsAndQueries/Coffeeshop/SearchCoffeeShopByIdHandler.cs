@@ -1,28 +1,21 @@
 using Google.Maps.Places.V1;
-using Google.Protobuf.WellKnownTypes;
-using Google.Type;
 using Google.Api.Gax.Grpc;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.DTOs;
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
-public class SearchCoffeeShopByIdHandler
+public class SearchCoffeeshopByIdHandler
 {
     private readonly PlacesClient _places;
 
-    public SearchCoffeeShopByIdHandler(PlacesClient places)
+    public SearchCoffeeshopByIdHandler(PlacesClient places)
     {
         _places = places;
     }
 
     public async Task<ExpandedCoffeeshopDto> Handle(
-        SearchCoffeeShopByIdQuery query,
+        SearchCoffeeshopByIdQuery query,
         CancellationToken ct = default
         )
     {

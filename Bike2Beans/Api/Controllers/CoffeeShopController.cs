@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Commands.Create;
 using MediatR;
+using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
 namespace Bike2Beans.Api.Controllers;
 
@@ -8,17 +8,17 @@ namespace Bike2Beans.Api.Controllers;
 [Route("api/coffeeshops")]
 public class CoffeeShopController : ControllerBase
 {
-    private readonly IMeditator _mediator;
+    private readonly IMediator _mediator;
 
-    public CoffeeShopController(IMeditator sender) => _mediator = sender;
+    public CoffeeShopController(IMediator sender) => _mediator = sender;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
-    => Ok(await _mediator.Send(new GetAllCoffeeShopQuery(), ct));
+    => Ok(await _mediator.Send(new GetAllCoffeeshopQuery(), ct));
 
 
 
     [HttpPost]
-    public async Task<IActionResult> AddNew([FromBody] CreateCoffeeShopCommand cmd, CancellationToken ct)
+    public async Task<IActionResult> AddNew([FromBody] CreateCoffeeshopCommand cmd, CancellationToken ct)
     => Ok(await _mediator.Send(cmd, ct));
 }

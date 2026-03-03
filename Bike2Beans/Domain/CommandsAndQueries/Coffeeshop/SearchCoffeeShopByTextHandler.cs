@@ -10,7 +10,7 @@ using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.Gateways;
 using Bike2Beans.Domain.DTOs;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
 public class SearchCoffeeShopByTextHandler
 {
@@ -20,7 +20,7 @@ public class SearchCoffeeShopByTextHandler
 
 
     public async Task<PaginationSupportedCoffeeshopResultDto> Handle(
-        SearchCoffeeShopByTextQuery query,
+        SearchCoffeeshopByTextQuery query,
         CancellationToken ct = default
     )
     {
@@ -30,11 +30,11 @@ public class SearchCoffeeShopByTextHandler
         var result = response.Locations.Select(p => new CoffeeshopDto(
             p.Id,
             p.Name ?? "",
-            p.FormattedAddress,
+            p.Address,
             p.Rating,
-            p.UserRatingCount,
-            p.Latitude,
-            p.Longitude
+            p.UserRatingsTotal,
+            p.Lat,
+            p.Lng
             )).ToList();
 
         return new PaginationSupportedCoffeeshopResultDto()

@@ -1,15 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
-using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Commands.Create;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Bike2Beans.Domain.CommandsAndQueries.Route;
 namespace Bike2Beans.Api.Controllers;
 
 [ApiController]
 [Route("api/Route")]
 public class RouteController : ControllerBase
 {
-    private readonly IMeditator _mediator;
+    private readonly IMediator _mediator;
 
-    public RouteController(IMeditator sender) => _mediator = sender;
+    public RouteController(IMediator sender) => _mediator = sender;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)

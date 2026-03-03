@@ -1,13 +1,8 @@
-using Google.Maps.Places.V1;
-using Google.Protobuf.WellKnownTypes;
-using Google.Type;
-using Google.Api.Gax.Grpc;
+
+using Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
+using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Queries.Search;
-using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
+
 
 
 
@@ -18,13 +13,13 @@ namespace Bike2Beans.Api.Controllers;
 public class PlacesController : ControllerBase
 {
     private readonly SearchNearbyCoffeeShopHandler _searchNearby;
-    private readonly SearchCoffeeShopByIdHandler _searchById;
+    private readonly SearchCoffeeshopByIdHandler _searchById;
     private readonly SearchCoffeeShopByTextHandler _searchByText;
     private readonly AutocompleteHandler _autocompleteSearch;
 
     public PlacesController(
         SearchNearbyCoffeeShopHandler searchNearby,
-        SearchCoffeeShopByIdHandler SearchById,
+        SearchCoffeeshopByIdHandler SearchById,
         SearchCoffeeShopByTextHandler SearchByText,
         AutocompleteHandler AutocompleteSearch
     )
@@ -44,7 +39,7 @@ public class PlacesController : ControllerBase
         CancellationToken ct = default
     )
     {
-        var query = new SearchNearbyCoffeeShopQuery(lat, lng, radiusMeters, max);
+        var query = new SearchNearbyCoffeeshopQuery(lat, lng, radiusMeters, max);
         var shops = await _searchNearby.Handle(query);
         return Ok(shops);
     }
@@ -53,7 +48,7 @@ public class PlacesController : ControllerBase
         [FromQuery] string id = "ChIJ-cPHe4xrkFQRMvbH8nZG-nc"
     )
     {
-        var query = new SearchCoffeeShopByIdQuery(id);
+        var query = new SearchCoffeeshopByIdQuery(id);
         var shop = await _searchById.Handle(query);
         return Ok(shop);
     }
@@ -65,7 +60,7 @@ public class PlacesController : ControllerBase
         [FromQuery] string? PageToken = null
     )
     {
-        var query = new SearchCoffeeShopByTextQuery(
+        var query = new SearchCoffeeshopByTextQuery(
             Text,
             PageSize,
             PageToken

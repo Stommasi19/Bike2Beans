@@ -11,7 +11,7 @@ using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
 
 
@@ -25,7 +25,7 @@ public class SearchNearbyCoffeeShopHandler
     }
 
     public async Task<List<CoffeeshopDto>> Handle(
-        SearchNearbyCoffeeShopQuery query,
+        SearchNearbyCoffeeshopQuery query,
         CancellationToken ct = default
     )
     {

@@ -1,9 +1,8 @@
 using Bike2Beans.Models;
-using Bike2Beans.Data;
-using Bike2Beans.Dtos;
 using Bike2Beans.Infrastructure;
-using Bike2Beans.Application.Common;
 using MediatR;
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Infrastructure.Gateways;
 
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
@@ -27,7 +26,7 @@ public class CreateRouteHandler : IRequestHandler<CreateRouteCommand, List<Route
         //     Stops = cmd.Stops,
         //     Mileage = cmd.Mileage
         // };
-        var response = await _mapbox.CreateRoute(cmd, ct);
+        var response = await _mapbox.CreateRoute(cmd.StartLocation, cmd.EndLocation, cmd.Stops, ct);
 
         return response;
     }

@@ -1,9 +1,7 @@
+using Bike2Beans.Domain.DTOs;
 using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
-public record GetAllCoffeeShopQuery() : IRequest<List<CoffeeshopDto>>;
+public record GetAllCoffeeshopQuery() : IRequest<List<CoffeeshopDto>>;
 
-public class CoffeeshopDto
-{
-}

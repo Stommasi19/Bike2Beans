@@ -1,7 +1,8 @@
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
+namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
-public record SearchCoffeeShopByIdQuery(
+
+public record SearchCoffeeshopByIdQuery(
     string Id
 );

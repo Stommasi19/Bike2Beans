@@ -33,14 +33,14 @@ public sealed class MapboxRestGateway : IRouteProvider
     public async Task<List<RouteOptionDto>> CreateRoute(
         List<double> startLocation,
         List<double>? endLocation,
-        List<ILocation> stops,
+        List<CoffeeshopDto> stops,
         CancellationToken ct = default
     )
     {
         var stopsstring = $"{startLocation[0]},{startLocation[1]}";
         foreach (var stop in stops)
         {
-            stopsstring += $";{stop.Latitude},${stop.Longitude}";
+            stopsstring += $";{stop.Lat},${stop.Lng}";
         }
         if (endLocation != null)
         {
