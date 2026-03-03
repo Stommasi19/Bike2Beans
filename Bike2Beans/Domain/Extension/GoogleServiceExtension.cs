@@ -1,16 +1,23 @@
-using Bike2Beans.Options;
 using Google.Api.Gax.Grpc.Rest;
 using Google.Maps.Places.V1;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Bike2Beans.Application.Common;
 using Bike2Beans.Infrastructure.Extensions;
+using Bike2Beans.Domain.Interfaces;
+using Bike2Beans.Domain.Gateways;
 
 
 
-namespace Bike2Beans.Infrastructure;
+namespace Bike2Beans.Domain.Extension;
 
+
+public sealed class GooglePlacesOptions
+{
+    public const string SectionName = "GooglePlaces";
+
+    public string ApiKey { get; init; } = "";
+}
 public static class GoogleServiceExtension
 {
     private const string ApiKeyEnvVarName = "GOOGLE_PLACES_API_KEY";
@@ -43,7 +50,7 @@ public static class GoogleServiceExtension
             return builder.Build();
         });
 
-        services.AddHttpClient<IPlacesRestGateway, GooglePlacesRestGateway>((sp, client) =>
+        services.AddHttpClient<ILocationProvider, GooglePlacesRestGateway>((sp, client) =>
         {
             var options = sp.GetRequiredService<IOptions<GooglePlacesOptions>>().Value;
 

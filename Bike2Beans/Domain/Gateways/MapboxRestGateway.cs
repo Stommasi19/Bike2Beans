@@ -1,18 +1,22 @@
-using Bike2Beans.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using Bike2Beans.Application.Common;
-using Bike2Beans.Application.CoffeeShops.Commands.Create;
-using Bike2Beans.Data;
-using Bike2Beans.Dtos;
 using Bike2Beans.Models;
 using System.Text.Json;
+using Bike2Beans.Domain.Interfaces;
+using Bike2Beans.Infrastructure.Responses;
+using Bike2Beans.Domain.DTOs;
 
 namespace Bike2Beans.Infrastructure.Gateways;
 
+public class MapboxOptions
+{
+    public const string SectionName = "Mapbox";
 
-public sealed class MapboxRestGateway : IMapboxRestGateway
+    public string AccessToken { get; init; } = "";
+}
+
+public sealed class MapboxRestGateway : IRouteProvider
 {
     private readonly HttpClient _http;
     private readonly string _accessToken;
@@ -27,25 +31,27 @@ public sealed class MapboxRestGateway : IMapboxRestGateway
 
 
     public async Task<List<RouteOptionDto>> CreateRoute(
-        CreateRouteCommand routeinfo,
+        List<double> startLocation,
+        List<double>? endLocation,
+        List<ILocation> stops,
         CancellationToken ct = default
     )
     {
-        var stops = $"{routeinfo.StartLocation[0]},{routeinfo.StartLocation[1]}";
-        foreach (var stop in routeinfo.Stops)
+        var stopsstring = $"{startLocation[0]},{startLocation[1]}";
+        foreach (var stop in stops)
         {
-            stops += $";{stop.Lat},${stop.Lng}";
+            stopsstring += $";{stop.Latitude},${stop.Longitude}";
         }
-        if (routeinfo.EndLocation != null)
+        if (endLocation != null)
         {
-            stops += $";{routeinfo.EndLocation[0]},{routeinfo.EndLocation[1]}";
+            stopsstring += $";{endLocation[0]},{endLocation[1]}";
         }
         else
         {
-            stops += $";{routeinfo.StartLocation[0]},{routeinfo.StartLocation[1]}";
+            stopsstring += $";{startLocation[0]},{startLocation[1]}";
         }
 
-        var url = $"https://api.mapbox.com/directions/v5/mapbox/cycling/{stops}" +
+        var url = $"https://api.mapbox.com/directions/v5/mapbox/cycling/{stopsstring}" +
            $"?alternatives=true&geometries=geojson&steps=true" +
            $"&access_token={_accessToken}";
 

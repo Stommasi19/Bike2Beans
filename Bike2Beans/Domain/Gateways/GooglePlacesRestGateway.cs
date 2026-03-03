@@ -1,8 +1,5 @@
 
 using Google.Maps.Places.V1;
-using Bike2Beans.Application.Common;
-using Bike2Beans.Application.CoffeeShops.Queries.Search;
-using Bike2Beans.Dtos;
 using System.Text.Json;
 using System.Net.Http;
 using System.Text;
@@ -10,12 +7,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 using Bike2Beans.Infrastructure.Responses;
-using Bike2Beans.Infrastructure.Gateways;
-
+using Bike2Beans.Domain.Interfaces;
 
 namespace Bike2Beans.Domain.Gateways;
 
-public sealed class GooglePlacesRestGateway : IPlacesRestGateway
+public class GooglePlacesOptions
+{
+    public const string SectionName = "GooglePlaces";
+
+    public string ApiKey { get; init; } = "";
+}
+public sealed class GooglePlacesRestGateway : ILocationProvider
 {
     private readonly HttpClient _http;
     public GooglePlacesRestGateway(HttpClient http)
@@ -26,8 +28,10 @@ public sealed class GooglePlacesRestGateway : IPlacesRestGateway
     {
         PropertyNameCaseInsensitive = true
     };
-    public async Task<GoogleSearchTextResponse> SearchPlacesByTextAsync(
-        SearchCoffeeShopByTextQuery query,
+    public async Task<ILocationPaginatedResponse> SearchPlacesByTextAsync(
+        string text,
+        int pageSize,
+        string? pageToken = null,
         CancellationToken ct = default
         )
     {
@@ -41,9 +45,9 @@ public sealed class GooglePlacesRestGateway : IPlacesRestGateway
                 );
         var body = new
         {
-            textQuery = query.Text,
-            pageSize = query.PageSize,
-            pageToken = query.PageToken,
+            textQuery = text,
+            pageSize = pageSize,
+            pageToken = pageToken,
             IncludedType = "cafe",
             StrictTypeFiltering = true
         };
@@ -62,4 +66,5 @@ public sealed class GooglePlacesRestGateway : IPlacesRestGateway
         return googleTextSearchResponse;
 
     }
+
 }

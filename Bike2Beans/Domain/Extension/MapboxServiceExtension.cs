@@ -1,10 +1,18 @@
-using Bike2Beans.Options;
 using Bike2Beans.Infrastructure.Extensions;
+using Bike2Beans.Infrastructure.Gateways;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bike2Beans.Infrastructure;
 
+namespace Bike2Beans.Domain.Extension;
 
+public class MapboxOptions
+{
+    public const string SectionName = "Mapbox";
+
+    public string AccessToken { get; init; } = "";
+}
 public static class MapboxServiceExtension
 {
     private const string AccessTokenEnvVarName = "MAPBOX_ACCESS_TOKEN";

@@ -1,6 +1,7 @@
 using Bike2Beans.Models;
-using Bike2Beans.Dtos;
+using Bike2Beans.Domain;
 using MediatR;
+using Bike2Beans.Domain.DTOs;
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
 public record CreateRouteCommand(
@@ -8,8 +9,7 @@ public record CreateRouteCommand(
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeShopDto> Stops,
-    double Mileage
+    List<CoffeeShopDto> Stops
 // RouteDto Route
 
 ) : IRequest<List<RouteOptionDto>>;
