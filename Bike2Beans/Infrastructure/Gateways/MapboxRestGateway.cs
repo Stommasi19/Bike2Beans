@@ -9,7 +9,7 @@ using Bike2Beans.Dtos;
 using Bike2Beans.Models;
 using System.Text.Json;
 
-namespace Bike2Beans.Infrastructure;
+namespace Bike2Beans.Infrastructure.Gateways;
 
 
 public sealed class MapboxRestGateway : IMapboxRestGateway

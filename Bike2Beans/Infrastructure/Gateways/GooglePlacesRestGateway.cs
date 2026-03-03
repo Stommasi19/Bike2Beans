@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 
+namespace Bike2Beans.Infrastructure.Gateways;
 
 public sealed class GooglePlacesRestGateway : IPlacesRestGateway
 {
