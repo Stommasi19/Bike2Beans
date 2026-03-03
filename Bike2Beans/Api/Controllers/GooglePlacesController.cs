@@ -1,6 +1,7 @@
 
 using Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
 using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,23 +13,9 @@ namespace Bike2Beans.Api.Controllers;
 [Route("Api/places")]
 public class PlacesController : ControllerBase
 {
-    private readonly SearchNearbyCoffeeShopHandler _searchNearby;
-    private readonly SearchCoffeeshopByIdHandler _searchById;
-    private readonly SearchCoffeeShopByTextHandler _searchByText;
-    private readonly AutocompleteHandler _autocompleteSearch;
+    private readonly IMediator _mediator;
 
-    public PlacesController(
-        SearchNearbyCoffeeShopHandler searchNearby,
-        SearchCoffeeshopByIdHandler SearchById,
-        SearchCoffeeShopByTextHandler SearchByText,
-        AutocompleteHandler AutocompleteSearch
-    )
-    {
-        _searchNearby = searchNearby;
-        _searchById = SearchById;
-        _searchByText = SearchByText;
-        _autocompleteSearch = AutocompleteSearch;
-    }
+    public PlacesController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("Nearby")]
     public async Task<IActionResult> SearchNearby(
@@ -40,7 +27,7 @@ public class PlacesController : ControllerBase
     )
     {
         var query = new SearchNearbyCoffeeshopQuery(lat, lng, radiusMeters, max);
-        var shops = await _searchNearby.Handle(query);
+        var shops = await _mediator.Send(query);
         return Ok(shops);
     }
     [HttpGet("Id")]
@@ -49,7 +36,7 @@ public class PlacesController : ControllerBase
     )
     {
         var query = new SearchCoffeeshopByIdQuery(id);
-        var shop = await _searchById.Handle(query);
+        var shop = await _mediator.Send(query);
         return Ok(shop);
     }
 
@@ -65,7 +52,7 @@ public class PlacesController : ControllerBase
             PageSize,
             PageToken
             );
-        var shops = await _searchByText.Handle(query);
+        var shops = await _mediator.Send(query);
 
 
 
@@ -78,7 +65,7 @@ public class PlacesController : ControllerBase
     )
     {
         var query = new AutocompleteQuery(text);
-        var response = await _autocompleteSearch.Handle(query);
+        var response = await _mediator.Send(query);
 
         return Ok(response);
     }
