@@ -4,8 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Application.CoffeeShops.Commands.Create;
-using Bike2Beans.Application.CoffeeShops.Queries.Get;
-
+using Bike2Beans.Api.CommandsAndQueries.Coffeeshops
 namespace Bike2Beans.Api.Controllers;
 
 [ApiController]

@@ -7,3 +7,9 @@ Bike2Beans/.env
 Bike2BeansUI/.env
 Bike2BeansUI/.env
 Bike2BeansUI/dist/bundle.js
+/Bike2Beans/Api/obj
+/Bike2Beans/Api/obj
+/Bike2Beans/Domain/obj
+/Bike2Beans/Domain/obj
+/Bike2Beans/Domain/obj
+/Bike2Beans/Infrastructure/obj

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Bike2Beans.Application.CoffeeShops.Queries.Get;
-using Bike2Beans.Application.CoffeeShops.Commands.Create;
+using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Commands.Create;
 using MediatR;
 
 namespace Bike2Beans.Api.Controllers;

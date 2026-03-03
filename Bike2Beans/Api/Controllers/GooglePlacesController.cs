@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Bike2Beans.Application.CoffeeShops.Queries.Get;
-using Bike2Beans.Application.CoffeeShops.Queries.Search;
+using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Queries.Search;
 using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
 
 

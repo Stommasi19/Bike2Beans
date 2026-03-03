@@ -43,6 +43,36 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Google.Api.Gax.Grpc": {
+              "target": "Package",
+              "version": "[4.13.0, )"
+            },
+            "Google.Cloud.Storage.V1": {
+              "target": "Package",
+              "version": "[4.14.0, )"
+            },
+            "Google.Maps.Places.V1": {
+              "target": "Package",
+              "version": "[1.0.0-beta18, )"
+            },
+            "Mapbox.Api": {
+              "target": "Package",
+              "version": "[0.1.11, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.0.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.6.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

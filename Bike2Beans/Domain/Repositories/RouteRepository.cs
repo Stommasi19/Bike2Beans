@@ -1,7 +1,6 @@
+using Bike2Beans.Models.Entities;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Bike2Beans.Models;
-using Bike2Beans.Application.CoffeeShops.Queries.Get;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Bike2Beans.Domain.Repositories;

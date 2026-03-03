@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Bike2Beans.Models.Entities;
 
-public class CoffeeShop
+public class Coffeeshop
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

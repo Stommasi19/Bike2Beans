@@ -1,6 +1,5 @@
 using Bike2Beans.Data;
-using Bike2Beans.Application.CoffeeShops.Queries.Get;
-using Bike2Beans.Application.CoffeeShops.Commands.Create;
+using Bike2Beans.Api.CommandsAndQueries.Coffeeshopsusing Bike2Beans.Application.CoffeeShops.Commands.Create;
 using Bike2Beans.Application.CoffeeShops.Queries.Search;
 using Bike2Beans.Application.CoffeeShops.Queries.Autocomplete;
 using Bike2Beans.Infrastructure;

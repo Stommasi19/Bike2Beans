@@ -1,9 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Bike2Beans.Dtos;
 
-
-namespace Bike2Beans.Models.Entities;
+namespace Bike2Beans.Domain.Entities;
 
 public class RouteDetails
 {
@@ -21,8 +19,8 @@ public class RouteDetails
 
 
 
-    [BsonElement("routeStops")]
-    public List<CoffeeShopDto>? Stops { get; set; } = new();
+    //[BsonElement("routeStops")]
+    // public List<CoffeeShopDto>? Stops { get; set; } = new();
 
     [BsonElement("mileage")]
     public double? Mileage { get; set; }
