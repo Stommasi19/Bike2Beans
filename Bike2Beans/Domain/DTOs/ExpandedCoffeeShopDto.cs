@@ -1,15 +1,13 @@
-// namespace Bike2Beans.Models.Dtos;
+namespace Bike2Beans.Domain.DTOs;
 
-// public record ExpandedCoffeeShopDto
-// (
-//     string? Id,
-//     string Name,
-//     string? Address,
-//     double? Rating,
-//     int? UserRatingsTotal,
-//     double? Lat,
-//     double? Lng
-// );
-// // subject to change
-
-// TODO. maybe delete??
+public record ExpandedCoffeeshopDto
+(
+    string? Id,
+    string Name,
+    string? Address,
+    double? Rating,
+    int? UserRatingsTotal,
+    double? Lat,
+    double? Lng
+);
+// subject to change

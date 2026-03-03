@@ -1,21 +1,22 @@
-using Bike2Beans.Data;
-using Bike2Beans.Dtos;
+
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Repositories;
 using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
-public class GetAllCoffeeShopHandler : IRequestHandler<GetAllCoffeeShopQuery, List<CoffeeShopDto>>
+public class GetAllCoffeeShopHandler : IRequestHandler<GetAllCoffeeShopQuery, List<DTOs.CoffeeshopDto>>
 {
     private readonly CoffeeShopRepository _repo;
 
     public GetAllCoffeeShopHandler(CoffeeShopRepository repo) => _repo = repo;
 
-    public async Task<List<CoffeeShopDto>> Handle(GetAllCoffeeShopQuery query, CancellationToken ct = default)
+    public async Task<List<DTOs.CoffeeshopDto>> Handle(GetAllCoffeeShopQuery query, CancellationToken ct = default)
     {
         var shops = await _repo.GetAllAsync();
 
         //mapping
-        return shops.Select(s => new CoffeeShopDto(
+        return shops.Select(s => new CoffeeshopDto(
             Id: s.Id,
             Name: s.Name,
             Address: s.Address,
@@ -23,7 +24,7 @@ public class GetAllCoffeeShopHandler : IRequestHandler<GetAllCoffeeShopQuery, Li
             Lng: s.Lng,
             Rating: s.Rating,
             UserRatingsTotal: s.UserRatingsTotal
-            )).ToList();
+        )).ToList();
     }
 
 

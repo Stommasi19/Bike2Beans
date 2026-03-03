@@ -1,11 +1,12 @@
-using Bike2Beans.Data;
-using Bike2Beans.Dtos;
+
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Repositories;
 using Bike2Beans.Models;
 using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
-public class CreateCoffeeShopHandler : IRequestHandler<CreateCoffeeShopCommand, CoffeeShopDto>
+public class CreateCoffeeShopHandler : IRequestHandler<CreateCoffeeShopCommand, DTOs.CoffeeshopDto>
 {
     private readonly CoffeeShopRepository _repo;
 
@@ -13,9 +14,9 @@ public class CreateCoffeeShopHandler : IRequestHandler<CreateCoffeeShopCommand, 
     {
         _repo = repo;
     }
-    public async Task<CoffeeShopDto> Handle(CreateCoffeeShopCommand cmd, CancellationToken ct)
+    public async Task<DTOs.CoffeeshopDto> Handle(CreateCoffeeShopCommand cmd, CancellationToken ct)
     {
-        var shop = new CoffeeShop
+        var shop = new Coffeeshop
         {
             Name = cmd.Name,
             Address = cmd.Address,
@@ -27,7 +28,7 @@ public class CreateCoffeeShopHandler : IRequestHandler<CreateCoffeeShopCommand, 
 
         var created = await _repo.InsertAsync(shop, ct);
 
-        return new CoffeeShopDto(
+        return new CoffeeshopDto(
             Id: created.Id,
             Name: created.Name,
             Address: created.Address,

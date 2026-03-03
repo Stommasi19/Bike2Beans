@@ -1,4 +1,3 @@
-using Bike2Beans.Dtos;
 using Google.Maps.Places.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -8,7 +7,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Infrastructure;
-using Bike2Beans.Data;
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Repositories;
 
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
@@ -24,7 +24,7 @@ public class SearchNearbyCoffeeShopHandler
         _places = places;
     }
 
-    public async Task<List<CoffeeShopDto>> Handle(
+    public async Task<List<CoffeeshopDto>> Handle(
         SearchNearbyCoffeeShopQuery query,
         CancellationToken ct = default
     )
@@ -52,7 +52,7 @@ public class SearchNearbyCoffeeShopHandler
 
         var response = await _places.SearchNearbyAsync(request, callSettings);
 
-        var result = response.Places.Select(p => new CoffeeShopDto(
+        var result = response.Places.Select(p => new CoffeeshopDto(
             p.Id,
             p.DisplayName?.Text ?? "",
             p.FormattedAddress,

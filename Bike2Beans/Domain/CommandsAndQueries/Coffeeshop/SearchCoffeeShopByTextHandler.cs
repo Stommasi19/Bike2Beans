@@ -1,4 +1,3 @@
-using Bike2Beans.Dtos;
 using Google.Maps.Places.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -8,37 +7,40 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Infrastructure;
-using Bike2Beans.Application.Common;
+using Bike2Beans.Domain.Gateways;
+using Bike2Beans.Domain.DTOs;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
 
 public class SearchCoffeeShopByTextHandler
 {
-    private readonly IPlacesRestGateway _placesRest;
+    private readonly GooglePlacesRestGateway _placesRest;
 
-    public SearchCoffeeShopByTextHandler(IPlacesRestGateway placesRest)
-    {
-        _placesRest = placesRest;
-    }
+    public SearchCoffeeShopByTextHandler(GooglePlacesRestGateway placesRest) => _placesRest = placesRest;
 
-    public async Task<PagedResult<CoffeeShopDto>> Handle(
+
+    public async Task<PaginationSupportedCoffeeshopResultDto> Handle(
         SearchCoffeeShopByTextQuery query,
         CancellationToken ct = default
     )
     {
 
-        var response = await _placesRest.SearchPlacesByTextAsync(query, ct);
+        var response = await _placesRest.SearchPlacesByTextAsync(query.Text, query.PageSize, query.PageToken, ct);
 
-        var result = response.Places.Select(p => new CoffeeShopDto(
+        var result = response.Locations.Select(p => new CoffeeshopDto(
             p.Id,
-            p.DisplayName?.Text ?? "",
+            p.Name ?? "",
             p.FormattedAddress,
             p.Rating,
             p.UserRatingCount,
-            p.Location?.Latitude,
-            p.Location?.Longitude
+            p.Latitude,
+            p.Longitude
             )).ToList();
 
-        return new PagedResult<CoffeeShopDto>(result, response.NextPageToken ?? null);
+        return new PaginationSupportedCoffeeshopResultDto()
+        {
+            Locations = result,
+            NextPageToken = response.NextPageToken ?? null
+        };
     }
 }

@@ -1,3 +1,7 @@
+using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
+using Bike2Beans.Models.Entities;
+using Bike2Beans.Models.Mapping;
+
 namespace Bike2Beans.Domain.Mapper;
 
 public class CoffeeshopMapper : BaseMapper<Coffeeshop, CoffeeshopDto>
@@ -7,12 +11,12 @@ public class CoffeeshopMapper : BaseMapper<Coffeeshop, CoffeeshopDto>
         if (entity == null) throw new ArgumentNullException(nameof(entity));
         return new CoffeeshopDto
         (
-            Id = entity.Id,
-            Name = entity.Name,
-            Address = entity.Address,
-            Latitude = entity.Latitude,
-            Longitude = entity.Longitude,
-            Rating = entity.Rating
+            entity.Id,
+           entity.Name,
+            entity.Address,
+            entity.Lat,
+            entity.Lng,
+            entity.Rating
         );
     }
     public override Coffeeshop ToEntity(CoffeeshopDto dto)

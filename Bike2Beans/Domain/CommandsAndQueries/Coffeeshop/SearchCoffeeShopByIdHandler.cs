@@ -1,4 +1,3 @@
-using Bike2Beans.Dtos;
 using Google.Maps.Places.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -8,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Infrastructure;
+using Bike2Beans.Domain.DTOs;
 
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
@@ -21,7 +21,7 @@ public class SearchCoffeeShopByIdHandler
         _places = places;
     }
 
-    public async Task<ExpandedCoffeeShopDto> Handle(
+    public async Task<ExpandedCoffeeshopDto> Handle(
         SearchCoffeeShopByIdQuery query,
         CancellationToken ct = default
         )
@@ -39,7 +39,7 @@ public class SearchCoffeeShopByIdHandler
         var response = await _places.GetPlaceAsync(request, callSettings);
 
         // TODO expandedcoffeeShopDto will be changing
-        return new ExpandedCoffeeShopDto(
+        return new ExpandedCoffeeshopDto(
             response.Id,
             response.DisplayName?.Text ?? "",
             response.FormattedAddress ?? "",

@@ -1,6 +1,6 @@
 namespace Bike2Beans.Domain.DTOs;
 
-public record CoffeeShopDto
+public record CoffeeshopDto
 (
     string? Id,
     string Name,

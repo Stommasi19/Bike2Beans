@@ -1,4 +1,3 @@
-using Bike2Beans.Data;
 namespace Bike2Beans.Domain.CommandsAndQueries.Coffeeshop;
 
 

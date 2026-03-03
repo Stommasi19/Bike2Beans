@@ -1,4 +1,3 @@
-using Bike2Beans.Dtos;
 using Google.Maps.Places.V1;
 using Google.Protobuf.WellKnownTypes;
 using Google.Type;
@@ -8,7 +7,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Infrastructure;
-using Bike2Beans.Data;
+using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Repositories;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
 

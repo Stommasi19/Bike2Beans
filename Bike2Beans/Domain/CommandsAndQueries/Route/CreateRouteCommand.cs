@@ -9,7 +9,7 @@ public record CreateRouteCommand(
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeShopDto> Stops
+    List<CoffeeshopDto> Stops
 // RouteDto Route
 
 ) : IRequest<List<RouteOptionDto>>;

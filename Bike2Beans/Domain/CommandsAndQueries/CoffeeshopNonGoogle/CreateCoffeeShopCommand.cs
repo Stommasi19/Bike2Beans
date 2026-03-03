@@ -1,5 +1,5 @@
 
-using Bike2Beans.Dtos;
+using Bike2Beans.Domain.DTOs;
 using MediatR;
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
 
@@ -10,4 +10,4 @@ public record CreateCoffeeShopCommand(
     double? Lng,
     double? Rating,
     int? UserRatingsTotal
-) : IRequest<CoffeeShopDto>;
+) : IRequest<DTOs.CoffeeshopDto>;

@@ -1,5 +1,4 @@
 
-using Bike2Beans.Entities;
 namespace Bike2Beans.Domain.DTOs;
 
 
@@ -8,7 +7,7 @@ public record RouteDetailsDto(
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeShopDto> RouteStops,
+    List<CoffeeshopDto> RouteStops,
     double Mileage
 // route?????
 );
