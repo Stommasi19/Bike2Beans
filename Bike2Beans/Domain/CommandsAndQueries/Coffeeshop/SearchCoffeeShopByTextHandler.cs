@@ -1,22 +1,15 @@
-using Google.Maps.Places.V1;
-using Google.Protobuf.WellKnownTypes;
-using Google.Type;
-using Google.Api.Gax.Grpc;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.Gateways;
 using Bike2Beans.Domain.DTOs;
+using MediatR;
+using Bike2Beans.Domain.Interfaces;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
-public class SearchCoffeeShopByTextHandler
+public class SearchCoffeeshopByTextHandler : IRequestHandler<SearchCoffeeshopByTextQuery, PaginationSupportedCoffeeshopResultDto>
 {
-    private readonly GooglePlacesRestGateway _placesRest;
+    private readonly ILocationProvider _placesRest;
 
-    public SearchCoffeeShopByTextHandler(GooglePlacesRestGateway placesRest) => _placesRest = placesRest;
+    public SearchCoffeeshopByTextHandler(ILocationProvider placesRest) => _placesRest = placesRest;
 
 
     public async Task<PaginationSupportedCoffeeshopResultDto> Handle(

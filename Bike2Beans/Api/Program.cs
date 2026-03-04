@@ -44,17 +44,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddGooglePlaces(builder.Configuration);
 builder.Services.AddMapbox(builder.Configuration);
 
-// Services
+// // Services
 builder.Services.AddScoped<CoffeeShopRepository>();
 builder.Services.AddScoped<RouteRepository>();
-builder.Services.AddScoped<GetRouteDetailsByIdHandler>();
-builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
-builder.Services.AddScoped<SearchCoffeeshopByIdHandler>();
-builder.Services.AddScoped<SearchCoffeeShopByTextHandler>();
-builder.Services.AddScoped<AutocompleteHandler>();
-builder.Services.AddScoped<GetAllRouteDetailsHandler>();
-builder.Services.AddScoped<CreateRouteDetailsHandler>();
-builder.Services.AddScoped<CreateRouteHandler>();
+// builder.Services.AddScoped<GetRouteDetailsByIdHandler>();
+// builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
+// builder.Services.AddScoped<SearchCoffeeshopByIdHandler>();
+// builder.Services.AddScoped<SearchCoffeeShopByTextHandler>();
+// builder.Services.AddScoped<AutocompleteHandler>();
+// builder.Services.AddScoped<GetAllRouteDetailsHandler>();
+// builder.Services.AddScoped<CreateRouteDetailsHandler>();
+// builder.Services.AddScoped<CreateRouteHandler>();
 
 
 

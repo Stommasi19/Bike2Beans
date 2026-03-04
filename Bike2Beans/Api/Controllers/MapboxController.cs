@@ -1,5 +1,6 @@
 
 using Bike2Beans.Domain.CommandsAndQueries.Route;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
@@ -10,23 +11,15 @@ namespace Bike2Beans.Api.Controllers;
 [Route("Api/Mapbox")]
 public class MapboxController : ControllerBase
 {
-    private readonly CreateRouteHandler _createRoute;
-    private readonly GetRouteDetailsByIdHandler _getById;
+    private readonly IMediator _mediator;
 
-    public MapboxController(
-        CreateRouteHandler createRoute,
-        GetRouteDetailsByIdHandler getById
-    )
-    {
-        _createRoute = createRoute;
-        _getById = getById;
-    }
+    public MapboxController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost("GenerateRouteFromDetails/{routeDetailsId}")]
     public async Task<IActionResult> GenerateRouteFromDetails([FromRoute] string routeDetailsId, CancellationToken ct)
     {
         var routeQuery = new GetRouteDetailsByIdQuery(routeDetailsId);
-        var routeDetails = await _getById.Handle(routeQuery, ct);
+        var routeDetails = await _mediator.Send(routeQuery, ct);
         if (routeDetails == null) return NotFound();
         var query = new CreateRouteCommand(
             routeDetails.Id,
@@ -36,7 +29,7 @@ public class MapboxController : ControllerBase
             routeDetails.RouteStops,
             routeDetails.Mileage
         );
-        var route = await _createRoute.Handle(query, ct);
+        var route = await _mediator.Send(query, ct);
         return Ok(route);
     }
 

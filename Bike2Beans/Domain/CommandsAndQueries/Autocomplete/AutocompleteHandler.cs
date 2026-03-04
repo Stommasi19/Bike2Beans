@@ -9,10 +9,11 @@ using System.Text.Json;
 using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
+using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
 
-public class AutocompleteHandler
+public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<AutocompletePredictionDto>>
 {
     private readonly PlacesClient _places;
 

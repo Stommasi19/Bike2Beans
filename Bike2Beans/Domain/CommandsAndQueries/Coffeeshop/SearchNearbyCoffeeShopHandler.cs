@@ -1,25 +1,20 @@
 using Google.Maps.Places.V1;
-using Google.Protobuf.WellKnownTypes;
 using Google.Type;
 using Google.Api.Gax.Grpc;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
+using MediatR;
 
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
 
 
-public class SearchNearbyCoffeeShopHandler
+public class SearchNearbyCoffeeshopHandler : IRequestHandler<SearchNearbyCoffeeshopQuery, List<CoffeeshopDto>>
 {
     private readonly PlacesClient _places;
 
-    public SearchNearbyCoffeeShopHandler(PlacesClient places)
+    public SearchNearbyCoffeeshopHandler(PlacesClient places)
     {
         _places = places;
     }

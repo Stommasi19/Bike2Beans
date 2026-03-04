@@ -1,11 +1,12 @@
 using Google.Maps.Places.V1;
 using Google.Api.Gax.Grpc;
 using Bike2Beans.Domain.DTOs;
+using MediatR;
 
 
 namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
 
-public class SearchCoffeeshopByIdHandler
+public class SearchCoffeeshopByIdHandler : IRequestHandler<SearchCoffeeshopByIdQuery, ExpandedCoffeeshopDto>
 {
     private readonly PlacesClient _places;
 

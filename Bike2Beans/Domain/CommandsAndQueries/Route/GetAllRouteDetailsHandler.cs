@@ -2,10 +2,11 @@
 using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
 using Bike2Beans.Models;
+using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
-public class GetAllRouteDetailsHandler
+public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, List<RouteDetailsDto>>
 {
     private readonly RouteRepository _repo;
 
