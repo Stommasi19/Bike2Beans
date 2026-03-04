@@ -4,8 +4,11 @@ import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
 import { RouteTable } from "../Features/Route/RouteTable";
-import { CoffeeShopDto } from "../Data/coffeeshopsDto";
+import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../Navigation/types";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -45,7 +48,11 @@ export function Home() {
 
 
 
+    const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+    function openRouteSetup() {
+        nav.navigate("RouteSetup", { routeStops });
+    }
 
 
 
@@ -54,7 +61,7 @@ export function Home() {
 
     const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
 
-    function addShop(shop: CoffeeShopDto) {
+    function addShop(shop: CoffeeshopDto) {
         setRouteStops(prev =>
             [...prev,
             { stopId: crypto.randomUUID(), shop }
@@ -85,7 +92,8 @@ export function Home() {
                 <RouteTable
                     routeStops={routeStops}
                     reorderStops={reorderStops}
-                    removeStop={removeStop} />
+                    removeStop={removeStop}
+                    openRouteSetup={openRouteSetup} />
             </div>
             <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
 

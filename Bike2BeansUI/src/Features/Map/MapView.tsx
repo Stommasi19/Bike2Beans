@@ -1,10 +1,10 @@
 import Map, { Marker } from "react-map-gl/mapbox";
-import { CoffeeShopDto } from "../../Data/coffeeshopsDto";
+import { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import { useEffect, useRef } from "react";
 import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";
 import { GetDistance } from '../Map/GetDistance'
 type Props = {
-    shops: CoffeeShopDto[],
+    shops: CoffeeshopDto[],
     activeId: string | null,
     setActiveId: (id: string) => void;
 }

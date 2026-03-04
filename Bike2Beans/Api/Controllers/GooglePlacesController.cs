@@ -64,9 +64,22 @@ public class PlacesController : ControllerBase
         [FromQuery] string text = ""
     )
     {
-        var query = new AutocompleteQuery(text);
+        var query = new AutocompleteQuery(false, text);
         var response = await _mediator.Send(query);
 
         return Ok(response);
     }
+    [HttpGet("ExternalLocationAutocomplete")]
+    public async Task<IActionResult> ExternalLocationAutocompleteText(
+        [FromQuery] string text = ""
+    )
+    {
+        var query = new AutocompleteQuery(true, text);
+        var response = await _mediator.Send(query);
+
+        return Ok(response);
+    }
+
+
+
 }

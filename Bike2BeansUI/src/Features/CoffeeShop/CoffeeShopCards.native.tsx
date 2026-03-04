@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import type { CoffeeShopDto } from "../../Data/coffeeshopsDto";
+import type { CoffeeShopDto } from "../../Data/CoffeeshopDto";
 import { nativeStyles } from "../../theme/nativeStyles";
 
 type Props = {

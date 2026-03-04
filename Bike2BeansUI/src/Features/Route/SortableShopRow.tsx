@@ -1,4 +1,4 @@
-import { CoffeeShopDto } from "../../Data/coffeeshopsDto";
+import { CoffeeShopDto } from "../../Data/CoffeeshopDto";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";

@@ -1,82 +1,127 @@
-import Map, { Marker } from "react-map-gl/mapbox";
-import { CoffeeShopDto } from "../../Data/coffeeshopsDto";
-import { useEffect, useRef } from "react";
-import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";
-import { GetDistance } from '../Map/GetDistance'
-import { ExternalLocationDto } from "../../Data/ExternalLocationDto";
+import { useEffect, useMemo, useRef } from "react";
+import type { Map as MapboxMap } from "mapbox-gl";
+import MapView, { Marker } from "react-map-gl/mapbox";
+import type { CoffeeshopDto } from "../../Data/CoffeeshopDto";
+import type { ExternalLocationDto } from "../../Data/ExternalLocationDto";
+import type { RouteDto } from "../../Data/RouteDto";
+import {
+    focusMapToLocations,
+    getInitialViewStateForLocations,
+    type MapLocation,
+} from "./focusMapToLocations";
+
 type Props = {
-    stops: location[],
-    activeId: string | null,
+    stops: RouteDto[];
+    startLocation?: ExternalLocationDto | CoffeeshopDto | null;
+    stopLocation?: ExternalLocationDto | CoffeeshopDto | null;
+    activeId: string | null;
     setActiveId: (id: string) => void;
+};
+
+function buildFocusLocations(
+    stops: RouteDto[],
+    startLocation?: ExternalLocationDto | CoffeeshopDto | null,
+    stopLocation?: ExternalLocationDto | CoffeeshopDto | null
+): MapLocation[] {
+    const dedup = new globalThis.Map<string, MapLocation>();
+
+    for (const stop of stops) {
+        const key = `${stop.shop.lat.toFixed(6)}:${stop.shop.lng.toFixed(6)}`;
+        dedup.set(key, { lat: stop.shop.lat, lng: stop.shop.lng });
+    }
+
+    if (startLocation) {
+        const key = `${startLocation.lat.toFixed(6)}:${startLocation.lng.toFixed(6)}`;
+        dedup.set(key, { lat: startLocation.lat, lng: startLocation.lng });
+    }
+
+    if (stopLocation) {
+        const key = `${stopLocation.lat.toFixed(6)}:${stopLocation.lng.toFixed(6)}`;
+        dedup.set(key, { lat: stopLocation.lat, lng: stopLocation.lng });
+    }
+
+    return Array.from(dedup.values());
 }
-type location = ExternalLocationDto | CoffeeShopDto;
 
-export function RouteMapView({ stops, activeId, setActiveId }: Props) {
+const DEFAULT_INITIAL_VIEW = {
+    latitude: 47.6062,
+    longitude: -122.3321,
+    zoom: 10,
+};
+
+export function RouteMapView({ stops, startLocation, stopLocation, activeId, setActiveId }: Props) {
     const token = process.env.MAPBOX_ACCESS_TOKEN;
-    const mapRef = useRef<any>(null);
+    const mapRef = useRef<{ getMap: () => MapboxMap } | null>(null);
+
+    // Initial camera is based on route shops only (no start/stop), so the first visit opens centered on the route.
+    const initialRouteLocations = useMemo(() => buildFocusLocations(stops, null, null), [stops]);
+    const initialViewState = useMemo(() => {
+        return (
+            getInitialViewStateForLocations(initialRouteLocations, {
+                padding: 108,
+                maxZoom: 14.5,
+                singlePointZoom: 13,
+            }) ?? DEFAULT_INITIAL_VIEW
+        );
+    }, [initialRouteLocations]);
+
+    const endpointKey = `${startLocation?.id ?? ""}:${startLocation?.lat ?? ""}:${startLocation?.lng ?? ""}|${stopLocation?.id ?? ""}:${stopLocation?.lat ?? ""}:${stopLocation?.lng ?? ""}`;
+
     useEffect(() => {
-        if (!activeId) return;
-        if (!mapRef.current) return;
+        // Map refocuses only when start/stop locations change.
+        if (!startLocation && !stopLocation) return;
 
-        var selected = stops.find((s) => s.id === activeId);
-        if (!selected) return;
+        const map = mapRef.current?.getMap();
+        if (!map) return;
 
-        const map = mapRef.current.getMap();
-        const center = map.getCenter();
-        const distance = GetDistance(center.lat, center.lng, selected.lat, selected.lng)
-        if (distance < 50) {
-            map.easeTo({
-                center: [selected.lng, selected.lat],
-                zoom: 14,
-                duration: 800,
-            })
+        const locationsForFocus = buildFocusLocations(stops, startLocation, stopLocation);
+        if (locationsForFocus.length === 0) return;
+
+        const focus = () => {
+            focusMapToLocations(map, locationsForFocus, {
+                padding: 108,
+                maxZoom: 14.5,
+                singlePointZoom: 13,
+                durationMs: 1000,
+                distanceThresholdKm: 0.35,
+                zoomThreshold: 0.25,
+            });
+        };
+
+        if (map.loaded()) {
+            focus();
+            return;
         }
-        else {
-            map.flyTo({
-                center: [selected.lng, selected.lat],
-                zoom: 14,
-                duration: 8000,
-            })
-        }
-    }, [activeId, stops])
 
+        map.once("load", focus);
+    }, [endpointKey]);
 
     return (
-        <div className="routeMapView">
-            <Map
+        <div style={{ height: "100vh", width: "100vw" }}>
+            <MapView
                 ref={mapRef}
                 mapboxAccessToken={token}
-                initialViewState={{
-                    latitude: 47.6062,
-                    longitude: -122.3321,
-                    zoom: 10,
-                    // TODO CHANGE TO BE IN MIDDLE OF ROUTE and be dependant on route length?
-                }}
+                initialViewState={initialViewState}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
             >
-
-                {
-                    stops.map((s) => (
-                        <Marker
-                            key={s.id}
-                            latitude={s.lat}
-                            longitude={s.lng}
-                            anchor="bottom"
-                        >
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveId(s.id);
-                                }}
-                                className={"pin pin-active"}
-
-                            />
-                        </Marker>
-
-                    ))
-                }
-            </Map>
+                {stops.map((stop) => (
+                    <Marker
+                        key={stop.shop.id}
+                        latitude={stop.shop.lat}
+                        longitude={stop.shop.lng}
+                        anchor="bottom"
+                    >
+                        <button
+                            type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                setActiveId(stop.shop.id);
+                            }}
+                            className={stop.shop.id === activeId ? "pin pin-active" : "pin"}
+                        />
+                    </Marker>
+                ))}
+            </MapView>
         </div>
     );
 }

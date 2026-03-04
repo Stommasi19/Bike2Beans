@@ -1,7 +1,8 @@
-import { CoffeeShopDto } from "./coffeeshopsDto";
+import { CoffeeshopDto } from "./CoffeeshopDto";
+import { ExternalLocationDto } from "./ExternalLocationDto";
 
 
 export type RouteDto = {
     stopId: string;
-    shop: CoffeeShopDto;
+    shop: CoffeeshopDto | ExternalLocationDto;
 }
