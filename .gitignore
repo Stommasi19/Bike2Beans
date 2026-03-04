@@ -7,3 +7,5 @@ Bike2BeansUI/dist/bundle.js
 /Bike2Beans/Api/obj
 /Bike2Beans/Domain/obj
 /Bike2Beans/Infrastructure/obj
+/Bike2Beans/Infrastructure/bin
+/Bike2Beans/Api/bin

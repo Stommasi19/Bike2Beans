@@ -1,8 +1,6 @@
-using Bike2Beans.Models;
 using Bike2Beans.Domain.Repositories;
 using Bike2Beans.Domain.DTOs;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
@@ -14,7 +12,7 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
     {
         _repo = repo;
     }
-    public async Task<RouteDetailsDto> Handle(GetRouteDetailsByIdQuery query, CancellationToken ct)
+    public async Task<RouteDetailsDto?> Handle(GetRouteDetailsByIdQuery query, CancellationToken ct)
     {
         var details = await _repo.GetRouteDetailsByIdAsync(query, ct);
 

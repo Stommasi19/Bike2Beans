@@ -16,7 +16,10 @@ public class RouteController : ControllerBase
     => Ok(await _mediator.Send(new GetRouteDetailsQuery(), ct));
     [HttpGet("{routeId}")]
     public async Task<IActionResult> GetById([FromRoute] string routeId, CancellationToken ct)
-    => Ok(await _mediator.Send(new GetRouteDetailsByIdQuery(routeId), ct));
+    {
+        var route = await _mediator.Send(new GetRouteDetailsByIdQuery(routeId), ct);
+        return route is null ? NotFound() : Ok(route);
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddNew([FromBody] CreateRouteDetailsCommand cmd, CancellationToken ct)

@@ -38,7 +38,7 @@ public sealed class MapboxRestGateway : IRouteProvider
         {
             stopsstring += $";{stop.Lat},{stop.Lng}";
         }
-        if (endLocation != null || endLocation.Count != 0)
+        if (endLocation != null && endLocation.Count > 0)
         {
             stopsstring += $";{endLocation[0]},{endLocation[1]}";
         }
