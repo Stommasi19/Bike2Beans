@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: bike2beans-mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: bike2beans
+
+volumes:
+  mongo_data:

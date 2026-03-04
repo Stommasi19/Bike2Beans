@@ -2,25 +2,72 @@
 
 @theme {
   --font-sans: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
-  --color-brand-50: #eef6ff;
-  --color-brand-100: #d9ebff;
-  --color-brand-300: #8ebfff;
-  --color-brand-500: #2f7ae5;
-  --color-brand-700: #1f4f98;
+  --color-latte-50: #fbf6f1;
+  --color-latte-100: #f3e8dd;
+  --color-latte-200: #e8d5c2;
+  --color-latte-300: #d8b89a;
+  --color-latte-400: #c19370;
+  --color-latte-500: #9f6f4c;
+  --color-latte-600: #835b3f;
+  --color-latte-700: #684732;
+  --color-brand-50: #f6eee6;
+  --color-brand-100: #e9d8c7;
+  --color-brand-300: #c8a98c;
+  --color-brand-500: #9a6f4d;
+  --color-brand-700: #6f4b33;
   --radius-panel: 1rem;
 }
 
 @layer base {
+  :root {
+    --ui-text: #2f2218;
+    --ui-muted: #5a4a3c;
+    --ui-bg-spot-1: #fff0e2;
+    --ui-bg-spot-2: #e5f0e5;
+    --ui-bg: #f8fafc;
+    --ui-navbar-bg: color-mix(in oklab, #fff 75%, var(--color-latte-50));
+    --ui-navbar-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
+    --ui-hover-border: var(--color-latte-400);
+    --ui-link: #5a4a3c;
+    --ui-link-hover-bg: color-mix(in oklab, #fff 70%, var(--color-latte-100));
+    --ui-panel-bg: color-mix(in oklab, #fff 88%, var(--color-latte-50));
+    --ui-panel-border: color-mix(in oklab, #e2e8f0 65%, var(--color-latte-200));
+    --ui-input-bg: var(--color-latte-50);
+    --ui-output-bg: var(--color-latte-100);
+    --ui-input-border: var(--color-latte-200);
+    --ui-input-placeholder: color-mix(in oklab, #64748b 75%, var(--color-latte-300));
+  }
+
+  /* @media (prefers-color-scheme: dark) {
+    :root {
+      --ui-text: #f3e8dd;
+      --ui-muted: #d0bdab;
+      --ui-bg-spot-1: #3a281b;
+      --ui-bg-spot-2: #3a281b;
+      --ui-bg: #14100d;
+      --ui-navbar-bg: color-mix(in oklab, #18120e 78%, var(--color-latte-700));
+      --ui-navbar-border: color-mix(in oklab, #3f2f24 70%, var(--color-latte-600));
+      --ui-link: #ead8c6;
+      --ui-link-hover-bg: color-mix(in oklab, #2f2218 74%, var(--color-latte-700));
+      --ui-panel-bg: color-mix(in oklab, #1a140f 85%, var(--color-laate-700));
+      --ui-panel-border: color-mix(in oklab, #4a3728 75%, var(--color-latte-600));
+      --ui-input-bg: #1b1510;
+      --ui-input-border: color-mix(in oklab, #5b4332 80%, var(--color-latte-600));
+      --ui-input-placeholder: color-mix(in oklab, #c9b39f 75%, #fff);
+    }
+  } */
+
   * {
     @apply box-border;
   }
 
   body {
-    @apply m-0 min-h-screen text-slate-900 antialiased;
+    @apply m-0 min-h-screen antialiased;
+    color: var(--ui-text);
     background:
-      radial-gradient(circle at 5% 0%, #eef6ff 0%, transparent 40%),
-      radial-gradient(circle at 95% 100%, #dff2e7 0%, transparent 45%),
-      #f8fafc;
+      radial-gradient(circle at 5% 0%, var(--ui-bg-spot-1) 0%, transparent 40%),
+      radial-gradient(circle at 95% 100%, var(--ui-bg-spot-2) 0%, transparent 45%),
+      var(--ui-bg);
   }
 
   #root {
@@ -33,12 +80,352 @@
 
   h1 {
     @apply text-3xl font-bold tracking-tight;
+    color: var(--ui-text);
   }
 }
 
 @layer components {
+
+  .saved_route_card {
+    @apply rounded-lg border p-4 shadow-sm;
+    border-color: var(--ui-input-border);
+    background: var(--ui-input-bg);
+    width: 360px;
+  }
+
+  .center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .element-header {
+    color: var(--ui-text);
+    display: grid;
+    place-items: center;
+    padding: 10px;
+  }
+
+  .route-table-container {
+    position: absolute;
+    right: 0;
+  }
+
+  .route-container {
+    height: auto;
+    padding: 15px;
+
+  }
+
+  .route-table {
+    position: absolute;
+    right: 0;
+    height: 60px;
+    width: 360px;
+    border-radius: 16px;
+    background-color: var(--ui-bg);
+    color: var(--ui-text);
+  }
+
+  .route-card {
+    transition: all 200ms ease;
+    width: 305px;
+    position: relative;
+  }
+
+  .coffeeShopCardList {
+    gap: 20px;
+    padding: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ui-input-border) transparent;
+  }
+
+  .coffeeShopCard {
+    border-radius: 0.75rem;
+    border: 1px solid var(--ui-input-border);
+    padding: 0.75rem 1rem;
+    transition: all 200ms ease;
+    width: 305px;
+    background: var(--ui-bg);
+    border-color: var(--ui-input-border);
+    position: relative;
+  }
+
+  .coffeeShopCard:hover {
+    border-color: var(--ui-hover-border);
+  }
+
+  .coffeeShopCard[data-state=true] {
+    width: 355px;
+    height: 160px;
+    background-color: var(--color-latte-50);
+    border-color: var(--color-latte-400);
+    transition: width 200ms ease,
+      height 200ms ease,
+      background-color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .coffeeShopCardTitle {
+    @apply text-base font-semibold tracking-tight;
+    color: var(--ui-text)
+  }
+
+  .coffeeShopCardTitle[data-state=true] {
+    color: var(--color-latte-600);
+
+  }
+
+  .coffeeShopCardRating {
+    @apply mt-1 flex items-center gap-2 text-sm text-gray-600;
+    position: relative;
+    top: -2px;
+
+  }
+
+  .coffeeShopCardRating[data-state=true] {
+    color: var(--color-latte-400);
+    font-size: medium;
+
+  }
+
+  .coffeeShopCardRemainder {
+    @apply mt-2 text-xs uppercase tracking-wide text-gray-500;
+    position: relative;
+    bottom: -10px;
+  }
+
+
+  .coffeeShopCardDivider {
+    @apply mt-3 h-px bg-gray-100;
+    position: relative;
+    bottom: -10px;
+  }
+
+  .coffeeShopCardRemainder[data-state=true] {
+    bottom: -50px;
+    transform: 200ms ease
+  }
+
+
+  .coffeeShopCardDivider[data-state=true] {
+    bottom: -50px;
+    transform: 200ms ease
+  }
+
+  .coffeeShopCardAdd {
+    position: absolute;
+    top: 90px;
+    transform: 200ms ease
+  }
+
+  .coffeeShopCardDelete {
+    position: absolute;
+    top: 45px;
+    left: 200px;
+  }
+
+  .pin {
+    @apply h-3 w-3 rounded-full border-2 border-white shadow-md;
+    background: var(--color-latte-400);
+  }
+
+  .pin-active {
+    @apply h-7 w-7;
+    background: var(--color-brand-500);
+  }
+
+  /*    SEARCHBOX WRAPPER */
+
+  .searchbox {
+    position: relative;
+    width: 320px;
+  }
+
+
+  /*    SEARCH BAR */
+
+  .searchbar {
+    width: 100%;
+    padding: 10px 14px;
+
+    border-radius: 16px;
+    background: white;
+
+    transition:
+      border-radius 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .searchbar input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+
+  .clear-search-button {
+    background: var(--ui-input-border);
+    color: var(--ui-text);
+    width: 60px;
+    position: absolute;
+    right: 8px;
+    border-radius: 15px;
+  }
+
+  .clear-search-button:hover {
+    background: var(--ui-input-bg);
+
+  }
+
+
+  /* RESULTS CONTAINER (DROPDOWN) */
+
+  .searchbox-results-card {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    border-top: var(--ui-input-border);
+    background: white;
+
+    border-radius: 0 0 16px 16px;
+
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-6px);
+
+    transition:
+      max-height 0.25s ease,
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+
+  /* RESULT ROW*/
+
+  .searchbox-result {
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .searchbox-result:hover {
+    background: var(--ui-input-border);
+    opacity: 75%;
+  }
+
+
+  /* OPEN STATE (loading + active) */
+
+  .searchbox[data-state="loading"] .searchbar,
+  .searchbox[data-state="active"] .searchbar {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: 0 0 0 2px rgba(100, 150, 255, 0.15);
+  }
+
+  .searchbox[data-state="loading"] .searchbox-results-card,
+  .searchbox[data-state="active"] .searchbox-results-card {
+    max-height: 240px;
+    /* adjust as needed */
+    opacity: 1;
+    transform: translateY(0);
+    overflow-y: auto;
+  }
+
+
+
+  .location-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    border: 1px solid var(--ui-input-border);
+    border-radius: 12px;
+    background: white;
+    margin-bottom: 10px;
+  }
+
+  .drag-handle {
+    user-select: none;
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--ui-input-border);
+    position: relative;
+    top: 30px;
+  }
+
+  .row-content {
+    display: grid;
+    gap: 4px;
+  }
+
+  .login-page {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: large;
+  }
+
+  .login {
+    width: 500px;
+    height: 400px;
+    background-color: var(--ui-input-bg);
+    border-radius: 20px;
+    border: 1px solid var(--ui-input-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    color: var(--ui-text);
+  }
+
+  .signup {
+    width: 550px;
+    height: 500px;
+    background-color: var(--ui-input-bg);
+    border-radius: 20px;
+    border: 1px solid var(--ui-input-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--ui-text);
+  }
+
+  .loginText {
+    position: relative;
+    right: -10px;
+    color: var(--ui-text);
+  }
+
+  .loginbtn {
+    display: flex;
+    gap: 40px;
+  }
+
+
+  .signin {
+    position: relative;
+    width: 80%;
+    height: auto;
+    padding: 10px;
+
+  }
+
+
+
   #navbar {
-    @apply sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur;
+    @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
+    border-color: var(--ui-navbar-border);
+    background: var(--ui-navbar-bg);
   }
 
   #navbar nav ul {
@@ -46,38 +433,99 @@
   }
 
   #navbar nav ul li a {
-    @apply inline-flex rounded-full px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900;
+    @apply inline-flex rounded-full px-4 py-2 text-sm font-semibold;
+    color: var(--ui-link);
   }
+
+  #navbar nav ul li a:hover {
+    background: var(--ui-link-hover-bg);
+    color: var(--ui-text);
+  }
+
+  .CoffeeShopList {
+    @apply w-20;
+  }
+
 
   .page-shell {
     @apply mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6;
   }
 
   .panel {
-    @apply rounded-[--radius-panel] border border-slate-200 bg-white p-5 shadow-sm;
+    @apply rounded-[--radius-panel] border p-5 shadow-sm;
+    border-color: var(--ui-panel-border);
+    background: var(--ui-panel-bg);
   }
 
   .section-title {
-    @apply mb-3 text-xl font-semibold text-slate-900;
+    @apply mb-3 text-xl font-semibold;
+    color: var(--ui-text);
   }
 
   .muted {
-    @apply text-sm text-slate-600;
+    @apply text-sm;
+    color: var(--ui-muted);
   }
 
   .btn {
     @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition;
+    border: 1px solid var(--ui-hover-border)
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-[--color-brand-500] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[--color-brand-700];
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-white transition;
+    background: var(--color-brand-700);
+    box-shadow: 0 6px 16px rgba(47, 34, 24, 0.18);
   }
+
+  .btn-primary:hover {
+    background: var(--color-latte-700);
+    /* slightly warmer “pressed” */
+    transform: translateY(-1px);
+  }
+
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50;
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition;
+    background: var(--ui-input-border);
+    color: var(--ui-text);
   }
 
+  .btn-secondary:hover {
+    background: var(--ui-link-hover-bg);
+    border-color: var(--color-latte-500);
+    transform: translateY(-1px);
+  }
+
+
   .input {
-    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
+    @apply w-full rounded-lg border px-3 py-2 text-sm focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
+    border-color: var(--ui-input-border);
+    background: var(--ui-input-bg);
+    color: var(--ui-text);
+  }
+
+  .input::placeholder {
+    color: var(--ui-input-placeholder);
+  }
+
+  @layer utilities {
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+      /* Chrome, Safari */
+    }
   }
 }
