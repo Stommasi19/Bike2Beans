@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
-public record GetRouteDetailsByIdQuery(string Id) : IRequest<RouteDetailsDto>;
+public record GetRouteDetailsByIdQuery(string Id) : IRequest<RouteDetailsDto?>;

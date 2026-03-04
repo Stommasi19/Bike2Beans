@@ -5,9 +5,9 @@ namespace Bike2Beans.Infrastructure.Responses;
 
 public sealed class GoogleSearchTextResponse
 {
-    public string? NextPageToken { get; }
+    public string? NextPageToken { get; set; }
 
-    public List<GooglePlace> Places { get; }
+    public List<GooglePlace> Places { get; set; }
 }
 public sealed class GooglePlace
 {
