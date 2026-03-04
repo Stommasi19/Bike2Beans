@@ -4,12 +4,12 @@ namespace Bike2Beans.Domain.Interfaces;
 
 public interface IRouteOption
 {
-    int OptionIndex { get; }
-    double DistanceMeters { get; }
+    int OptionIndex { get; set; }
+    double DistanceMeters { get; set; }
 
-    double DurationSeconds { get; }
+    double DurationSeconds { get; set; }
 
-    string GeometryType { get; }
-    List<List<double>> Coordinates { get; }
+    string GeometryType { get; set; }
+    List<List<double>> Coordinates { get; set; }
 
 }

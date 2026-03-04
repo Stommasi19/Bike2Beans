@@ -3,10 +3,10 @@ namespace Bike2Beans.Domain.Interfaces;
 
 public interface IRouteDetails
 {
-    string RouteName { get; }
-    public ILocation StartLocation { get; }
-    public ILocation EndLocation { get; }
-    public List<ILocation> Stops { get; }
+    string RouteName { get; set; }
+    public ILocation StartLocation { get; set; }
+    public ILocation EndLocation { get; set; }
+    public List<ILocation> Stops { get; set; }
 
-    double TotalDistanceMeters { get; }
+    double TotalDistanceMeters { get; set; }
 }

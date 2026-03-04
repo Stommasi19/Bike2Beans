@@ -3,13 +3,13 @@ namespace Bike2Beans.Domain.Interfaces;
 
 public interface ILocation
 {
-    public string? Id { get; }
+    public string? Id { get; set; }
 
-    string Name { get; }
-    public string? FormattedAddress { get; }
-    public double? Rating { get; }
-    public int? UserRatingCount { get; }
-    double Latitude { get; }
-    double Longitude { get; }
+    string Name { get; set; }
+    public string? FormattedAddress { get; set; }
+    public double? Rating { get; set; }
+    public int? UserRatingCount { get; set; }
+    double Latitude { get; set; }
+    double Longitude { get; set; }
 
 }

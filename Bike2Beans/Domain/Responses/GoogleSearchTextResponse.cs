@@ -11,12 +11,12 @@ public sealed class GoogleSearchTextResponse
 }
 public sealed class GooglePlace
 {
-    public string? Id { get; }
-    public GoogleDisplayName? DisplayName { get; }
-    public string? FormattedAddress { get; }
-    public double? Rating { get; }
-    public int? UserRatingCount { get; }
-    public GoogleLocation? Location { get; }
+    public string? Id { get; set; }
+    public GoogleDisplayName? DisplayName { get; set; }
+    public string? FormattedAddress { get; set; }
+    public double? Rating { get; set; }
+    public int? UserRatingCount { get; set; }
+    public GoogleLocation? Location { get; set; }
 
 }
 public sealed class GoogleDisplayName { public string? Text { get; set; } }

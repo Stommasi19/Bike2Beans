@@ -23,7 +23,7 @@ public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, L
             Name: d.Name ?? "",
             StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: d.EndLocation ?? null,
-            RouteStops: d.Stops,
+            RouteStops: d.Stops ?? [],
             Mileage: d.Mileage ?? 0
 
         )).ToList();
