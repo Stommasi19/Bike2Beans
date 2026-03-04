@@ -33,18 +33,18 @@ public sealed class MapboxRestGateway : IRouteProvider
         CancellationToken ct = default
     )
     {
-        var stopsstring = $"{startLocation[0]},{startLocation[1]}";
+        var stopsstring = $"{startLocation[1]},{startLocation[0]}";
         foreach (var stop in stops)
         {
-            stopsstring += $";{stop.Lat},{stop.Lng}";
+            stopsstring += $";{stop.Lng},{stop.Lat}";
         }
         if (endLocation != null && endLocation.Count > 0)
         {
-            stopsstring += $";{endLocation[0]},{endLocation[1]}";
+            stopsstring += $";{endLocation[1]},{endLocation[0]}";
         }
         else
         {
-            stopsstring += $";{startLocation[0]},{startLocation[1]}";
+            stopsstring += $";{startLocation[1]},{startLocation[0]}";
         }
 
         var url = $"https://api.mapbox.com/directions/v5/mapbox/cycling/{stopsstring}" +

@@ -23,7 +23,7 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
             Name: details.Name ?? "",
             StartLocation: details.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: details.EndLocation ?? null,
-            RouteStops: details.Stops ?? [],
+            RouteStops: details.RouteStops ?? [],
             Mileage: details.Mileage ?? 0
 
         );

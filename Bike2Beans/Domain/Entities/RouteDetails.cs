@@ -19,9 +19,8 @@ public class RouteDetails
     public List<double>? EndLocation { get; set; } = new();
 
 
-
     [BsonElement("routeStops")]
-    public List<CoffeeshopDto>? Stops { get; set; } = new();
+    public List<CoffeeshopDto>? RouteStops { get; set; } = new();
 
     [BsonElement("mileage")]
     public double? Mileage { get; set; }

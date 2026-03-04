@@ -18,7 +18,7 @@ public class CreateRouteDetailsHandler : IRequestHandler<CreateRouteDetailsComma
             Name = cmd.Name,
             StartLocation = cmd.StartLocation,
             EndLocation = cmd.EndLocation ?? null,
-            Stops = cmd.Stops,
+            RouteStops = cmd.Stops,
             Mileage = cmd.Mileage
         };
         return await _repo.InsertRouteDetailsAsync(RouteDetails, ct);

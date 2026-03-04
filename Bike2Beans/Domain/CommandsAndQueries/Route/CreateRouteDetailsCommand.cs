@@ -6,7 +6,7 @@ using MediatR;
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
 public record CreateRouteDetailsCommand(
-    string Id,
+    string? Id,
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
