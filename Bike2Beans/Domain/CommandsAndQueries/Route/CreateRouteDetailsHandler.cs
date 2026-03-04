@@ -16,6 +16,8 @@ public class CreateRouteDetailsHandler : IRequestHandler<CreateRouteDetailsComma
         var RouteDetails = new RouteDetails
         {
             Name = cmd.Name,
+            StartLocation = cmd.StartLocation,
+            EndLocation = cmd.EndLocation ?? null,
             Stops = cmd.Stops,
             Mileage = cmd.Mileage
         };

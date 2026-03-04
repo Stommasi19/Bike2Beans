@@ -15,7 +15,7 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
     }
     public async Task<RouteDetailsDto> Handle(GetRouteDetailsByIdQuery query, CancellationToken ct)
     {
-        var details = await _repo.GetRouteDetailsByIdAsync(query, ct);
+        var details = await _repo.GetRouteDetailsByIdAsync(query, ct) ?? throw new Exception(nameof(query));
 
         return new RouteDetailsDto(
             Id: details.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),

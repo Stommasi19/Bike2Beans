@@ -8,6 +8,8 @@ namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 public record CreateRouteDetailsCommand(
     string Id,
     string Name,
+    List<double> StartLocation,
+    List<double>? EndLocation,
     List<CoffeeshopDto> Stops,
     double Mileage
 // RouteDto Route
