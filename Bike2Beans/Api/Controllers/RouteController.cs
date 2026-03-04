@@ -15,7 +15,7 @@ public class RouteController : ControllerBase
     public async Task<IActionResult> GetAll(CancellationToken ct)
     => Ok(await _mediator.Send(new GetRouteDetailsQuery(), ct));
     [HttpGet("{routeId}")]
-    public async Task<IActionResult> GetById(GetRouteDetailsByIdQuery routeId, CancellationToken ct)
+    public async Task<IActionResult> GetById([FromRoute] GetRouteDetailsByIdQuery routeId, CancellationToken ct)
     => Ok(await _mediator.Send(routeId, ct));
 
     [HttpPost]

@@ -6,15 +6,11 @@ using System.Text.Json;
 using Bike2Beans.Domain.Interfaces;
 using Bike2Beans.Infrastructure.Responses;
 using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Domain.Extension;
 
 namespace Bike2Beans.Infrastructure.Gateways;
 
-public class MapboxOptions
-{
-    public const string SectionName = "Mapbox";
 
-    public string AccessToken { get; init; } = "";
-}
 
 public sealed class MapboxRestGateway : IRouteProvider
 {
@@ -40,7 +36,7 @@ public sealed class MapboxRestGateway : IRouteProvider
         var stopsstring = $"{startLocation[0]},{startLocation[1]}";
         foreach (var stop in stops)
         {
-            stopsstring += $";{stop.Lat},${stop.Lng}";
+            stopsstring += $";{stop.Lat},{stop.Lng}";
         }
         if (endLocation != null)
         {
