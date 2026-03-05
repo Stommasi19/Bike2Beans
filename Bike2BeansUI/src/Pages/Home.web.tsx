@@ -9,6 +9,8 @@ import { RouteDto } from "../Data/RouteDto";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../Navigation/types";
+import { RouteGeoJson } from "../Features/Map/routeGeoJson";
+import { RouteSetupManager } from "./RouteSetupManager.web";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -39,24 +41,13 @@ export function Home() {
         timeout: 5000,
         maximumAge: 0,
     };
-    const [userLocationLat, setUserLocationLat] = useState()
-    const [userLocationLng, setUserLocationLng] = useState()
-    function success(pos: any) {
-        setUserLocationLat(pos.latitude)
-        setUserLocationLng(pos.longitude)
-    }
+    // const [userLocationLat, setUserLocationLat] = useState()
+    // const [userLocationLng, setUserLocationLng] = useState()
 
-
-
-    const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-    function openRouteSetup() {
-        nav.navigate("RouteSetup", { routeStops });
-    }
-
-
-
-
+    // function success(pos: any) {
+    //     setUserLocationLat(pos.latitude)
+    //     setUserLocationLng(pos.longitude)
+    // }
 
 
     const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
@@ -77,23 +68,33 @@ export function Home() {
         setRouteStops(next);
     }
 
-    console.log("shops: ", shops)
+    const [routePath, setRoutePath] = useState<RouteGeoJson | null>(null);
 
     return (
         <div className="absolute h-full w-full" onClick={() => setActiveId(null)}>
             <div className="absolute inset-0">
-                {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} />
+                {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} routePath={routePath} />
                 ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
             </div>
             <div className=" absolute top-0 inset-x-0">
                 <Search />
             </div>
             <div className="route-table-container">
-                <RouteTable
+                {routeStops.length > 0 && (
+                    <RouteSetupManager
+                        routeStops={routeStops}
+                        setRouteStops={setRouteStops}
+                        routePath={routePath}
+                        setRoutePath={setRoutePath} />
+                )}
+
+
+                {/* <RouteTable
                     routeStops={routeStops}
                     reorderStops={reorderStops}
                     removeStop={removeStop}
-                    openRouteSetup={openRouteSetup} />
+                //openRouteSetup={openRouteSetup}
+                /> */}
             </div>
             <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
 

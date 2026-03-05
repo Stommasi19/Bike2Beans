@@ -10,11 +10,15 @@ import type { RootStackParamList } from "../Navigation/types";
 import { CreateRouteAndReturnPath } from "../Api/CreateRoute";
 import { type RouteGeoJson, toRouteFeature } from "../Features/Map/routeGeoJson";
 
-export function RouteSetupManager() {
-    const [activeId, setActiveId] = useState<string | null>(null);
+type Props = {
+    routeStops: RouteDto[]
+    setRouteStops: (next: RouteDto[]) => void;
+    routePath: RouteGeoJson | null;
+    setRoutePath: (routePath: RouteGeoJson) => void;
+}
+export function RouteSetupManager({ routeStops, setRouteStops, routePath, setRoutePath }: Props) {
 
     const route = useRoute<RouteProp<RootStackParamList, "RouteSetup">>();
-    const [routeStops, setRouteStops] = useState<RouteDto[]>(route.params?.routeStops ?? []);
 
     const {
         startLocation,
@@ -38,13 +42,12 @@ export function RouteSetupManager() {
     } = useRouteSetupLocations({ routeStops });
 
     function removeStop(stopId: string) {
-        setRouteStops((prev) => prev.filter((stop) => stop.stopId !== stopId));
+        setRouteStops(routeStops.filter((stop) => stop.stopId !== stopId));
     }
 
     function reorderStops(next: RouteDto[]) {
         setRouteStops(next);
     }
-    const [routePath, setRoutePath] = useState<RouteGeoJson | null>(null);
     async function handleSeeRoute() {
         if (!startLocation) return; // or show toast
 
@@ -74,22 +77,10 @@ export function RouteSetupManager() {
 
 
     return (
-        <div className="absolute h-full w-full">
-            <div className="absolute inset-0">
-                <RouteMapView
-                    stops={routeStops}
-                    startLocation={startLocation}
-                    stopLocation={stopLocation}
-                    activeId={activeId}
-                    setActiveId={setActiveId}
-                    routePath={routePath}
-                />
-            </div>
-            <div className="route-table-container">
-                <div className="route-container route-setup-builder">
-
-
-                    {isEditingStart || !startLocation ? (
+        <div className="route-table-container center">
+            <div className="route-container route-setup-builder">
+                {routeStops.length > 0 && (
+                    isEditingStart || !startLocation ? (
                         <LocationSearchCard
                             label="Start location"
                             query={startQuery}
@@ -104,41 +95,44 @@ export function RouteSetupManager() {
                             location={startLocation}
                             onChange={beginStartEdit}
                         />
-                    )}
+                    )
+                )}
 
-                    <LocationBox routeStops={routeStops} reorderStops={reorderStops} removeStop={removeStop} />
+                <LocationBox routeStops={routeStops} reorderStops={reorderStops} removeStop={removeStop} />
 
-                    {startLocation && !stopLocation && !isEditingStop ? (
-                        <button type="button" className="btn-secondary route-stop-toggle" onClick={addStopLocation}>
-                            Add stop location
-                        </button>
-                    ) : null}
+                {startLocation && !stopLocation && !isEditingStop ? (
+                    <button type="button" className="btn-secondary route-stop-toggle" onClick={addStopLocation}>
+                        Add stop location
+                    </button>
+                ) : null}
 
-                    {startLocation && isEditingStop ? (
-                        <LocationSearchCard
-                            label="Stop location"
-                            query={stopQuery}
-                            suggestions={stopSuggestions}
-                            onQueryChange={setStopQuery}
-                            onSelectSuggestion={selectStopSuggestion}
-                            onCancel={cancelStopEdit}
-                        />
-                    ) : null}
+                {startLocation && isEditingStop ? (
+                    <LocationSearchCard
+                        label="Stop location"
+                        query={stopQuery}
+                        suggestions={stopSuggestions}
+                        onQueryChange={setStopQuery}
+                        onSelectSuggestion={selectStopSuggestion}
+                        onCancel={cancelStopEdit}
+                    />
+                ) : null}
 
-                    {startLocation && stopLocation && !isEditingStop ? (
-                        <SelectedLocationCard
-                            label="Stop location"
-                            location={stopLocation}
-                            onChange={beginStopEdit}
-                            onRemove={removeStopLocation}
-                        />
-                    ) : null}
-                </div>
-                <button className="btn"
-                    onClick={handleSeeRoute}
-                >See Route</button>
+                {startLocation && stopLocation && !isEditingStop ? (
+                    <SelectedLocationCard
+                        label="Stop location"
+                        location={stopLocation}
+                        onChange={beginStopEdit}
+                        onRemove={removeStopLocation}
+                    />
+                ) : null}
             </div>
+            {startLocation && (
+                <button className="btn btn-primary center"
+                    onClick={handleSeeRoute}
+                >Show Route</button>
+            )}
 
         </div>
+
     );
 }
