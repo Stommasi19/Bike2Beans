@@ -47,7 +47,7 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
             // IncludePureServiceAreaBusinesses = false,
         };
 
-        if (!query.external)
+        if (query.Coffee == true)
         {
             request.IncludedPrimaryTypes.AddRange(DestinationTypes.IncludedTypes);
         }

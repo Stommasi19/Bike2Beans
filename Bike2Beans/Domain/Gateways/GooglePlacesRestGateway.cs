@@ -34,6 +34,7 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
         string text,
         int pageSize,
         string? pageToken = null,
+        bool coffeeOnly = true,
         CancellationToken ct = default
         )
     {
@@ -45,14 +46,24 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
         request.Headers.Add("X-Goog-FieldMask",
                 "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,nextPageToken"
                 );
-        var body = new
+        object body = new
         {
             textQuery = text,
             pageSize = pageSize,
-            pageToken = pageToken,
-            IncludedType = "cafe",
-            StrictTypeFiltering = true
+            pageToken = pageToken
         };
+
+        if (coffeeOnly)
+        {
+            body = new
+            {
+                textQuery = text,
+                pageSize = pageSize,
+                pageToken = pageToken,
+                IncludedType = "cafe",
+                StrictTypeFiltering = true
+            };
+        }
 
 
         request.Content = JsonContent.Create(body);

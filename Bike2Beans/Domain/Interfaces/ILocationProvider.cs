@@ -10,6 +10,7 @@ public interface ILocationProvider
         string text,
         int pageSize,
         string? pageToken = null,
+        bool coffeeOnly = true,
         CancellationToken ct = default
     );
 }

@@ -202,6 +202,7 @@
     font-size: 0.95rem;
     font-weight: 700;
     color: var(--ui-text);
+    line-height: 1.35;
   }
 
   .route-location-result-address {
@@ -364,6 +365,29 @@
   .pin-active {
     @apply h-7 w-7;
     background: var(--color-brand-500);
+  }
+
+  .route-point-pin {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: white;
+    border: 2px solid white;
+    box-shadow: 0 6px 14px rgba(47, 34, 24, 0.26);
+    cursor: default;
+    user-select: none;
+  }
+
+  .route-point-start {
+    background: #1d7f4c;
+  }
+
+  .route-point-stop {
+    background: #9a6f4d;
   }
 
   /*    SEARCHBOX WRAPPER */

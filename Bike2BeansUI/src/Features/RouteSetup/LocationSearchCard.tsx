@@ -1,21 +1,18 @@
-import type { LocationChoice } from "./locationSearch";
-
 type Props = {
     label: string;
     query: string;
-    results: LocationChoice[];
+    suggestions: string[];
     onQueryChange: (value: string) => void;
-    onSelect: (location: LocationChoice) => void;
+    onSelectSuggestion: (suggestion: string) => void;
     onCancel?: () => void;
-    onEnter?: () => void;
 };
 
 export function LocationSearchCard({
     label,
     query,
-    results,
+    suggestions,
     onQueryChange,
-    onSelect,
+    onSelectSuggestion,
     onCancel,
 }: Props) {
     const hasQuery = query.trim().length > 0;
@@ -35,22 +32,21 @@ export function LocationSearchCard({
                 type="text"
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
-                placeholder="Search for a location..."
+                placeholder="Search for an address..."
             />
             {hasQuery ? (
-                <div className="route-location-results" role="listbox" aria-label={`${label} search results`}>
-                    {results.length === 0 ? (
-                        <p className="route-location-empty muted">No matching locations found.</p>
+                <div className="route-location-results" role="listbox" aria-label={`${label} autocomplete results`}>
+                    {suggestions.length === 0 ? (
+                        <p className="route-location-empty muted">No suggestions found.</p>
                     ) : (
-                        results.map((location) => (
+                        suggestions.map((suggestion) => (
                             <button
                                 type="button"
-                                key={location.id}
+                                key={suggestion}
                                 className="route-location-result"
-                                onClick={() => onSelect(location)}
+                                onClick={() => onSelectSuggestion(suggestion)}
                             >
-                                <span className="route-location-result-title">{location.name}</span>
-                                <span className="route-location-result-address">{location.address}</span>
+                                <span className="route-location-result-title">{suggestion}</span>
                             </button>
                         ))
                     )}

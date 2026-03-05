@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { Map as MapboxMap } from "mapbox-gl";
-import MapView, { Marker } from "react-map-gl/mapbox";
+import MapView, { Layer, Marker, Source } from "react-map-gl/mapbox";
 import type { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import type { ExternalLocationDto } from "../../Data/ExternalLocationDto";
 import type { RouteDto } from "../../Data/RouteDto";
@@ -9,6 +9,7 @@ import {
     getInitialViewStateForLocations,
     type MapLocation,
 } from "./focusMapToLocations";
+import type { RouteGeoJson } from "./routeGeoJson";
 
 type Props = {
     stops: RouteDto[];
@@ -16,6 +17,7 @@ type Props = {
     stopLocation?: ExternalLocationDto | CoffeeshopDto | null;
     activeId: string | null;
     setActiveId: (id: string) => void;
+    routePath?: RouteGeoJson | null;
 };
 
 function buildFocusLocations(
@@ -49,9 +51,18 @@ const DEFAULT_INITIAL_VIEW = {
     zoom: 10,
 };
 
-export function RouteMapView({ stops, startLocation, stopLocation, activeId, setActiveId }: Props) {
+const ROUTE_COLOR = "#9a6f4d";
+const ROUTE_CASE_COLOR = "#f6eee6";
+const ROUTE_DIRECTION_COLOR = "#6f4b33";
+
+export function RouteMapView({ stops, startLocation, stopLocation, activeId, setActiveId, routePath }: Props) {
     const token = process.env.MAPBOX_ACCESS_TOKEN;
     const mapRef = useRef<{ getMap: () => MapboxMap } | null>(null);
+    const isStartStopOverlap =
+        !!startLocation &&
+        !!stopLocation &&
+        Math.abs(startLocation.lat - stopLocation.lat) < 0.000001 &&
+        Math.abs(startLocation.lng - stopLocation.lng) < 0.000001;
 
     // Initial camera is based on route shops only (no start/stop), so the first visit opens centered on the route.
     const initialRouteLocations = useMemo(() => buildFocusLocations(stops, null, null), [stops]);
@@ -104,6 +115,46 @@ export function RouteMapView({ stops, startLocation, stopLocation, activeId, set
                 initialViewState={initialViewState}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
             >
+                {routePath ? (
+                    <Source id="route-source" type="geojson" data={routePath}>
+                        <Layer
+                            id="route-line-case"
+                            type="line"
+                            paint={{
+                                "line-color": ROUTE_CASE_COLOR,
+                                "line-width": 8,
+                                "line-opacity": 0.95,
+                            }}
+                        />
+                        <Layer
+                            id="route-line"
+                            type="line"
+                            paint={{
+                                "line-color": ROUTE_COLOR,
+                                "line-width": 5,
+                                "line-opacity": 0.98,
+                            }}
+                        />
+                        <Layer
+                            id="route-direction"
+                            type="symbol"
+                            layout={{
+                                "symbol-placement": "line",
+                                "symbol-spacing": 68,
+                                "text-field": "➤",
+                                "text-size": 12,
+                                "text-keep-upright": false,
+                                "text-allow-overlap": true,
+                                "text-ignore-placement": true,
+                            }}
+                            paint={{
+                                "text-color": ROUTE_DIRECTION_COLOR,
+                                "text-halo-color": ROUTE_CASE_COLOR,
+                                "text-halo-width": 1.5,
+                            }}
+                        />
+                    </Source>
+                ) : null}
                 {stops.map((stop) => (
                     <Marker
                         key={stop.shop.id}
@@ -121,6 +172,32 @@ export function RouteMapView({ stops, startLocation, stopLocation, activeId, set
                         />
                     </Marker>
                 ))}
+                {startLocation ? (
+                    <Marker
+                        key={`start-${startLocation.id}`}
+                        latitude={startLocation.lat}
+                        longitude={startLocation.lng}
+                        anchor="bottom"
+                        offset={isStartStopOverlap ? [-14, -6] : [0, 0]}
+                    >
+                        <div className="route-point-pin route-point-start" title="Start location">
+                            S
+                        </div>
+                    </Marker>
+                ) : null}
+                {stopLocation ? (
+                    <Marker
+                        key={`stop-${stopLocation.id}`}
+                        latitude={stopLocation.lat}
+                        longitude={stopLocation.lng}
+                        anchor="bottom"
+                        offset={isStartStopOverlap ? [14, -6] : [0, 0]}
+                    >
+                        <div className="route-point-pin route-point-stop" title="Stop location">
+                            E
+                        </div>
+                    </Marker>
+                ) : null}
             </MapView>
         </div>
     );
