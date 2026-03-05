@@ -1,8 +1,9 @@
 import { api } from "./client";
 
-let timeout: number | undefined;
 
 export const getAutocomplete = (text: string): Promise<any> => {
+    let timeout: number | undefined;
+
     return new Promise((resolve) => {
         clearTimeout(timeout);
 
@@ -13,6 +14,6 @@ export const getAutocomplete = (text: string): Promise<any> => {
             );
 
             resolve(response.data);
-        }, 2000);
+        }, 1000);
     });
 };
