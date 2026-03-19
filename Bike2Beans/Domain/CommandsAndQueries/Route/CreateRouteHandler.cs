@@ -17,15 +17,7 @@ public class CreateRouteHandler : IRequestHandler<CreateRouteCommand, List<Route
     }
     public async Task<List<RouteOptionDto>> Handle(CreateRouteCommand cmd, CancellationToken ct)
     {
-        // var RouteDetails = new RouteDetails 
-        // {
-        //     Id = cmd.Id,
-        //     Name = cmd.Name,
-        //     StartLocation = cmd.StartLocation,
-        //     EndLocation = cmd.EndLocation != null ? cmd.EndLocation : null,
-        //     Stops = cmd.Stops,
-        //     Mileage = cmd.Mileage
-        // };
+
         var response = await _mapbox.CreateRoute(cmd.StartLocation, cmd.EndLocation, cmd.Stops, ct);
 
         return response;

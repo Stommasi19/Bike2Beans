@@ -1,5 +1,6 @@
 
 using Bike2Beans.Domain.CommandsAndQueries.Route;
+using Bike2Beans.Domain.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
@@ -8,7 +9,7 @@ using System.Net.Http.Headers;
 namespace Bike2Beans.Api.Controllers;
 
 [ApiController]
-[Route("Api/Mapbox")]
+[Route("api/mapbox")]
 public class MapboxController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -22,15 +23,31 @@ public class MapboxController : ControllerBase
         var routeDetails = await _mediator.Send(routeQuery, ct);
         if (routeDetails == null) return NotFound();
         var query = new CreateRouteCommand(
-            routeDetails.Id,
-            routeDetails.Name,
             routeDetails.StartLocation,
             routeDetails.EndLocation ?? null,
-            routeDetails.RouteStops,
-            routeDetails.Mileage
+            routeDetails.RouteStops
         );
         var route = await _mediator.Send(query, ct);
         return Ok(route);
     }
 
+    [HttpPost("GenerateRoute")]
+    public async Task<IActionResult> GenerateRoute([FromBody] GenerateRouteRequest req,
+       CancellationToken ct)
+    {
+        var query = new CreateRouteCommand(
+            req.StartLocation,
+            req.EndLocation,
+            req.RouteStops
+        );
+        var route = await _mediator.Send(query, ct);
+        return Ok(route);
+    }
+
+    public sealed class GenerateRouteRequest
+    {
+        public List<double> StartLocation { get; set; } = new();
+        public List<double> EndLocation { get; set; } = new();
+        public List<CoffeeshopDto> RouteStops { get; set; } = new();
+    }
 }

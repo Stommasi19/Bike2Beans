@@ -31,12 +31,12 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
         {
             return new List<AutocompletePredictionDto>();
         }
+
         AutocompletePlacesRequest request = new AutocompletePlacesRequest
         {
             Input = query.Text,
             // LocationBias = new AutocompletePlacesRequest.Types.LocationBias(),
             // LocationRestriction = new AutocompletePlacesRequest.Types.LocationRestriction(),
-            IncludedPrimaryTypes = { DestinationTypes.IncludedTypes },
             // IncludedRegionCodes = { "", },
             // LanguageCode = "",
             // RegionCode = "",
@@ -46,6 +46,11 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
             // SessionToken = "",``
             // IncludePureServiceAreaBusinesses = false,
         };
+
+        if (query.Coffee == true)
+        {
+            request.IncludedPrimaryTypes.AddRange(DestinationTypes.IncludedTypes);
+        }
 
         var response = await _places.AutocompletePlacesAsync(request);
 
@@ -58,4 +63,6 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
         return predictions;
 
     }
+
+
 }

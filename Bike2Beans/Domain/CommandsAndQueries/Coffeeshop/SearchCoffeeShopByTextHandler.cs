@@ -18,7 +18,13 @@ public class SearchCoffeeshopByTextHandler : IRequestHandler<SearchCoffeeshopByT
     )
     {
 
-        var response = await _placesRest.SearchPlacesByTextAsync(query.Text, query.PageSize, query.PageToken, ct);
+        var response = await _placesRest.SearchPlacesByTextAsync(
+            query.Text,
+            query.PageSize,
+            query.PageToken,
+            query.CoffeeOnly,
+            ct
+        );
 
         var result = response.Locations.Select(p => new CoffeeshopDto(
             p.Id,

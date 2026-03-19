@@ -1,36 +1,40 @@
-import { LocationBox } from "./LocationBox"
-import { CoffeeshopDto } from "../../Data/CoffeeshopDto"
-import { RouteDto } from "../../Data/RouteDto"
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../Navigation/types";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useState } from "react";
-
 type Props = {
-    routeStops: RouteDto[];
-    reorderStops: (shops: RouteDto[]) => void;
-    removeStop: (stopId: string) => void;
+    label: string;
+    query: string;
+    suggestions: string[];
+    onQueryChange: (value: string) => void;
+    onSelectSuggestion: (suggestion: string) => void;
+    onCancel?: () => void;
+};
 
-
-}
-
-export function RouteTable({ routeStops, reorderStops, removeStop }: Props) {
-    const [query, setQuery] = useState();
-
-
+export function LocationSearchCard({
+    label,
+    query,
+    suggestions,
+    onQueryChange,
+    onSelectSuggestion,
+    onCancel,
+}: Props) {
+    const hasQuery = query.trim().length > 0;
 
     return (
-        <div className="route-container center">
-            <h1 className="element-header">
-                Add Shops To A Route            </h1>
-
+        <section className="panel route-location-card">
+            <div className="route-location-card-head">
+                <p className="route-location-card-label">{label}</p>
+                {onCancel ? (
+                    <button type="button" className="btn route-inline-cancel" onClick={onCancel}>
+                        Cancel
+                    </button>
+                ) : null}
+            </div>
             <input
                 className="input route-location-input"
                 type="text"
                 value={query}
+                onChange={(event) => onQueryChange(event.target.value)}
                 placeholder="Search for an address..."
             />
-            {/* {hasQuery ? (
+            {hasQuery ? (
                 <div className="route-location-results" role="listbox" aria-label={`${label} autocomplete results`}>
                     {suggestions.length === 0 ? (
                         <p className="route-location-empty muted">No suggestions found.</p>
@@ -47,9 +51,7 @@ export function RouteTable({ routeStops, reorderStops, removeStop }: Props) {
                         ))
                     )}
                 </div>
-            ) : null} */}
-            <LocationBox routeStops={routeStops} reorderStops={reorderStops} removeStop={removeStop} />
-
-        </div>
-    )
+            ) : null}
+        </section>
+    );
 }

@@ -1,4 +1,4 @@
-import { CoffeeShopDto } from "../../Data/coffeeshopsDto"
+import { CoffeeshopDto } from "../../Data/CoffeeshopDto"
 type Props = {
     routeStops: RouteDto[];
     reorderStops: (shops: RouteDto[]) => void;

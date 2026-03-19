@@ -1,4 +1,4 @@
-export type CoffeeShopDto = {
+export type CoffeeshopDto = {
   id: string;
   name: string;
   rating: number;

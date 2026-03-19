@@ -6,12 +6,10 @@ using Bike2Beans.Domain.Interfaces;
 namespace Bike2Beans.Domain.CommandsAndQueries.Route;
 
 public record CreateRouteCommand(
-    string Id,
-    string Name,
+
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeshopDto> Stops,
-    double Mileage
+    List<CoffeeshopDto> Stops
 // RouteDto Route
 
 ) : IRequest<List<RouteOptionDto>>;

@@ -44,13 +44,15 @@ public class PlacesController : ControllerBase
     public async Task<IActionResult> SearchPlaceByText(
         [FromQuery] string Text = "URL Coffee Seattle",
         [FromQuery] int PageSize = 10,
-        [FromQuery] string? PageToken = null
+        [FromQuery] string? PageToken = null,
+        [FromQuery] bool coffeeOnly = true
     )
     {
         var query = new SearchCoffeeshopByTextQuery(
             Text,
             PageSize,
-            PageToken
+            PageToken,
+            coffeeOnly
             );
         var shops = await _mediator.Send(query);
 
@@ -64,9 +66,22 @@ public class PlacesController : ControllerBase
         [FromQuery] string text = ""
     )
     {
-        var query = new AutocompleteQuery(text);
+        var query = new AutocompleteQuery(true, text);
         var response = await _mediator.Send(query);
 
         return Ok(response);
     }
+    [HttpGet("ExternalLocationAutocomplete")]
+    public async Task<IActionResult> ExternalLocationAutocompleteText(
+        [FromQuery] string text = ""
+    )
+    {
+        var query = new AutocompleteQuery(false, text);
+        var response = await _mediator.Send(query);
+
+        return Ok(response);
+    }
+
+
+
 }

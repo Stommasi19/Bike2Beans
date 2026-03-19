@@ -6,14 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GetCoffeeShops } from "../Api/coffeeShops";
 import { NavBar } from "../Components/NavBar.native";
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.native";
-import type { CoffeeShopDto } from "../Data/coffeeshopsDto";
+import type { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import type { RootStackParamList } from "../Navigation/types";
 import { nativeStyles } from "../theme/nativeStyles";
 
 type Navigation = NativeStackNavigationProp<RootStackParamList, "Home">;
 
 export function Home() {
-    const [shops, setShops] = useState<CoffeeShopDto[]>([]);
+    const [shops, setShops] = useState<CoffeeshopDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeId, setActiveId] = useState<string | null>(null);
