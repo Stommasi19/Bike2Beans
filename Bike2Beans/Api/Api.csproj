@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="3.4.0" />
     <PackageReference Include="Google.Api.Gax.Grpc" Version="4.13.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.14.0" />
     <PackageReference Include="Google.Maps.Places.V1" Version="1.0.0-beta18" />
