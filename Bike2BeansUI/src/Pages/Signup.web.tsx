@@ -16,13 +16,14 @@ export function Signup() {
         setLoading(true);
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            // navigate to app
-            window.location.href = "/";
+
         } catch (err: any) {
             const message = getFirebaseErrorMessage(err.code);
             setToast(message);
         } finally {
             setLoading(false);
+            // navigate to app
+            window.location.href = "/home";
         }
     }
     const handleGoogleSignUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,14 +31,15 @@ export function Signup() {
         setLoading(true);
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
-            // navigate to app
-            window.location.href = "/home";
+
         }
         catch (err: any) {
             const message = getFirebaseErrorMessage(err.code);
             setToast(message);
         } finally {
             setLoading(false);
+            // navigate to app
+            window.location.href = "/home";
         }
 
 

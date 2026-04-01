@@ -16,13 +16,14 @@ export function Login() {
         setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // navigate to app
-            window.location.href = "/";
+
         } catch (err: any) {
             const message = getFirebaseErrorMessage(err.code);
             setToast(message);
         } finally {
             setLoading(false);
+            // navigate to app
+            window.location.href = "/home";
         }
     }
     const handleGoogleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
