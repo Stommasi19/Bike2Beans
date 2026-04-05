@@ -1,7 +1,7 @@
-using Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
-using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
-using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
-using Bike2Beans.Domain.CommandsAndQueries.Route;
+using Bike2Beans.Application.CommandsAndQueries.Autocomplete;
+using Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
+using Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
+using Bike2Beans.Application.CommandsAndQueries.Route;
 using Bike2Beans.Domain.Extension;
 using Bike2Beans.Domain.Repositories;
 

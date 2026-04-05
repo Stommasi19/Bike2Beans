@@ -3,7 +3,7 @@ using MediatR;
 using Bike2Beans.Domain.Entities;
 using Bike2Beans.Domain.Repositories;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Route;
+namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class CreateRouteDetailsHandler : IRequestHandler<CreateRouteDetailsCommand, RouteDetails>
 {

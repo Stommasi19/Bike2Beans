@@ -1,7 +1,7 @@
 
 using Bike2Beans.Domain.DTOs;
 using MediatR;
-namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
+namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
 
 public record CreateCoffeeshopCommand(
     string Name,

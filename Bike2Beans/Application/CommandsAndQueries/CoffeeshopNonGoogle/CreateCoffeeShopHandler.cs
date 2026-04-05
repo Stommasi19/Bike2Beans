@@ -6,7 +6,7 @@ using Bike2Beans.Models;
 using Bike2Beans.Models.Entities;
 using MediatR;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
+namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
 
 public class CreateCoffeeshopHandler : IRequestHandler<CreateCoffeeshopCommand, DTOs.CoffeeshopDto>
 {

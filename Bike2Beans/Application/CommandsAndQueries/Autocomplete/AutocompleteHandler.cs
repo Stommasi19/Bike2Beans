@@ -11,7 +11,7 @@ using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
 using MediatR;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
+namespace Bike2Beans.Application.CommandsAndQueries.Autocomplete;
 
 public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<AutocompletePredictionDto>>
 {

@@ -5,7 +5,7 @@ using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Infrastructure.Gateways;
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.Route;
+namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class CreateRouteHandler : IRequestHandler<CreateRouteCommand, List<RouteOptionDto>>
 {

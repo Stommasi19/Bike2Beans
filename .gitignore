@@ -10,3 +10,8 @@ Bike2BeansUI/dist/bundle.js
 /Bike2Beans/Infrastructure/bin
 /Bike2Beans/Api/bin
 /Bike2Beans/Domain/bin
+/Bike2Beans/Application.Tests/bin
+/Bike2Beans/Application/obj
+/Bike2Beans/Application.Tests/obj
+/Bike2Beans/Api.IntegrationTests/bin
+/Bike2Beans/Api.IntegrationTests/obj

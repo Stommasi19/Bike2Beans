@@ -6,7 +6,7 @@ using Bike2Beans.Domain.Repositories;
 using MediatR;
 
 
-namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
+namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 
 
 

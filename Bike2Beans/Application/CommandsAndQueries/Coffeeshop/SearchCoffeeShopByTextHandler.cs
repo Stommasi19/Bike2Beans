@@ -3,7 +3,7 @@ using Bike2Beans.Domain.DTOs;
 using MediatR;
 using Bike2Beans.Domain.Interfaces;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
+namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 
 public class SearchCoffeeshopByTextHandler : IRequestHandler<SearchCoffeeshopByTextQuery, PaginationSupportedCoffeeshopResultDto>
 {

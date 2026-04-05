@@ -3,7 +3,7 @@ using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Repositories;
 using MediatR;
 
-namespace Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
+namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
 
 public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, List<DTOs.CoffeeshopDto>>
 {

@@ -3,7 +3,7 @@ using Bike2Beans.Domain;
 using MediatR;
 using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Domain.Interfaces;
-namespace Bike2Beans.Domain.CommandsAndQueries.Route;
+namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public record CreateRouteCommand(
 
