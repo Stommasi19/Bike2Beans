@@ -1,15 +1,15 @@
 using Bike2Beans.Models;
 using MediatR;
 using Bike2Beans.Domain.Entities;
-using Bike2Beans.Domain.Repositories;
+using Bike2Beans.Application.Interfaces;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class CreateRouteDetailsHandler : IRequestHandler<CreateRouteDetailsCommand, RouteDetails>
 {
-    private readonly RouteRepository _repo;
+    private readonly IRouteRepository _repo;
 
-    public CreateRouteDetailsHandler(RouteRepository repo) => _repo = repo;
+    public CreateRouteDetailsHandler(IRouteRepository repo) => _repo = repo;
 
     public async Task<RouteDetails> Handle(CreateRouteDetailsCommand cmd, CancellationToken ct)
     {

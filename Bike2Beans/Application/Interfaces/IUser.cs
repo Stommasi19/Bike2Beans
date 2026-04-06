@@ -1,6 +1,6 @@
 
 
-namespace Bike2Beans.Domain.Interfaces;
+namespace Bike2Beans.Application.Interfaces;
 
 public interface IUser
 {

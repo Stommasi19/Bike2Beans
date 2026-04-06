@@ -1,16 +1,17 @@
 
 using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Repositories;
+using Bike2Beans.Application.Interfaces;
 using Bike2Beans.Models;
 using MediatR;
+using Bike2Beans.Application.DTOs;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, List<RouteDetailsDto>>
 {
-    private readonly RouteRepository _repo;
+    private readonly IRouteRepository _repo;
 
-    public GetAllRouteDetailsHandler(RouteRepository repo)
+    public GetAllRouteDetailsHandler(IRouteRepository repo)
     {
         _repo = repo;
     }
@@ -23,7 +24,7 @@ public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, L
             Name: d.Name ?? "",
             StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: d.EndLocation ?? null,
-            RouteStops: d.RouteStops ?? [],
+            RouteStops: d.RouteStops,
             Mileage: d.Mileage ?? 0
 
         )).ToList();

@@ -1,13 +1,12 @@
-using Bike2Beans.Domain.CommandsAndQueries.Route;
+using Bike2Beans.Application.CommandsAndQueries.Route;
+using Bike2Beans.Application.Interfaces;
 using Bike2Beans.Domain.Entities;
-using Bike2Beans.Models.Entities;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Reflection.Metadata.Ecma335;
 
-namespace Bike2Beans.Domain.Repositories;
+namespace Bike2Beans.Infrastructure.Repositories;
 
-public class RouteRepository
+public class RouteRepository : IRouteRepository
 {
     private readonly IMongoCollection<RouteDetails> _routedetails;
 

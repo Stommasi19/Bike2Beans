@@ -1,8 +1,8 @@
 
 using Google.Maps.Places.V1;
-using Bike2Beans.Infrastructure;
 using Bike2Beans.Domain.Entities;
-namespace Bike2Beans.Domain.Interfaces;
+
+namespace Bike2Beans.Application.Interfaces;
 
 public interface ILocationProvider
 {

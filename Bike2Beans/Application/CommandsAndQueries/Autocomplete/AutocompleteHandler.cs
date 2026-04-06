@@ -6,15 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Bike2Beans.Infrastructure;
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Repositories;
+using Bike2Beans.Application.DTOs;
 using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Autocomplete;
 
 public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<AutocompletePredictionDto>>
 {
+    private static IReadOnlyList<string> IncludedTypes =
+        new List<string>
+        {
+            "cafe",
+            "bakery"
+        };
     private readonly PlacesClient _places;
 
     public AutocompleteHandler(PlacesClient places)
@@ -49,7 +53,7 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
 
         if (query.Coffee == true)
         {
-            request.IncludedPrimaryTypes.AddRange(DestinationTypes.IncludedTypes);
+            request.IncludedPrimaryTypes.AddRange(IncludedTypes);
         }
 
         var response = await _places.AutocompletePlacesAsync(request);

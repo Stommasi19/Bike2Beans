@@ -1,6 +1,6 @@
 using Google.Maps.Places.V1;
 using Google.Api.Gax.Grpc;
-using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Application.DTOs;
 using MediatR;
 
 

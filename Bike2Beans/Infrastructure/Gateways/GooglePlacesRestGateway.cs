@@ -7,11 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 using Bike2Beans.Infrastructure.Responses;
-using Bike2Beans.Domain.Interfaces;
-using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Application.DTOs;
 using Bike2Beans.Domain.Entities;
 
-namespace Bike2Beans.Domain.Gateways;
+namespace Bike2Beans.Infrastructure.Gateways;
 
 public class GooglePlacesOptions
 {

@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Bike2Beans.Infrastructure.Extensions;
-using Bike2Beans.Domain.Interfaces;
-using Bike2Beans.Domain.Gateways;
+using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Infrastructure.Gateways;
 
 
 
-namespace Bike2Beans.Domain.Extension;
+namespace Bike2Beans.Infrastructure.Extension;
 
 
 public sealed class GooglePlacesOptions

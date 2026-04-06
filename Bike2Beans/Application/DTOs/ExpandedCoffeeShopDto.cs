@@ -1,4 +1,4 @@
-namespace Bike2Beans.Domain.DTOs;
+namespace Bike2Beans.Application.DTOs;
 
 public record ExpandedCoffeeshopDto
 (

@@ -1,5 +1,5 @@
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Interfaces;
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
 
 namespace Bike2Beans.Infrastructure.Responses;
 

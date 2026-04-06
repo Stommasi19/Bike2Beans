@@ -1,4 +1,4 @@
-namespace Bike2Beans.Domain.Repositories;
+namespace Bike2Beans.Infrastructure.Repositories;
 
 public class MongoDBSettings
 {

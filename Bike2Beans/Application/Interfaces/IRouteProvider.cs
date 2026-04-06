@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Application.DTOs;
 
 
-namespace Bike2Beans.Domain.Interfaces;
+namespace Bike2Beans.Application.Interfaces;
 
 public interface IRouteProvider
 {

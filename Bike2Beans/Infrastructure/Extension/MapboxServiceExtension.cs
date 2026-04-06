@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 
-namespace Bike2Beans.Domain.Extension;
+namespace Bike2Beans.Infrastructure.Extension;
 
 public class MapboxOptions
 {
