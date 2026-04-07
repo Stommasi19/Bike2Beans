@@ -14,8 +14,8 @@ public class RouteStop
         this.PlaceId = PlaceId;
         this.Name = name;
         this.Address = address;
-        this.Lat = Lat;
-        this.Lng = Lng;
+        this.Lat = lat;
+        this.Lng = lng;
         this.LocationType = locationType;
     }
     [BsonId]

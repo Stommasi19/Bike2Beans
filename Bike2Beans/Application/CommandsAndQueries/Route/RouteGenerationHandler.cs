@@ -10,7 +10,6 @@ namespace Bike2Beans.Application.CommandsAndQueries.Route;
 public class RouteGenerationHandler : IRequestHandler<RouteGenerationCommand, List<RouteOptionDto>>
 {
     private readonly IRouteProvider _mapbox;
-    private readonly IMapper<RouteOption, RouteOptionDto> _mapper;
     public RouteGenerationHandler(IRouteProvider mapbox)
     {
         _mapbox = mapbox;

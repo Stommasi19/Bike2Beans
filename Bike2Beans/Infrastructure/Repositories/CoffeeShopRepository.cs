@@ -6,11 +6,11 @@ using Bike2Beans.Domain.Entities;
 
 namespace Bike2Beans.Infrastructure.Repositories;
 
-public class CoffeeShopRepository : ICoffeeshopRepository
+public class CoffeeshopRepository : ICoffeeshopRepository
 {
     private readonly IMongoCollection<Coffeeshop> _coffeeShop;
 
-    public CoffeeShopRepository(IOptions<MongoDBSettings> settings)
+    public CoffeeshopRepository(IOptions<MongoDBSettings> settings)
     {
         var client = new MongoClient(settings.Value.ConnectionString);
         var db = client.GetDatabase(settings.Value.DatabaseName);

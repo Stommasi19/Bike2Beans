@@ -16,26 +16,28 @@ export function Login() {
         setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "/home";
+
 
         } catch (err: any) {
             const message = getFirebaseErrorMessage(err.code);
             setToast(message);
         } finally {
             setLoading(false);
-            // navigate to app
-            window.location.href = "/home";
         }
     }
     const handleGoogleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+        setLoading(true);
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
+            window.location.href = "/home";
+
         } catch (err: any) {
             const message = getFirebaseErrorMessage(err.code);
             setToast(message);
         } finally {
-            // navigate to app
-            window.location.href = "/home";
+            setLoading(false);
         }
     }
     return (
