@@ -51,7 +51,7 @@ builder.Services.AddMapbox(builder.Configuration);
 builder.Services.AddScoped<IRouteRepository, RouteRepository>();
 builder.Services.AddScoped<ICoffeeshopRepository, CoffeeshopRepository>();
 builder.Services.AddScoped<IRouteProvider, MapboxRestGateway>();
-builder.Services.AddScoped<ILocationProvider, GooglePlacesRestGateway>();
+// builder.Services.AddScoped<ILocationProvider, GooglePlacesRestGateway>();
 builder.Services.AddScoped<IMapper<Coffeeshop, CoffeeshopDto>, CoffeeshopMapper>();
 builder.Services.AddScoped<IMapper<RouteOption, RouteOptionDto>, RouteOptionMapper>();
 builder.Services.AddScoped<IMapper<RouteStop, RouteStopDto>, RouteStopMapper>();

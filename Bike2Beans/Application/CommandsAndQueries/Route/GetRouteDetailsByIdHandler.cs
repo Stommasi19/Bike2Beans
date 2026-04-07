@@ -20,15 +20,14 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
         var details = await _repo.GetRouteDetailsByIdAsync(query, ct);
 
         if (details == null) return null;
-
+        var routeStops = details.RouteStops?.Select(_mapper.ToDto).ToList() ?? new List<RouteStopDto>();
         return new RouteDetailsDto(
             Id: details.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),
             Name: details.Name ?? "",
             StartLocation: details.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: details.EndLocation ?? null,
-            RouteStops: details.RouteStops.Select(_mapper.ToDto).ToList(),
+            RouteStops: routeStops,
             Mileage: details.Mileage ?? 0
-
         );
     }
 }
