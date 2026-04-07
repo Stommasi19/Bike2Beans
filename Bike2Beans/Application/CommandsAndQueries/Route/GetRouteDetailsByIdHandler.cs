@@ -1,16 +1,19 @@
 using Bike2Beans.Application.DTOs;
 using MediatR;
 using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Domain.Entities;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQuery, RouteDetailsDto?>
 {
     private readonly IRouteRepository _repo;
+    private readonly IMapper<RouteStop, RouteStopDto> _mapper;
 
-    public GetRouteDetailsByIdHandler(IRouteRepository repo)
+    public GetRouteDetailsByIdHandler(IRouteRepository repo, IMapper<RouteStop, RouteStopDto> mapper)
     {
         _repo = repo;
+        _mapper = mapper;
     }
     public async Task<RouteDetailsDto?> Handle(GetRouteDetailsByIdQuery query, CancellationToken ct)
     {
@@ -23,7 +26,7 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
             Name: details.Name ?? "",
             StartLocation: details.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: details.EndLocation ?? null,
-            RouteStops: details.RouteStops,
+            RouteStops: details.RouteStops.Select(_mapper.ToDto).ToList(),
             Mileage: details.Mileage ?? 0
 
         );
