@@ -7,14 +7,15 @@ using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
-public class CreateRouteHandler : IRequestHandler<CreateRouteCommand, List<RouteOptionDto>>
+public class RouteGenerationHandler : IRequestHandler<RouteGenerationCommand, List<RouteOptionDto>>
 {
     private readonly IRouteProvider _mapbox;
-    public CreateRouteHandler(IRouteProvider mapbox)
+    private readonly IMapper<RouteOption, RouteOptionDto> _mapper;
+    public RouteGenerationHandler(IRouteProvider mapbox)
     {
         _mapbox = mapbox;
     }
-    public async Task<List<RouteOptionDto>> Handle(CreateRouteCommand cmd, CancellationToken ct)
+    public async Task<List<RouteOptionDto>> Handle(RouteGenerationCommand cmd, CancellationToken ct)
     {
         var response = await _mapbox.CreateRoute(cmd.StartLocation, cmd.EndLocation, cmd.Stops, ct);
 

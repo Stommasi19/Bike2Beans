@@ -2,6 +2,7 @@
 
 using Bike2Beans.Application.DTOs;
 using Bike2Beans.Application.Interfaces;
+using Google.Maps.Places.V1;
 using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
@@ -19,6 +20,7 @@ public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, Li
         //mapping
         return shops.Select(s => new CoffeeshopDto(
             Id: s.Id,
+            PlaceId: s.PlaceId,
             Name: s.Name,
             Address: s.Address,
             Lat: s.Lat,

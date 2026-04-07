@@ -32,7 +32,6 @@ public class RouteDetailsMapper : BaseMapper<RouteDetails, RouteDetailsDto>
         if (dto == null) throw new ArgumentNullException(nameof(dto));
 
         return new RouteDetails(
-            dto.Id,
             dto.Name,
             dto.StartLocation,
             dto.EndLocation,

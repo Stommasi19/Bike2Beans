@@ -1,6 +1,7 @@
 
 
-using Bike2Beans.Models.Entities;
+
+using Bike2Beans.Domain.Entities;
 
 namespace Bike2Beans.Application.Interfaces;
 

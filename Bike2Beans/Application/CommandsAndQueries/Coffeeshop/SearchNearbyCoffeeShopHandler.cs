@@ -48,13 +48,15 @@ public class SearchNearbyCoffeeshopHandler : IRequestHandler<SearchNearbyCoffees
         var response = await _places.SearchNearbyAsync(request, callSettings);
 
         var result = response.Places.Select(p => new CoffeeshopDto(
-            p.Id,
-            p.DisplayName?.Text ?? "",
-            p.FormattedAddress,
-            p.Rating,
-            p.UserRatingCount,
-            p.Location.Latitude,
-            p.Location.Longitude
+            null,
+            PlaceId: p.Id,
+            Name: p.DisplayName?.Text ?? "",
+            Address: p.FormattedAddress,
+            Lat: p.Location.Latitude,
+            Lng: p.Location.Longitude,
+            Rating: p.Rating,
+            UserRatingsTotal: p.UserRatingCount
+
             )).ToList();
         return result;
     }

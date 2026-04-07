@@ -33,15 +33,15 @@ public class Coffeeshop
     [BsonElement("userRatingsTotal")]
     public int? UserRatingsTotal { get; set; }
 
-    public Coffeeshop(string Id, string PlaceId, string Name, string? Address, double? Rating, int? UserRatingsTotal, double? Lat, double? Lng)
+    public Coffeeshop(string PlaceId, string Name, string? Address, double? Lat, double? Lng, double? Rating, int? UserRatingsTotal)
     {
-        this.Id = Id;
         this.PlaceId = PlaceId;
         this.Name = Name;
         this.Address = Address;
-        this.Rating = Rating;
-        this.UserRatingsTotal = UserRatingsTotal;
         this.Lat = Lat;
         this.Lng = Lng;
+        this.Rating = Rating;
+        this.UserRatingsTotal = UserRatingsTotal;
+
     }
 }

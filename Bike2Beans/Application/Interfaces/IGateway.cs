@@ -7,5 +7,5 @@ namespace Bike2Beans.Application.Interfaces;
 
 public interface IGateway
 {
-    Task<List<RouteOptionDto>> Handle(CreateRouteCommand command, CancellationToken ct);
+    Task<List<RouteOptionDto>> Handle(RouteGenerationCommand command, CancellationToken ct);
 }

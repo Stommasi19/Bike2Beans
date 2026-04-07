@@ -17,10 +17,11 @@ public class CoffeeshopMapper : BaseMapper<Coffeeshop, CoffeeshopDto>
             entity.PlaceId,
             entity.Name,
             entity.Address,
-            entity.Rating,
-            entity.UserRatingsTotal,
             entity.Lat,
-            entity.Lng
+            entity.Lng,
+            entity.Rating,
+            entity.UserRatingsTotal
+
         );
     }
     public override Coffeeshop ToEntity(CoffeeshopDto dto)
@@ -28,14 +29,13 @@ public class CoffeeshopMapper : BaseMapper<Coffeeshop, CoffeeshopDto>
         if (dto == null) throw new ArgumentNullException(nameof(dto));
         return new Coffeeshop
         (
-            dto.Id?.ToString() ?? string.Empty,
             dto.PlaceId?.ToString() ?? string.Empty,
             dto.Name,
             dto.Address,
-            dto.Rating,
-            dto.UserRatingsTotal,
             dto.Lat,
-            dto.Lng
+            dto.Lng,
+            dto.Rating,
+            dto.UserRatingsTotal
         );
     }
 

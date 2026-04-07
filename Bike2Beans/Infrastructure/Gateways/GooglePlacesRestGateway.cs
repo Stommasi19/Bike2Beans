@@ -80,13 +80,15 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
         {
             NextPageToken = googleTextSearchResponse.NextPageToken,
             Locations = googleTextSearchResponse.Places.Select(loc => new CoffeeshopDto(
-                loc.Id ?? "",
-                loc.DisplayName?.Text ?? "",
-                loc.FormattedAddress,
-                loc.Rating,
-                loc.UserRatingCount,
-                loc.Location?.Latitude ?? 0,
-                loc.Location?.Longitude ?? 0
+                Id: null,
+                PlaceId: loc.Id,
+                Name: loc.DisplayName?.Text ?? "",
+                Address: loc.FormattedAddress,
+                Lat: loc.Location?.Latitude ?? 0,
+                Lng: loc.Location?.Longitude ?? 0,
+                Rating: loc.Rating,
+                UserRatingsTotal: loc.UserRatingCount
+
             )).ToList()
         };
         return returnResponse;

@@ -29,7 +29,7 @@ public sealed class MapboxRestGateway : IRouteProvider
     public async Task<List<RouteOptionDto>> CreateRoute(
         List<double> startLocation,
         List<double>? endLocation,
-        List<CoffeeshopDto> stops,
+        List<RouteStopDto> stops,
         CancellationToken ct = default
     )
     {
@@ -66,6 +66,7 @@ public sealed class MapboxRestGateway : IRouteProvider
             return [];
         var options = mb.Routes
     .Select((r, idx) => new RouteOptionDto(
+        Id: null,
         OptionIndex: idx,
         DistanceMeters: r.Distance,
         DurationSeconds: r.Duration,

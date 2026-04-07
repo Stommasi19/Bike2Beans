@@ -27,13 +27,15 @@ public class SearchCoffeeshopByTextHandler : IRequestHandler<SearchCoffeeshopByT
         );
 
         var result = response.Locations.Select(p => new CoffeeshopDto(
-            p.Id,
+            null,
+            p.PlaceId,
             p.Name ?? "",
             p.Address,
-            p.Rating,
-            p.UserRatingsTotal,
             p.Lat,
-            p.Lng
+            p.Lng,
+            p.Rating,
+            p.UserRatingsTotal
+
             )).ToList();
 
         return new PaginationSupportedCoffeeshopResultDto()

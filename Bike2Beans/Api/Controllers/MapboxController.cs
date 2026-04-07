@@ -1,6 +1,6 @@
 
-using Bike2Beans.Domain.CommandsAndQueries.Route;
-using Bike2Beans.Domain.DTOs;
+using Bike2Beans.Application.CommandsAndQueries.Route;
+using Bike2Beans.Application.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
@@ -22,7 +22,7 @@ public class MapboxController : ControllerBase
         var routeQuery = new GetRouteDetailsByIdQuery(routeDetailsId);
         var routeDetails = await _mediator.Send(routeQuery, ct);
         if (routeDetails == null) return NotFound();
-        var query = new CreateRouteCommand(
+        var query = new RouteGenerationCommand(
             routeDetails.StartLocation,
             routeDetails.EndLocation ?? null,
             routeDetails.RouteStops
@@ -35,7 +35,7 @@ public class MapboxController : ControllerBase
     public async Task<IActionResult> GenerateRoute([FromBody] GenerateRouteRequest req,
        CancellationToken ct)
     {
-        var query = new CreateRouteCommand(
+        var query = new RouteGenerationCommand(
             req.StartLocation,
             req.EndLocation,
             req.RouteStops
@@ -48,6 +48,6 @@ public class MapboxController : ControllerBase
     {
         public List<double> StartLocation { get; set; } = new();
         public List<double> EndLocation { get; set; } = new();
-        public List<CoffeeshopDto> RouteStops { get; set; } = new();
+        public List<RouteStopDto> RouteStops { get; set; } = new();
     }
 }

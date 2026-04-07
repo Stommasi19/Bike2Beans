@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Bike2Beans.Domain.CommandsAndQueries.Route;
+using Bike2Beans.Application.CommandsAndQueries.Route;
 namespace Bike2Beans.Api.Controllers;
 
 [ApiController]
