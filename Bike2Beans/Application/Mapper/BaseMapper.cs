@@ -1,4 +1,6 @@
-namespace Bike2Beans.Models.Mapping;
+using Bike2Beans.Application.Interfaces;
+
+namespace Bike2Beans.Application.Mapping;
 
 
 public abstract class BaseMapper<TEntity, TDto> : IMapper<TEntity, TDto>

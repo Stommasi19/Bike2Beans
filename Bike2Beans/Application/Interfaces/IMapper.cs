@@ -1,4 +1,4 @@
-namespace Bike2Beans.Models.Mapping;
+namespace Bike2Beans.Application.Interfaces;
 
 public interface IMapper<TEntity, TDto>
 {

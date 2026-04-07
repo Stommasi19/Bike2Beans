@@ -1,15 +1,16 @@
 
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Repositories;
+
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
 using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
 
-public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, List<DTOs.CoffeeshopDto>>
+public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, List<CoffeeshopDto>>
 {
-    private readonly CoffeeShopRepository _repo;
+    private readonly ICoffeeshopRepository _repo;
 
-    public GetAllCoffeeshopHandler(CoffeeShopRepository repo) => _repo = repo;
+    public GetAllCoffeeshopHandler(ICoffeeshopRepository repo) => _repo = repo;
 
     public async Task<List<DTOs.CoffeeshopDto>> Handle(GetAllCoffeeshopQuery query, CancellationToken ct = default)
     {

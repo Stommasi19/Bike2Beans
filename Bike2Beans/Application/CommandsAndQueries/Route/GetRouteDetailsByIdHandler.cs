@@ -1,4 +1,3 @@
-using Bike2Beans.Application.Repositories;
 using Bike2Beans.Application.DTOs;
 using MediatR;
 using Bike2Beans.Application.Interfaces;

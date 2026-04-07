@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Bike2Beans.Models;
-using Bike2Beans.Models.Entities;
 
-namespace Bike2Beans.Domain.Repositories;
+using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Domain.Entities;
 
-public class CoffeeShopRepository
+namespace Bike2Beans.Infrastructure.Repositories;
+
+public class CoffeeShopRepository : ICoffeeshopRepository
 {
     private readonly IMongoCollection<Coffeeshop> _coffeeShop;
 

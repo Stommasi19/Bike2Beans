@@ -1,7 +1,5 @@
 
-using Bike2Beans.Domain.DTOs;
 using Bike2Beans.Application.Interfaces;
-using Bike2Beans.Models;
 using MediatR;
 using Bike2Beans.Application.DTOs;
 
@@ -24,7 +22,7 @@ public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, L
             Name: d.Name ?? "",
             StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: d.EndLocation ?? null,
-            RouteStops: d.RouteStops,
+            RouteStops: d.RouteStops ?? new List<RouteStopDto>(),
             Mileage: d.Mileage ?? 0
 
         )).ToList();

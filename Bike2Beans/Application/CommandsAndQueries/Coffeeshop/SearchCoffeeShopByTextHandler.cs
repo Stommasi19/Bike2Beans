@@ -1,7 +1,7 @@
-using Bike2Beans.Domain.Gateways;
-using Bike2Beans.Domain.DTOs;
+
 using MediatR;
-using Bike2Beans.Domain.Interfaces;
+using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Application.DTOs;
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 

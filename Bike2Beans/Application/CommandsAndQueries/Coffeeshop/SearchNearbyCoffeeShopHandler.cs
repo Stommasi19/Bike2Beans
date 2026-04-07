@@ -1,9 +1,9 @@
 using Google.Maps.Places.V1;
 using Google.Type;
 using Google.Api.Gax.Grpc;
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Repositories;
+
 using MediatR;
+using Bike2Beans.Application.DTOs;
 
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;

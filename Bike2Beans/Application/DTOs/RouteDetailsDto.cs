@@ -7,7 +7,7 @@ public record RouteDetailsDto(
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeshopDto> RouteStops,
+    List<RouteStopDto>? RouteStops,
     double Mileage
 // route?????
 );

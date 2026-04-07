@@ -1,8 +1,6 @@
 
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Entities;
-using Bike2Beans.Domain.Repositories;
-using Bike2Beans.Models;
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
 using Bike2Beans.Models.Entities;
 using MediatR;
 
@@ -10,9 +8,9 @@ namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
 
 public class CreateCoffeeshopHandler : IRequestHandler<CreateCoffeeshopCommand, DTOs.CoffeeshopDto>
 {
-    private readonly CoffeeShopRepository _repo;
+    private readonly ICoffeeshopRepository _repo;
 
-    public CreateCoffeeshopHandler(CoffeeShopRepository repo)
+    public CreateCoffeeshopHandler(ICoffeeshopRepository repo)
     {
         _repo = repo;
     }

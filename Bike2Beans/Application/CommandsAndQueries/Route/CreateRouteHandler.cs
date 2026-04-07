@@ -1,17 +1,17 @@
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
 using Bike2Beans.Models;
-using Bike2Beans.Infrastructure;
 using MediatR;
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Infrastructure.Gateways;
+
 
 
 namespace Bike2Beans.Application.CommandsAndQueries.Route;
 
 public class CreateRouteHandler : IRequestHandler<CreateRouteCommand, List<RouteOptionDto>>
 {
-    private readonly MapboxRestGateway _mapbox;
+    private readonly IRouteProvider _mapbox;
 
-    public CreateRouteHandler(MapboxRestGateway mapbox)
+    public CreateRouteHandler(IRouteProvider mapbox)
     {
         _mapbox = mapbox;
     }

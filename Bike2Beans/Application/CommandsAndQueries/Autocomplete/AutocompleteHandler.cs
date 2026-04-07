@@ -13,12 +13,6 @@ namespace Bike2Beans.Application.CommandsAndQueries.Autocomplete;
 
 public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<AutocompletePredictionDto>>
 {
-    private static IReadOnlyList<string> IncludedTypes =
-        new List<string>
-        {
-            "cafe",
-            "bakery"
-        };
     private readonly PlacesClient _places;
 
     public AutocompleteHandler(PlacesClient places)
@@ -53,7 +47,7 @@ public class AutocompleteHandler : IRequestHandler<AutocompleteQuery, List<Autoc
 
         if (query.Coffee == true)
         {
-            request.IncludedPrimaryTypes.AddRange(IncludedTypes);
+            request.IncludedPrimaryTypes.AddRange(DestinationTypes.IncludedTypes);
         }
 
         var response = await _places.AutocompletePlacesAsync(request);

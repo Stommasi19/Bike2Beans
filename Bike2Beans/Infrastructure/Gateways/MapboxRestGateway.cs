@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using Bike2Beans.Models;
 using System.Text.Json;
-using Bike2Beans.Domain.Interfaces;
 using Bike2Beans.Infrastructure.Responses;
-using Bike2Beans.Domain.DTOs;
-using Bike2Beans.Domain.Extension;
+using Bike2Beans.Infrastructure.Extension;
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
+
 
 namespace Bike2Beans.Infrastructure.Gateways;
 

@@ -9,7 +9,7 @@ public record CreateRouteDetailsCommand(
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
-    List<CoffeeshopDto> Stops,
+    List<RouteStopDto> Stops,
     double Mileage
 // RouteDto Route
 

@@ -7,7 +7,7 @@ namespace Bike2Beans.Application.DTOs;
 
 public class PaginationSupportedCoffeeshopResultDto
 {
-    public List<CoffeeshopDto> Locations { get; set; }
+    public List<CoffeeshopDto> Locations { get; set; } = new List<CoffeeshopDto>();
     public string? NextPageToken { get; set; }
 
 }
