@@ -7,9 +7,8 @@ public class RouteDetails
 {
 
 
-    public RouteDetails(string id, string name, List<double> startLocation, List<double>? endLocation, List<RouteStop>? routeStops, double mileage)
+    public RouteDetails(string name, List<double> startLocation, List<double>? endLocation, List<RouteStop>? routeStops, double mileage)
     {
-        this.Id = id;
         this.Name = name;
         this.StartLocation = startLocation;
         this.EndLocation = endLocation;
@@ -24,6 +23,7 @@ public class RouteDetails
 
     [BsonElement("name")]
     public string? Name { get; set; }
+
     [BsonElement("startLocation")]
     public List<double> StartLocation { get; set; } = new();
 
