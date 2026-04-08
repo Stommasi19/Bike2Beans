@@ -1,6 +1,6 @@
 
-using Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
-using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
+using Bike2Beans.Application.CommandsAndQueries.Autocomplete;
+using Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

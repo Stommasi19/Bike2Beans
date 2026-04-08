@@ -1,9 +1,12 @@
-using Bike2Beans.Domain.CommandsAndQueries.Autocomplete;
-using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopLocaters;
-using Bike2Beans.Domain.CommandsAndQueries.CoffeeshopNonGoogle;
-using Bike2Beans.Domain.CommandsAndQueries.Route;
-using Bike2Beans.Domain.Extension;
-using Bike2Beans.Domain.Repositories;
+using Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
+using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.Interfaces;
+using Bike2Beans.Application.Mapper;
+using Bike2Beans.Domain.Entities;
+using Bike2Beans.Domain.Mapper;
+using Bike2Beans.Infrastructure.Extension;
+using Bike2Beans.Infrastructure.Gateways;
+using Bike2Beans.Infrastructure.Repositories;
 
 
 
@@ -45,8 +48,14 @@ builder.Services.AddGooglePlaces(builder.Configuration);
 builder.Services.AddMapbox(builder.Configuration);
 
 // // Services
-builder.Services.AddScoped<CoffeeShopRepository>();
-builder.Services.AddScoped<RouteRepository>();
+builder.Services.AddScoped<IRouteRepository, RouteRepository>();
+builder.Services.AddScoped<ICoffeeshopRepository, CoffeeshopRepository>();
+builder.Services.AddScoped<IRouteProvider, MapboxRestGateway>();
+// builder.Services.AddScoped<ILocationProvider, GooglePlacesRestGateway>();
+builder.Services.AddScoped<IMapper<Coffeeshop, CoffeeshopDto>, CoffeeshopMapper>();
+builder.Services.AddScoped<IMapper<RouteOption, RouteOptionDto>, RouteOptionMapper>();
+builder.Services.AddScoped<IMapper<RouteStop, RouteStopDto>, RouteStopMapper>();
+
 // builder.Services.AddScoped<GetRouteDetailsByIdHandler>();
 // builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
 // builder.Services.AddScoped<SearchCoffeeshopByIdHandler>();

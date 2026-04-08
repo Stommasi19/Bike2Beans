@@ -558,6 +558,22 @@
     position: relative;
     right: -10px;
     color: var(--ui-text);
+    gap: 30px;
+  }
+
+  .signInInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--ui-input-border);
+    background-color: var(--ui-input-bg);
+    color: var(--ui-text);
+  }
+
+  .signInInput:focus {
+    border-color: var(--color-brand-300);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(154, 111, 77, 0.3);
   }
 
   .loginbtn {
@@ -568,9 +584,24 @@
 
   .signin {
     position: relative;
-    width: 80%;
+    width: 90%;
     height: auto;
     padding: 10px;
+  }
+
+  .noAccount {
+    position: relative;
+    bottom: -20px;
+    text-decoration: italic;
+  }
+
+  .link {
+    color: var(--ui-link);
+    text-decoration: underline;
+  }
+
+  .link :hover {
+    color: var(--ui-link-hover-bg);
 
   }
 
