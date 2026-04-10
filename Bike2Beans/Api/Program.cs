@@ -12,7 +12,7 @@ using Bike2Beans.Infrastructure.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddFirebaseAdmin(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<GetAllCoffeeshopHandler>();

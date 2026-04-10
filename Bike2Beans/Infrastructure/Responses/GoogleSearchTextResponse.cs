@@ -7,7 +7,7 @@ public sealed class GoogleSearchTextResponse
 {
     public string? NextPageToken { get; set; }
 
-    public List<GooglePlace> Places { get; set; }
+    public List<GooglePlace>? Places { get; set; } = null;
 }
 public sealed class GooglePlace
 {
