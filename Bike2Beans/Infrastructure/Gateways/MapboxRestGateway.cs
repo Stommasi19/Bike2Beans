@@ -66,7 +66,7 @@ public sealed class MapboxRestGateway : IRouteProvider
             return [];
         var options = mb.Routes
     .Select((r, idx) => new RouteOptionDto(
-        Id: null,
+        Id: Guid.NewGuid(),
         OptionIndex: idx,
         DistanceMeters: r.Distance,
         DurationSeconds: r.Duration,

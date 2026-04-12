@@ -17,7 +17,7 @@ public class MapboxController : ControllerBase
     public MapboxController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost("GenerateRouteFromDetails/{routeDetailsId}")]
-    public async Task<IActionResult> GenerateRouteFromDetails([FromRoute] string routeDetailsId, CancellationToken ct)
+    public async Task<IActionResult> GenerateRouteFromDetails([FromRoute] Guid routeDetailsId, CancellationToken ct)
     {
         var routeQuery = new GetRouteDetailsByIdQuery(routeDetailsId);
         var routeDetails = await _mediator.Send(routeQuery, ct);

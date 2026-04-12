@@ -22,7 +22,7 @@ public class GetRouteDetailsByIdHandler : IRequestHandler<GetRouteDetailsByIdQue
         if (details == null) return null;
         var routeStops = details.RouteStops?.Select(_mapper.ToDto).ToList() ?? new List<RouteStopDto>();
         return new RouteDetailsDto(
-            Id: details.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),
+            Id: details.Id,
             Name: details.Name ?? "",
             StartLocation: details.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: details.EndLocation ?? null,

@@ -1,0 +1,18 @@
+
+
+using Bike2Beans.Domain.Entities;
+using MongoDB.Driver;
+
+namespace Bike2Beans.Application.Interfaces
+{
+    public interface IUserRepository
+    {
+        Task<User> CreateUserAsync(User user, CancellationToken cancellationToken = default);
+        Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+
+        Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default);
+        Task<User> PatchUserAsync(User user, CancellationToken cancellationToken = default);
+        Task DeleteUserAsync(Guid id, CancellationToken cancellationToken = default);
+    }
+}

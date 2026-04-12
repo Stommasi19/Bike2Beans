@@ -21,7 +21,7 @@ public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, L
         var details = await _repo.GetAllRouteDetailsAsync(ct);
 
         return details.Select(d => new RouteDetailsDto(
-            Id: d.Id ?? throw new InvalidOperationException("RouteDetails.Id is null"),
+            Id: d.Id,
             Name: d.Name ?? "",
             StartLocation: d.StartLocation ?? throw new InvalidOperationException("RouteDetails.StartLocation is null"),
             EndLocation: d.EndLocation ?? null,
