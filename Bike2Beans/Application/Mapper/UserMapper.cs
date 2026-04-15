@@ -14,7 +14,6 @@ public class UserMapper : BaseMapper<User, UserDto>
         return new UserDto
         (
             entity.Id,
-            entity.AuthId,
             entity.Email,
             entity.FirstName,
             entity.LastName
@@ -27,7 +26,6 @@ public class UserMapper : BaseMapper<User, UserDto>
         return new User
         (
             dto.Id,
-            dto.AuthId,
             dto.Email,
             dto.FirstName,
             dto.LastName

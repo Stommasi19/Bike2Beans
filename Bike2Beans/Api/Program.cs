@@ -39,7 +39,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-
+// auth 
+builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
 
 builder.Services.AddGooglePlaces(builder.Configuration);
@@ -71,7 +72,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors(corsPolicyName);
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

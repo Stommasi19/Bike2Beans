@@ -1,10 +1,13 @@
 import { SearchResultCard } from "./SearchCard"
 import { SearchState } from "../../Data/SearchState"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export function Search() {
     var [searchState, setSearchState] = useState<SearchState>(SearchState.Loading)
-    const autocompleteresults: String[] = ["hello", "helllloo"]
+    const [autocompleteresults, setAutocompleteresults] = useState<string[]>([])
+
+    const [query, setQuery] = useState("");
+
     return (
         <div className="searchbox" data-state={searchState}>
             <form action=""
@@ -12,7 +15,7 @@ export function Search() {
                 onSubmit={(e) => e.preventDefault()}>
                 <input type="text"
                     placeholder="Search..."
-                    // value={query}
+                    value={query}
                     // onChange={handleSearch}
                     className="searchbar-input"
                 />

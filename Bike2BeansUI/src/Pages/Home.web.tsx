@@ -1,16 +1,13 @@
 import { useEffect, useState, useRef } from "react"
-import { GetCoffeeShops } from "../Api/coffeeShops"
+import { GetCoffeeShops } from "../Api/Coffeeshops"
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
-import { RouteTable } from "../Features/Route/RouteTable";
 import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../Navigation/types";
 import { RouteGeoJson } from "../Features/Map/routeGeoJson";
 import { RouteSetupManager } from "./RouteSetupManager.web";
+import { searchPlacesNearby } from "../Api/Places";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -34,22 +31,6 @@ export function Home() {
             inline: "nearest"
         })
     }, [activeId])
-    function error(err: any) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-    }
-    const options = {
-        timeout: 5000,
-        maximumAge: 0,
-    };
-    // const [userLocationLat, setUserLocationLat] = useState()
-    // const [userLocationLng, setUserLocationLng] = useState()
-
-    // function success(pos: any) {
-    //     setUserLocationLat(pos.latitude)
-    //     setUserLocationLng(pos.longitude)
-    // }
-
-
     const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
 
     function addShop(shop: CoffeeshopDto) {
@@ -58,23 +39,94 @@ export function Home() {
             { stopId: crypto.randomUUID(), shop }
             ])
     }
-    function removeStop(stopId: string) {
 
-        setRouteStops(prev => prev.filter(s => s.stopId !== stopId));
-
-
-    }
-    function reorderStops(next: RouteDto[]) {
-        setRouteStops(next);
-    }
 
     const [routePath, setRoutePath] = useState<RouteGeoJson | null>(null);
+
+    const [userLocation, setUserLocation] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+
+    const [mapSearchCenter, setMapSearchCenter] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+
+    useEffect(() => {
+        if (!mapSearchCenter) return;
+
+        console.log("mapSearchCenter changed", mapSearchCenter);
+
+        const timeoutId = window.setTimeout(async () => {
+            try {
+                console.log("about to call nearby API", mapSearchCenter);
+                const nearby = await searchPlacesNearby(
+                    mapSearchCenter.lat,
+                    mapSearchCenter.lng
+                );
+                console.log("nearby response", nearby);
+                setShops(nearby);
+            } catch (error) {
+                console.warn("nearby fetch failed", error);
+            }
+        }, 400);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [mapSearchCenter]);
+
+
+
+
+    useEffect(() => {
+        if (typeof navigator === "undefined" || !navigator.geolocation) {
+            console.warn("Geolocation is not available in this browser context.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            ({ coords }) => {
+                const lat = Number(coords.latitude.toFixed(3));
+                const lng = Number(coords.longitude.toFixed(3));
+
+                setUserLocation({
+                    lat,
+                    lng,
+                });
+            },
+            (error) => {
+                console.warn(error);
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 5000,
+                maximumAge: 300000,
+            }
+        );
+    }, []);
 
     return (
         <div className="absolute h-full w-full" onClick={() => setActiveId(null)}>
             <div className="absolute inset-0">
-                {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} routePath={routePath} />
-                ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
+                {shops ? (<MapView
+                    startLocation={userLocation}
+                    shops={shops}
+                    activeId={activeId}
+                    setActiveId={setActiveId}
+                    routePath={routePath}
+                    onViewportSettled={({ lat, lng, zoom }) => {
+                        console.log("viewport settled", lat, lng, zoom);
+                        setMapSearchCenter({ lat, lng });
+                    }}
+                />
+                ) : (<MapView
+                    shops={[]}
+                    activeId={"null"}
+                    setActiveId={setActiveId}
+                    onViewportSettled={({ lat, lng, zoom }) => {
+                        console.log("viewport settled", lat, lng, zoom);
+                        setMapSearchCenter({ lat, lng });
+                    }} />)}
             </div>
             <div className=" absolute top-0 inset-x-0">
                 <Search />
@@ -88,13 +140,6 @@ export function Home() {
                         setRoutePath={setRoutePath} />
                 )}
 
-
-                {/* <RouteTable
-                    routeStops={routeStops}
-                    reorderStops={reorderStops}
-                    removeStop={removeStop}
-                //openRouteSetup={openRouteSetup}
-                /> */}
             </div>
             <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
 

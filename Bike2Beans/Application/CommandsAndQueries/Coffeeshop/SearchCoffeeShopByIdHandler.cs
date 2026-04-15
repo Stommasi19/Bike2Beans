@@ -34,7 +34,7 @@ public class SearchCoffeeshopByIdHandler : IRequestHandler<SearchCoffeeshopByIdQ
 
         // TODO expandedcoffeeShopDto will be changing
         return new ExpandedCoffeeshopDto(
-            response.Id,
+            Guid.NewGuid(),
             response.DisplayName?.Text ?? "",
             response.FormattedAddress ?? "",
             response.Rating,

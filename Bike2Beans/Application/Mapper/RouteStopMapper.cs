@@ -27,8 +27,8 @@ public class RouteStopMapper : BaseMapper<RouteStop, RouteStopDto>
         if (dto == null) throw new ArgumentNullException(nameof(dto));
         return new RouteStop
         (
-            Id: dto.Id,
-            PlaceId: dto.PlaceId,
+            id: dto.Id,
+            placeId: dto.PlaceId,
             name: dto.Name,
             address: dto.Address,
             lat: dto.Lat,

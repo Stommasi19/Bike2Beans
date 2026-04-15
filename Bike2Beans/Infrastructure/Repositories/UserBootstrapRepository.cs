@@ -17,7 +17,7 @@ public class UserBootstrapRepository : IUserBootstrapRepository
         _collection = db.GetCollection<User>("user");
     }
 
-    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
@@ -25,11 +25,6 @@ public class UserBootstrapRepository : IUserBootstrapRepository
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         return await _collection.Find(x => x.Email == email).FirstOrDefaultAsync(cancellationToken);
-    }
-
-    public async Task<User?> GetByAuthIdAsync(Guid authId, CancellationToken cancellationToken = default)
-    {
-        return await _collection.Find(x => x.AuthId == authId).FirstOrDefaultAsync(cancellationToken);
     }
 
 

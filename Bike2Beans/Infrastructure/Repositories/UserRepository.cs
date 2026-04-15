@@ -23,7 +23,7 @@ public class UserRepository : IUserRepository
             .ContinueWith(t => user, cancellationToken);
     }
 
-    public async Task DeleteUserAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task DeleteUserAsync(string id, CancellationToken cancellationToken = default)
     {
         await _user.DeleteOneAsync(u => u.Id == id, cancellationToken);
     }
@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
         return await _user.Find(u => u.Email == email).FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         return await _user.Find(u => u.Id == id).FirstOrDefaultAsync(cancellationToken);
     }

@@ -1,7 +1,7 @@
 namespace Bike2Beans.Application.DTOs;
 
 public record RouteOptionDto(
-    string Id,
+    Guid Id,
     int OptionIndex,
     double DistanceMeters,
     double DurationSeconds,

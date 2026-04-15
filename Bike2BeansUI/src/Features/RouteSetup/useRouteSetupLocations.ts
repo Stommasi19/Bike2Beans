@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getExternalAutocomplete } from "../../Api/ExternalAutocomplete";
-import { searchPlacesByText } from "../../Api/places";
+import { searchPlacesByText } from "../../Api/Places";
 import type { RouteDto } from "../../Data/RouteDto";
 import type { LocationChoice } from "./locationSearch";
 

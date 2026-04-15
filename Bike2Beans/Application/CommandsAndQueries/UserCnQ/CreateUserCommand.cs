@@ -12,7 +12,7 @@ namespace Bike2Beans.Application.CommandsAndQueries.UserCnQ;
 public record CreateUserCommand
 
     (
-    Guid AuthId,
+    string UserId,
     string Email,
     string FirstName,
     string LastName
@@ -33,9 +33,19 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
 
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+        var existingUser = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        if (existingUser != null)
+        {
+            existingUser.Email = request.Email;
+            existingUser.FirstName = request.FirstName;
+            existingUser.LastName = request.LastName;
+
+            var updatedUser = await _userRepository.UpdateUserAsync(existingUser, cancellationToken);
+            return _mapper.ToDto(updatedUser);
+        }
+
         var user = new User(
-            Guid.NewGuid(),
-            request.AuthId,
+            request.UserId,
             request.Email,
             request.FirstName,
             request.LastName

@@ -1,14 +1,15 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 
 namespace Bike2Beans.Domain.Entities;
 
 public class Coffeeshop
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    [BsonId(IdGenerator = typeof(GuidGenerator))]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]   
+     public Guid Id { get; set; }
 
     [BsonElement("id")]
     public string? PlaceId { get; set; }
@@ -33,15 +34,16 @@ public class Coffeeshop
     [BsonElement("userRatingsTotal")]
     public int? UserRatingsTotal { get; set; }
 
-    public Coffeeshop(string PlaceId, string Name, string? Address, double? Lat, double? Lng, double? Rating, int? UserRatingsTotal)
+    public Coffeeshop(string placeId, string name, string? address, double? lat, double? lng, double? rating, int? userRatingsTotal)
     {
-        this.PlaceId = PlaceId;
-        this.Name = Name;
-        this.Address = Address;
-        this.Lat = Lat;
-        this.Lng = Lng;
-        this.Rating = Rating;
-        this.UserRatingsTotal = UserRatingsTotal;
+
+        this.PlaceId = placeId;
+        this.Name = name;
+        this.Address = address;
+        this.Lat = lat;
+        this.Lng = lng;
+        this.Rating = rating;
+        this.UserRatingsTotal = userRatingsTotal;
 
     }
 }

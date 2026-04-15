@@ -10,8 +10,7 @@ namespace Bike2Beans.Application.CommandsAndQueries.UserCnQ;
 
 public record DeleteUserCommand
 (
-    Guid Id,
-    Guid AuthId
+    string Id
     ) : IRequest<IActionResult>;
 
 
@@ -26,7 +25,7 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, IActionResul
 
     public async Task<IActionResult> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        await _userRepository.DeleteUserAsync(request.Id);
+        await _userRepository.DeleteUserAsync(request.Id, cancellationToken);
         return new NoContentResult();
     }
 

@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.CommandsAndQueries.Types;
 using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.Autocomplete;

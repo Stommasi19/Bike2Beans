@@ -1,18 +1,27 @@
 import Map, { Layer, Marker, Source } from "react-map-gl/mapbox";
 import { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import { useEffect, useRef } from "react";
-import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";
 import { GetDistance } from '../Map/GetDistance'
 import { RouteGeoJson } from "./routeGeoJson";
+
+const DEFAULT_INITIAL_VIEW = {
+    latitude: 47.6062,
+    longitude: -122.3321,
+    zoom: 10,
+};
+
 type Props = {
+    startLocation?: { lat: number, lng: number } | null,
+    onViewportSettled?: (viewport: { lat: number, lng: number, zoom: number }) => void;
     shops: CoffeeshopDto[],
     activeId: string | null,
     setActiveId: (id: string) => void;
     routePath?: RouteGeoJson | null
+
 }
 
 
-export function MapView({ shops, activeId, setActiveId, routePath }: Props) {
+export function MapView({ onViewportSettled, startLocation, shops, activeId, setActiveId, routePath }: Props) {
 
     const ROUTE_COLOR = "#9a6f4d";
     const ROUTE_CASE_COLOR = "#f6eee6";
@@ -20,6 +29,28 @@ export function MapView({ shops, activeId, setActiveId, routePath }: Props) {
 
     const token = process.env.MAPBOX_ACCESS_TOKEN;
     const mapRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (!startLocation) return;
+        if (!mapRef.current) return;
+
+        const map = mapRef.current.getMap();
+        const focusUserLocation = () => {
+            map.easeTo({
+                center: [startLocation.lng, startLocation.lat],
+                zoom: 11.5,
+                duration: 1000,
+            });
+        };
+
+        if (map.loaded()) {
+            focusUserLocation();
+            return;
+        }
+
+        map.once("load", focusUserLocation);
+    }, [startLocation?.lat, startLocation?.lng]);
+
     useEffect(() => {
         if (!activeId) return;
         if (!mapRef.current) return;
@@ -53,12 +84,41 @@ export function MapView({ shops, activeId, setActiveId, routePath }: Props) {
                 ref={mapRef}
                 mapboxAccessToken={token}
                 initialViewState={{
-                    latitude: 47.6062,
-                    longitude: -122.3321,
-                    zoom: 10,
+                    latitude: startLocation?.lat ?? DEFAULT_INITIAL_VIEW.latitude,
+                    longitude: startLocation?.lng ?? DEFAULT_INITIAL_VIEW.longitude,
+                    zoom: DEFAULT_INITIAL_VIEW.zoom,
                 }}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
+                onMoveEnd={(event) => {
+                    console.log("MapView onMoveEnd", event.viewState);
+
+                    onViewportSettled?.({
+                        lat: event.viewState.latitude,
+                        lng: event.viewState.longitude,
+                        zoom: event.viewState.zoom,
+                    });
+                }}
+
             >
+                {startLocation ? (
+                    <Marker
+                        latitude={startLocation.lat}
+                        longitude={startLocation.lng}
+                        anchor="center"
+                    >
+                        <div
+                            title="Approximate location"
+                            style={{
+                                width: 16,
+                                height: 16,
+                                borderRadius: "9999px",
+                                background: "#2563eb",
+                                border: "3px solid white",
+                                boxShadow: "0 0 0 6px rgba(37, 99, 235, 0.2)",
+                            }}
+                        />
+                    </Marker>
+                ) : null}
 
                 {
                     shops.map((s) => (

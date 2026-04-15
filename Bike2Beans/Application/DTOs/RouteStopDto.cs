@@ -3,7 +3,7 @@ using Bike2Beans.Domain.Entities;
 namespace Bike2Beans.Application.DTOs;
 
 public record RouteStopDto(
-    string? Id,
+    Guid Id,
     string PlaceId,
     string Name,
     string? Address,

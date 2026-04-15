@@ -1,4 +1,4 @@
-import { api } from "./client";
+import { api } from "./Client";
 
 
 export const getAutocomplete = (text: string): Promise<any> => {

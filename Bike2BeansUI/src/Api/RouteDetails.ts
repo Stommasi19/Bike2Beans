@@ -1,4 +1,4 @@
-import { api } from "./client";
+import { api } from "./Client";
 
 export const GetRoutes = async () => {
     const response = await api.get(`api/Route`)

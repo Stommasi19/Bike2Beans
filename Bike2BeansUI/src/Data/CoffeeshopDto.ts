@@ -7,4 +7,3 @@ export type CoffeeshopDto = {
   lat: number;
   lng: number;
 };
-

@@ -4,6 +4,7 @@ using Google.Api.Gax.Grpc;
 
 using MediatR;
 using Bike2Beans.Application.DTOs;
+using Bike2Beans.Application.CommandsAndQueries.Types;
 
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
@@ -43,8 +44,10 @@ public class SearchNearbyCoffeeshopHandler : IRequestHandler<SearchNearbyCoffees
                 }
             }
         };
-        request.IncludedTypes.Add(DestinationTypes.IncludedTypes);
-
+        foreach (var type in DestinationTypes.IncludedTypes)
+        {
+            request.IncludedTypes.Add(type);
+        }
         var response = await _places.SearchNearbyAsync(request, callSettings);
 
         var result = response.Places.Select(p => new CoffeeshopDto(
