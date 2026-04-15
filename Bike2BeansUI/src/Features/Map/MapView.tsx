@@ -3,12 +3,9 @@ import { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import { useEffect, useRef } from "react";
 import { GetDistance } from '../Map/GetDistance'
 import { RouteGeoJson } from "./routeGeoJson";
+import { useFocusEffect } from "@react-navigation/native";
 
-const DEFAULT_INITIAL_VIEW = {
-    latitude: 47.6062,
-    longitude: -122.3321,
-    zoom: 10,
-};
+
 
 type Props = {
     startLocation?: { lat: number, lng: number } | null,
@@ -20,8 +17,20 @@ type Props = {
 
 }
 
+type Viewport = {
+    lat: number;
+    lng: number;
+    zoom: number;
+};
+
+const VIEWPORT_SETTLE_DISTANCE_KM = 0.5;
+const PROGRAMMATIC_SETTLE_TOLERANCE_KM = 0.05;
+const PROGRAMMATIC_ZOOM_TOLERANCE = 0.1;
+
 
 export function MapView({ onViewportSettled, startLocation, shops, activeId, setActiveId, routePath }: Props) {
+
+
 
     const ROUTE_COLOR = "#9a6f4d";
     const ROUTE_CASE_COLOR = "#f6eee6";
@@ -29,7 +38,18 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
 
     const token = process.env.MAPBOX_ACCESS_TOKEN;
     const mapRef = useRef<any>(null);
+    const lastSettledViewportRef = useRef<Viewport | null>(null);
+    const suppressedViewportRef = useRef<Viewport | null>(null);
 
+
+    useEffect(() => {
+        if (!startLocation) return;
+        lastSettledViewportRef.current = {
+            lat: startLocation.lat,
+            lng: startLocation.lng,
+            zoom: 11.5
+        };
+    }, [startLocation?.lat, startLocation?.lng])
     useEffect(() => {
         if (!startLocation) return;
         if (!mapRef.current) return;
@@ -55,7 +75,7 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
         if (!activeId) return;
         if (!mapRef.current) return;
 
-        var selected = shops.find((s) => s.id === activeId);
+        const selected = shops.find((s) => s.placeId === activeId);
         if (!selected) return;
 
         const map = mapRef.current.getMap();
@@ -75,7 +95,8 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                 duration: 8000,
             })
         }
-    }, [activeId, shops])
+    }, [activeId, shops]);
+
 
 
     return (
@@ -84,22 +105,61 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                 ref={mapRef}
                 mapboxAccessToken={token}
                 initialViewState={{
-                    latitude: startLocation?.lat ?? DEFAULT_INITIAL_VIEW.latitude,
-                    longitude: startLocation?.lng ?? DEFAULT_INITIAL_VIEW.longitude,
-                    zoom: DEFAULT_INITIAL_VIEW.zoom,
+                    latitude: startLocation?.lat,
+                    longitude: startLocation?.lng,
+                    zoom: 11,
                 }}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
-                onMoveEnd={(event) => {
-                    console.log("MapView onMoveEnd", event.viewState);
 
-                    onViewportSettled?.({
+                onMoveEnd={(event) => {
+                    const nextViewport: Viewport = {
                         lat: event.viewState.latitude,
                         lng: event.viewState.longitude,
                         zoom: event.viewState.zoom,
-                    });
-                }}
+                    };
 
-            >
+                    const suppressedViewport = suppressedViewportRef.current;
+                    if (suppressedViewport) {
+                        const suppressedDistance = GetDistance(
+                            suppressedViewport.lat,
+                            suppressedViewport.lng,
+                            nextViewport.lat,
+                            nextViewport.lng
+                        );
+                        const suppressedZoomDelta = Math.abs(suppressedViewport.zoom - nextViewport.zoom);
+
+                        if (
+                            suppressedDistance <= PROGRAMMATIC_SETTLE_TOLERANCE_KM &&
+                            suppressedZoomDelta <= PROGRAMMATIC_ZOOM_TOLERANCE
+                        ) {
+                            suppressedViewportRef.current = null;
+                            lastSettledViewportRef.current = nextViewport;
+                            return;
+                        }
+
+                        suppressedViewportRef.current = null;
+                    }
+
+                    const lastSettledViewport = lastSettledViewportRef.current;
+                    if (!lastSettledViewport) {
+                        lastSettledViewportRef.current = nextViewport;
+                        return;
+                    }
+
+                    const distanceFromLastSettled = GetDistance(
+                        lastSettledViewport.lat,
+                        lastSettledViewport.lng,
+                        nextViewport.lat,
+                        nextViewport.lng
+                    );
+
+                    if (distanceFromLastSettled <= VIEWPORT_SETTLE_DISTANCE_KM) {
+                        return;
+                    }
+
+                    lastSettledViewportRef.current = nextViewport;
+                    onViewportSettled?.(nextViewport);
+                }}
                 {startLocation ? (
                     <Marker
                         latitude={startLocation.lat}
@@ -122,24 +182,24 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
 
                 {
                     shops.map((s) => (
-                        <Marker
-                            key={s.id}
-                            latitude={s.lat}
-                            longitude={s.lng}
-                            anchor="bottom"
-                        >
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveId(s.id);
-                                }}
-                                className={s.id === activeId ? "pin pin-active" : "pin"}
+                    <Marker
+                        key={s.placeId}
+                        latitude={s.lat}
+                        longitude={s.lng}
+                        anchor="bottom"
+                    >
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveId(s.placeId);
+                            }}
+                            className={s.placeId === activeId ? "pin pin-active" : "pin"}
 
-                            />
-                        </Marker>
+                        />
+                    </Marker>
 
-                    ))
+                ))
                 }
                 {routePath ? (
                     <Source id="route-source" type="geojson" data={routePath}>
@@ -182,6 +242,6 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                     </Source>
                 ) : null}
             </Map>
-        </div>
+        </div >
     );
 }

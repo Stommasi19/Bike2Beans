@@ -7,7 +7,7 @@ import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
 import { RouteGeoJson } from "../Features/Map/routeGeoJson";
 import { RouteSetupManager } from "./RouteSetupManager.web";
-import { searchPlacesNearby } from "../Api/Places";
+import { searchPlacesByText, searchPlacesNearby } from "../Api/Places";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -16,6 +16,7 @@ export function Home() {
         GetCoffeeShops()
             .then(setShops)
             .catch(console.error);
+
 
 
     }, []);
@@ -32,6 +33,8 @@ export function Home() {
         })
     }, [activeId])
     const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
+    const suppressNextMove = useRef(false);
+
 
     function addShop(shop: CoffeeshopDto) {
         setRouteStops(prev =>
@@ -55,7 +58,6 @@ export function Home() {
 
     useEffect(() => {
         if (!mapSearchCenter) return;
-
         console.log("mapSearchCenter changed", mapSearchCenter);
 
         const timeoutId = window.setTimeout(async () => {
@@ -70,9 +72,10 @@ export function Home() {
             } catch (error) {
                 console.warn("nearby fetch failed", error);
             }
-        }, 400);
+        }, 2000);
 
         return () => window.clearTimeout(timeoutId);
+
     }, [mapSearchCenter]);
 
 
@@ -85,7 +88,7 @@ export function Home() {
         }
 
         navigator.geolocation.getCurrentPosition(
-            ({ coords }) => {
+            async ({ coords }) => {
                 const lat = Number(coords.latitude.toFixed(3));
                 const lng = Number(coords.longitude.toFixed(3));
 
@@ -93,6 +96,13 @@ export function Home() {
                     lat,
                     lng,
                 });
+                await searchPlacesNearby(lat, lng).then((nearby) => {
+                    console.log("nearby response", nearby);
+                    setShops(nearby);
+                })
+                    .catch((error) => {
+                        console.warn("nearby fetch failed", error);
+                    });
             },
             (error) => {
                 console.warn(error);
@@ -104,6 +114,18 @@ export function Home() {
             }
         );
     }, []);
+
+    const getCoffeeshopFromAutocomplete = async (autocompleteResult: any) => {
+        const result = await searchPlacesByText(autocompleteResult)
+        const shop = result.locations[0]
+        console.log(shop)
+        setShops((prev: CoffeeshopDto[]) => {
+            const isShopInList = prev.some((coffeeshop: CoffeeshopDto) => coffeeshop.placeId === shop.placeId)
+            return isShopInList ? prev : [shop, ...prev]
+        });
+        setActiveId(shop.placeId)
+        suppressNextMove.current = false
+    }
 
     return (
         <div className="absolute h-full w-full" onClick={() => setActiveId(null)}>
@@ -129,7 +151,9 @@ export function Home() {
                     }} />)}
             </div>
             <div className=" absolute top-0 inset-x-0">
-                <Search />
+                <Search
+                    getCoffeeshopFromAutocomplete={getCoffeeshopFromAutocomplete}
+                />
             </div>
             <div className="route-table-container">
                 {routeStops.length > 0 && (
@@ -156,10 +180,10 @@ export function Home() {
                         {shops.map((shop) => (
 
                             <div ref={(node) => {
-                                cardRefs.current[shop.id] = node;
+                                cardRefs.current[shop.placeId] = node;
                             }}
-                                key={shop.id}>
-                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} addShop={() => addShop(shop)} />
+                                key={shop.placeId}>
+                                <CoffeeShopCard shop={shop} active={shop.placeId === activeId} onSelect={() => setActiveId(shop.placeId)} addShop={() => addShop(shop)} />
                             </div>
                         ))}
                     </div>

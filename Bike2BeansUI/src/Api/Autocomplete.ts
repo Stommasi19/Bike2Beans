@@ -15,5 +15,6 @@ export const getAutocomplete = (text: string): Promise<any> => {
 
             resolve(response.data);
         }, 1000);
+
     });
 };

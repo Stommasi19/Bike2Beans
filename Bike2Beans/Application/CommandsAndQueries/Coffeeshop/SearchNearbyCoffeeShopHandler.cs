@@ -42,12 +42,13 @@ public class SearchNearbyCoffeeshopHandler : IRequestHandler<SearchNearbyCoffees
                     Center = new LatLng { Latitude = query.Lat, Longitude = query.Lng },
                     Radius = query.RadiusMeters
                 }
-            }
+
+            },
+            RankPreference = SearchNearbyRequest.Types.RankPreference.Distance
+
+
         };
-        foreach (var type in DestinationTypes.IncludedTypes)
-        {
-            request.IncludedTypes.Add(type);
-        }
+        request.IncludedTypes.Add("cafe");
         var response = await _places.SearchNearbyAsync(request, callSettings);
 
         var result = response.Places.Select(p => new CoffeeshopDto(
