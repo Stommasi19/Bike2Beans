@@ -1,7 +1,5 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { useState } from "react";
 import type { RouteDto } from "../Data/RouteDto";
-import { RouteMapView } from "../Features/Map/RouteMapView";
 import { LocationBox } from "../Features/Route/LocationBox";
 import { LocationSearchCard } from "../Features/RouteSetup/LocationSearchCard";
 import { SelectedLocationCard } from "../Features/RouteSetup/SelectedLocationCard";

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { GetDistance } from '../Map/GetDistance'
 import { RouteGeoJson } from "./routeGeoJson";
 import { useFocusEffect } from "@react-navigation/native";
+import { MapMover } from "./MapMover";
 
 
 
@@ -16,6 +17,13 @@ type Props = {
     routePath?: RouteGeoJson | null
 
 }
+type MoveEndEvent = {
+    viewState: {
+        latitude: number;
+        longitude: number;
+        zoom: number;
+    };
+};
 
 type Viewport = {
     lat: number;
@@ -24,8 +32,7 @@ type Viewport = {
 };
 
 const VIEWPORT_SETTLE_DISTANCE_KM = 0.5;
-const PROGRAMMATIC_SETTLE_TOLERANCE_KM = 0.05;
-const PROGRAMMATIC_ZOOM_TOLERANCE = 0.1;
+
 
 
 export function MapView({ onViewportSettled, startLocation, shops, activeId, setActiveId, routePath }: Props) {
@@ -50,12 +57,20 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
             zoom: 11.5
         };
     }, [startLocation?.lat, startLocation?.lng])
+
     useEffect(() => {
         if (!startLocation) return;
         if (!mapRef.current) return;
 
         const map = mapRef.current.getMap();
+
         const focusUserLocation = () => {
+            suppressedViewportRef.current = {
+                lat: startLocation.lat,
+                lng: startLocation.lng,
+                zoom: 11.5,
+            };
+
             map.easeTo({
                 center: [startLocation.lng, startLocation.lat],
                 zoom: 11.5,
@@ -69,7 +84,8 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
         }
 
         map.once("load", focusUserLocation);
-    }, [startLocation?.lat, startLocation?.lng]);
+    }, [startLocation]);
+
 
     useEffect(() => {
         if (!activeId) return;
@@ -80,25 +96,53 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
 
         const map = mapRef.current.getMap();
         const center = map.getCenter();
-        const distance = GetDistance(center.lat, center.lng, selected.lat, selected.lng)
-        if (distance < 50) {
-            map.easeTo({
-                center: [selected.lng, selected.lat],
-                zoom: 14,
-                duration: 800,
-            })
-        }
-        else {
-            map.flyTo({
-                center: [selected.lng, selected.lat],
-                zoom: 14,
-                duration: 8000,
-            })
-        }
+        MapMover(map, center, selected)
     }, [activeId, shops]);
 
 
+    const rememberViewport = (viewport: Viewport) => {
+        lastSettledViewportRef.current = viewport;
+    };
+    const ignoreNextMoveEndRef = useRef(false);
 
+    const handleMoveEnd = (event: MoveEndEvent) => {
+        const nextViewport: Viewport = {
+            lat: event.viewState.latitude,
+            lng: event.viewState.longitude,
+            zoom: event.viewState.zoom,
+        };
+
+        if (ignoreNextMoveEndRef.current) {
+            ignoreNextMoveEndRef.current = false;
+            rememberViewport(nextViewport);
+            return;
+        }
+
+        const lastViewport = lastSettledViewportRef.current;
+        if (!lastViewport) {
+            rememberViewport(nextViewport);
+            return;
+        }
+
+        const distance = GetDistance(
+            lastViewport.lat,
+            lastViewport.lng,
+            nextViewport.lat,
+            nextViewport.lng
+        );
+
+        if (distance <= VIEWPORT_SETTLE_DISTANCE_KM) return;
+
+        rememberViewport(nextViewport);
+        onViewportSettled?.(nextViewport);
+        if (shops.filter((shop) => shop.placeId !== activeId)) {
+            setActiveId("null")
+        }
+    };
+
+    if (!startLocation) {
+        return <div style={{ height: "100vh", width: "100vw" }} />;
+    }
     return (
         <div style={{ height: "100vh", width: "100vw" }}>
             <Map
@@ -107,59 +151,12 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                 initialViewState={{
                     latitude: startLocation?.lat,
                     longitude: startLocation?.lng,
-                    zoom: 11,
+                    zoom: 13,
                 }}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
+                onMoveEnd={handleMoveEnd}
+            >
 
-                onMoveEnd={(event) => {
-                    const nextViewport: Viewport = {
-                        lat: event.viewState.latitude,
-                        lng: event.viewState.longitude,
-                        zoom: event.viewState.zoom,
-                    };
-
-                    const suppressedViewport = suppressedViewportRef.current;
-                    if (suppressedViewport) {
-                        const suppressedDistance = GetDistance(
-                            suppressedViewport.lat,
-                            suppressedViewport.lng,
-                            nextViewport.lat,
-                            nextViewport.lng
-                        );
-                        const suppressedZoomDelta = Math.abs(suppressedViewport.zoom - nextViewport.zoom);
-
-                        if (
-                            suppressedDistance <= PROGRAMMATIC_SETTLE_TOLERANCE_KM &&
-                            suppressedZoomDelta <= PROGRAMMATIC_ZOOM_TOLERANCE
-                        ) {
-                            suppressedViewportRef.current = null;
-                            lastSettledViewportRef.current = nextViewport;
-                            return;
-                        }
-
-                        suppressedViewportRef.current = null;
-                    }
-
-                    const lastSettledViewport = lastSettledViewportRef.current;
-                    if (!lastSettledViewport) {
-                        lastSettledViewportRef.current = nextViewport;
-                        return;
-                    }
-
-                    const distanceFromLastSettled = GetDistance(
-                        lastSettledViewport.lat,
-                        lastSettledViewport.lng,
-                        nextViewport.lat,
-                        nextViewport.lng
-                    );
-
-                    if (distanceFromLastSettled <= VIEWPORT_SETTLE_DISTANCE_KM) {
-                        return;
-                    }
-
-                    lastSettledViewportRef.current = nextViewport;
-                    onViewportSettled?.(nextViewport);
-                }}
                 {startLocation ? (
                     <Marker
                         latitude={startLocation.lat}
@@ -182,24 +179,24 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
 
                 {
                     shops.map((s) => (
-                    <Marker
-                        key={s.placeId}
-                        latitude={s.lat}
-                        longitude={s.lng}
-                        anchor="bottom"
-                    >
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveId(s.placeId);
-                            }}
-                            className={s.placeId === activeId ? "pin pin-active" : "pin"}
+                        <Marker
+                            key={s.placeId}
+                            latitude={s.lat}
+                            longitude={s.lng}
+                            anchor="bottom"
+                        >
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveId(s.placeId);
+                                }}
+                                className={s.placeId === activeId ? "pin pin-active" : "pin"}
 
-                        />
-                    </Marker>
+                            />
+                        </Marker>
 
-                ))
+                    ))
                 }
                 {routePath ? (
                     <Source id="route-source" type="geojson" data={routePath}>

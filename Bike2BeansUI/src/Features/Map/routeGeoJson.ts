@@ -9,15 +9,13 @@ export type RouteGeoJson = {
     };
 };
 
-function getRouteCoordinates(routeOption: RouteOptionDto | undefined): number[][] {
+function getRouteCoordinates(routeOption: RouteOptionDto): number[][] {
     if (!routeOption) return [];
 
     return (
-        routeOption.coordinates ??
-        routeOption.Coordinates ??
-        routeOption.geometry?.coordinates ??
-        routeOption.Geometry?.Coordinates ??
-        []
+
+        routeOption.Coordinates ?? []
+
     );
 }
 
@@ -39,7 +37,7 @@ function normalizeRouteCoordinatePair(pair: number[]): number[] | null {
     return [first, second];
 }
 
-export function toRouteFeature(routeOption: RouteOptionDto | undefined): RouteGeoJson | null {
+export function toRouteFeature(routeOption: RouteOptionDto): RouteGeoJson | null {
     const coordinates = getRouteCoordinates(routeOption)
         .map(normalizeRouteCoordinatePair)
         .filter((coord): coord is number[] => coord !== null);
