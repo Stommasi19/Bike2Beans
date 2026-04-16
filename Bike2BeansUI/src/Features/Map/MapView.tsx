@@ -237,6 +237,7 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                             }}
                         />
                     </Source>
+
                 ) : null}
             </Map>
         </div >

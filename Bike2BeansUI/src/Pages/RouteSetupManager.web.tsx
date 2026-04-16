@@ -39,6 +39,28 @@ export function RouteSetupManager({ routeStops, setRouteStops, routePath, setRou
         cancelStopEdit,
     } = useRouteSetupLocations({ routeStops });
 
+    function convertGeoJSONToGPX(route: RouteGeoJson) {
+        const togpx = require("togpx") as (geojson: unknown, options?: unknown) => string;
+
+        return togpx(route, {
+            creator: "Bike2Beans",
+        });
+    }
+    function handleDownloadGPX() {
+        if (!routePath) return;
+
+        const gpx = convertGeoJSONToGPX(routePath);
+        const blob = new Blob([gpx], { type: "application/gpx+xml" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "this-route.gpx";
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
+
     function removeStop(stopId: string) {
         setRouteStops(routeStops.filter((stop) => stop.stopId !== stopId));
     }
@@ -128,6 +150,9 @@ export function RouteSetupManager({ routeStops, setRouteStops, routePath, setRou
                 <button className="btn btn-primary center"
                     onClick={handleSeeRoute}
                 >Show Route</button>
+            )}
+            {routePath && (
+                <button className="btn btn-secondary center" onClick={handleDownloadGPX}>Download to GPX</button>
             )}
 
         </div>

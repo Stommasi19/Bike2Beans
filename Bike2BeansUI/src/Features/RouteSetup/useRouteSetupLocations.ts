@@ -47,7 +47,7 @@ export function useRouteSetupLocations({ routeStops: _routeStops }: Args) {
     async function resolveSuggestionToLocation(suggestion: string): Promise<LocationChoice | null> {
         const places = await searchPlacesByText(suggestion, false);
         if (!places || places.length === 0) return null;
-        return places[0] as LocationChoice;
+        return places.locations[0] as LocationChoice;
     }
 
     async function selectStartSuggestion(suggestion: string) {
