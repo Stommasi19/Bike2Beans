@@ -3,7 +3,7 @@ using Bike2Beans.Application.CommandsAndQueries.Autocomplete;
 using Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+using Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
 
 
 
@@ -19,15 +19,15 @@ public class PlacesController : ControllerBase
 
     [HttpGet("Nearby")]
     public async Task<IActionResult> SearchNearby(
-        [FromQuery] double lat = 42.4370,
-        [FromQuery] double lng = -71.5056,
+        [FromQuery] double lat = 47.6062,
+        [FromQuery] double lng = -122.3320,
         [FromQuery] int radiusMeters = 5000,
         [FromQuery] int max = 20,
         CancellationToken ct = default
     )
     {
         var query = new SearchNearbyCoffeeshopQuery(lat, lng, radiusMeters, max);
-        var shops = await _mediator.Send(query);
+        var shops = await _mediator.Send(query, ct);
         return Ok(shops);
     }
     [HttpGet("Id")]
@@ -60,6 +60,8 @@ public class PlacesController : ControllerBase
 
         return Ok(shops);
     }
+
+    //TODO this is ugly 
 
     [HttpGet("Autocomplete")]
     public async Task<IActionResult> AutocompleteText(

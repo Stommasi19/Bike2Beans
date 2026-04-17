@@ -1,16 +1,13 @@
 import { useEffect, useState, useRef } from "react"
-import { GetCoffeeShops } from "../Api/coffeeShops"
+import { GetCoffeeShops } from "../Api/Coffeeshops"
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
-import { RouteTable } from "../Features/Route/RouteTable";
 import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../Navigation/types";
-import { RouteGeoJson } from "../Features/Map/routeGeoJson";
+import { RouteOptionDto } from "../Data/RouteOptionDto";
 import { RouteSetupManager } from "./RouteSetupManager.web";
+import { searchPlacesByText, searchPlacesNearby } from "../Api/Places";
 
 export function Home() {
     const STACK_MAX_PX = 660
@@ -19,6 +16,7 @@ export function Home() {
         GetCoffeeShops()
             .then(setShops)
             .catch(console.error);
+
 
 
     }, []);
@@ -34,23 +32,9 @@ export function Home() {
             inline: "nearest"
         })
     }, [activeId])
-    function error(err: any) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-    }
-    const options = {
-        timeout: 5000,
-        maximumAge: 0,
-    };
-    // const [userLocationLat, setUserLocationLat] = useState()
-    // const [userLocationLng, setUserLocationLng] = useState()
-
-    // function success(pos: any) {
-    //     setUserLocationLat(pos.latitude)
-    //     setUserLocationLng(pos.longitude)
-    // }
-
-
     const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
+    const suppressNextMove = useRef(false);
+
 
     function addShop(shop: CoffeeshopDto) {
         setRouteStops(prev =>
@@ -58,43 +42,134 @@ export function Home() {
             { stopId: crypto.randomUUID(), shop }
             ])
     }
-    function removeStop(stopId: string) {
-
-        setRouteStops(prev => prev.filter(s => s.stopId !== stopId));
 
 
+    const [routeOptions, setRouteOptions] = useState<RouteOptionDto[]>([]);
+    const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+
+    const [userLocation, setUserLocation] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+
+    const [mapSearchCenter, setMapSearchCenter] = useState<{
+        lat: number;
+        lng: number;
+    } | null>(null);
+
+    useEffect(() => {
+        if (!mapSearchCenter) return;
+        console.log("mapSearchCenter changed", mapSearchCenter);
+
+        const timeoutId = window.setTimeout(async () => {
+            try {
+                console.log("about to call nearby API", mapSearchCenter);
+                const nearby = await searchPlacesNearby(
+                    mapSearchCenter.lat,
+                    mapSearchCenter.lng
+                );
+                console.log("nearby response", nearby);
+                setShops(nearby);
+            } catch (error) {
+                console.warn("nearby fetch failed", error);
+            }
+        }, 2000);
+
+        return () => window.clearTimeout(timeoutId);
+
+    }, [mapSearchCenter]);
+
+
+
+
+    useEffect(() => {
+        if (typeof navigator === "undefined" || !navigator.geolocation) {
+            console.warn("Geolocation is not available in this browser context.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async ({ coords }) => {
+                const lat = Number(coords.latitude.toFixed(3));
+                const lng = Number(coords.longitude.toFixed(3));
+
+                setUserLocation({
+                    lat,
+                    lng,
+                });
+                await searchPlacesNearby(lat, lng).then((nearby) => {
+                    console.log("nearby response", nearby);
+                    setShops(nearby);
+                })
+                    .catch((error) => {
+                        console.warn("nearby fetch failed", error);
+                    });
+            },
+            (error) => {
+                console.warn(error);
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 5000,
+                maximumAge: 300000,
+            }
+        );
+    }, []);
+
+    const getCoffeeshopFromAutocomplete = async (autocompleteResult: any) => {
+        const result = await searchPlacesByText(autocompleteResult)
+        const shop = result.locations[0]
+        console.log(shop)
+        setShops((prev: CoffeeshopDto[]) => {
+            const isShopInList = prev.some((coffeeshop: CoffeeshopDto) => coffeeshop.placeId === shop.placeId)
+            return isShopInList ? prev : [shop, ...prev]
+        });
+        setActiveId(shop.placeId)
+        suppressNextMove.current = false
     }
-    function reorderStops(next: RouteDto[]) {
-        setRouteStops(next);
-    }
-
-    const [routePath, setRoutePath] = useState<RouteGeoJson | null>(null);
 
     return (
         <div className="absolute h-full w-full" onClick={() => setActiveId(null)}>
             <div className="absolute inset-0">
-                {shops ? (<MapView shops={shops} activeId={activeId} setActiveId={setActiveId} routePath={routePath} />
-                ) : (<MapView shops={[]} activeId={"null"} setActiveId={setActiveId} />)}
+                {shops ? (<MapView
+                    startLocation={userLocation}
+                    shops={shops}
+                    activeId={activeId}
+                    setActiveId={setActiveId}
+                    routeOptions={routeOptions}
+                    selectedRouteId={selectedRouteId}
+                    onViewportSettled={({ lat, lng, zoom }) => {
+                        console.log("viewport settled", lat, lng, zoom);
+                        setMapSearchCenter({ lat, lng });
+                    }}
+                />
+                ) : (<MapView
+                    shops={[]}
+                    activeId={activeId}
+                    setActiveId={setActiveId}
+                    routeOptions={routeOptions}
+                    selectedRouteId={selectedRouteId}
+                    onViewportSettled={({ lat, lng, zoom }) => {
+                        console.log("viewport settled", lat, lng, zoom);
+                        setMapSearchCenter({ lat, lng });
+                    }} />)}
             </div>
             <div className=" absolute top-0 inset-x-0">
-                <Search />
+                <Search
+                    getCoffeeshopFromAutocomplete={getCoffeeshopFromAutocomplete}
+                />
             </div>
             <div className="route-table-container">
                 {routeStops.length > 0 && (
                     <RouteSetupManager
                         routeStops={routeStops}
                         setRouteStops={setRouteStops}
-                        routePath={routePath}
-                        setRoutePath={setRoutePath} />
+                        routeOptions={routeOptions}
+                        setRouteOptions={setRouteOptions}
+                        selectedRouteId={selectedRouteId}
+                        setSelectedRouteId={setSelectedRouteId} />
                 )}
 
-
-                {/* <RouteTable
-                    routeStops={routeStops}
-                    reorderStops={reorderStops}
-                    removeStop={removeStop}
-                //openRouteSetup={openRouteSetup}
-                /> */}
             </div>
             <div className="fixed bottom-0 inset-x-0 z-20 pointer-events-none">
 
@@ -111,10 +186,10 @@ export function Home() {
                         {shops.map((shop) => (
 
                             <div ref={(node) => {
-                                cardRefs.current[shop.id] = node;
+                                cardRefs.current[shop.placeId] = node;
                             }}
-                                key={shop.id}>
-                                <CoffeeShopCard shop={shop} active={shop.id === activeId} onSelect={() => setActiveId(shop.id)} addShop={() => addShop(shop)} />
+                                key={shop.placeId}>
+                                <CoffeeShopCard shop={shop} active={shop.placeId === activeId} onSelect={() => setActiveId(shop.placeId)} addShop={() => addShop(shop)} />
                             </div>
                         ))}
                     </div>

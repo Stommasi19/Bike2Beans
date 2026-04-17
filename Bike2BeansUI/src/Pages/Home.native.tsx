@@ -3,7 +3,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GetCoffeeShops } from "../Api/coffeeShops";
+import { GetCoffeeShops } from "../Api/Coffeeshops";
 import { NavBar } from "../Components/NavBar.native";
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.native";
 import type { CoffeeshopDto } from "../Data/CoffeeshopDto";

@@ -12,7 +12,6 @@ using Bike2Beans.Infrastructure.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddFirebaseAdmin(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<GetAllCoffeeshopHandler>();
@@ -27,8 +26,7 @@ builder.Services.AddSwaggerGen();
 
 // Mongo Settings
 var corsPolicyName = "Bike2BeansUI";
-builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection(MongoDBSettings.SectionName));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
@@ -41,11 +39,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-
+// auth 
+builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
 
 builder.Services.AddGooglePlaces(builder.Configuration);
 builder.Services.AddMapbox(builder.Configuration);
+builder.Services.AddFirebaseAdmin(builder.Configuration);
+builder.Services.AddMongo(builder.Configuration);
 
 // // Services
 builder.Services.AddScoped<IRouteRepository, RouteRepository>();
@@ -55,15 +56,10 @@ builder.Services.AddScoped<IRouteProvider, MapboxRestGateway>();
 builder.Services.AddScoped<IMapper<Coffeeshop, CoffeeshopDto>, CoffeeshopMapper>();
 builder.Services.AddScoped<IMapper<RouteOption, RouteOptionDto>, RouteOptionMapper>();
 builder.Services.AddScoped<IMapper<RouteStop, RouteStopDto>, RouteStopMapper>();
+builder.Services.AddScoped<IMapper<User, UserDto>, UserMapper>();
+builder.Services.AddScoped<IUserBootstrapRepository, UserBootstrapRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// builder.Services.AddScoped<GetRouteDetailsByIdHandler>();
-// builder.Services.AddScoped<SearchNearbyCoffeeShopHandler>();
-// builder.Services.AddScoped<SearchCoffeeshopByIdHandler>();
-// builder.Services.AddScoped<SearchCoffeeShopByTextHandler>();
-// builder.Services.AddScoped<AutocompleteHandler>();
-// builder.Services.AddScoped<GetAllRouteDetailsHandler>();
-// builder.Services.AddScoped<CreateRouteDetailsHandler>();
-// builder.Services.AddScoped<CreateRouteHandler>();
 
 
 
@@ -76,7 +72,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors(corsPolicyName);
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

@@ -12,17 +12,17 @@ public class RouteController : ControllerBase
     public RouteController(IMediator sender) => _mediator = sender;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAllRoutesByUserId(CancellationToken ct)
     => Ok(await _mediator.Send(new GetRouteDetailsQuery(), ct));
     [HttpGet("{routeId}")]
-    public async Task<IActionResult> GetById([FromRoute] string routeId, CancellationToken ct)
+    public async Task<IActionResult> GetRouteByRouteId([FromRoute] Guid routeId, CancellationToken ct)
     {
         var route = await _mediator.Send(new GetRouteDetailsByIdQuery(routeId), ct);
         return route is null ? NotFound() : Ok(route);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddNew([FromBody] CreateRouteDetailsCommand cmd, CancellationToken ct)
+    public async Task<IActionResult> CreateNewRoute([FromBody] CreateRouteDetailsCommand cmd, CancellationToken ct)
     => Ok(await _mediator.Send(cmd, ct));
 
 }

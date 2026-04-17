@@ -1,5 +1,6 @@
 export type CoffeeshopDto = {
   id: string;
+  placeId: string
   name: string;
   rating: number;
   address: string;
@@ -7,4 +8,3 @@ export type CoffeeshopDto = {
   lat: number;
   lng: number;
 };
-

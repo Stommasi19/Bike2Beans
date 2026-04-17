@@ -2,7 +2,6 @@
 
 using Bike2Beans.Application.DTOs;
 using Bike2Beans.Application.Interfaces;
-using Google.Maps.Places.V1;
 using MediatR;
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopNonGoogle;
@@ -13,7 +12,7 @@ public class GetAllCoffeeshopHandler : IRequestHandler<GetAllCoffeeshopQuery, Li
 
     public GetAllCoffeeshopHandler(ICoffeeshopRepository repo) => _repo = repo;
 
-    public async Task<List<DTOs.CoffeeshopDto>> Handle(GetAllCoffeeshopQuery query, CancellationToken ct = default)
+    public async Task<List<CoffeeshopDto>> Handle(GetAllCoffeeshopQuery query, CancellationToken ct = default)
     {
         var shops = await _repo.GetAllAsync();
 

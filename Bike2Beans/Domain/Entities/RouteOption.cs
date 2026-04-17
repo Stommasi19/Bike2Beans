@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Bike2Beans.Domain.Entities;
 
@@ -19,11 +20,9 @@ public class RouteOption
 
 
 
-
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
-
+    [BsonId(IdGenerator = typeof(GuidGenerator))]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid Id { get; set; }
     [BsonElement("optionIndex")]
     public int OptionIndex { get; set; }
 

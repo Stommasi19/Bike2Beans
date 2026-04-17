@@ -5,4 +5,3 @@ export type ExternalLocationDto = {
     lat: number;
     lng: number;
 };
-

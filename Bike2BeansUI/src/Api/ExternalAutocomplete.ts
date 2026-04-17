@@ -1,19 +1,12 @@
-import { api } from "./client";
+import { api } from "./Client";
 
+import type { AutocompleteSuggestion } from "./Autocomplete";
 
-export const getExternalAutocomplete = (text: string): Promise<any> => {
-    let timeout: number | undefined;
+export const getExternalAutocomplete = async (text: string): Promise<AutocompleteSuggestion[]> => {
+    const response = await api.get<AutocompleteSuggestion[]>(
+        "Api/places/ExternalLocationAutocomplete",
+        { params: { text } }
+    );
 
-    return new Promise((resolve) => {
-        clearTimeout(timeout);
-
-        timeout = window.setTimeout(async () => {
-            const response = await api.get(
-                "Api/places/ExternalLocationAutocomplete",
-                { params: { text } }
-            );
-
-            resolve(response.data);
-        }, 1000);
-    });
+    return Array.isArray(response.data) ? response.data : [];
 };

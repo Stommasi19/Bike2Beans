@@ -110,13 +110,24 @@
   .route-table-container {
     position: absolute;
     right: 0;
+    top: 0;
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .route-manager-shell {
+    width: 390px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .route-setup-builder {
     width: 390px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     align-items: stretch;
     border-radius: 16px;
   }
@@ -129,6 +140,119 @@
 
   .route-setup-summary .section-title {
     margin-bottom: 6px;
+  }
+
+  .route-options-panel {
+    width: 390px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2px 4px 0;
+    border-top: 1px solid color-mix(in oklab, var(--color-brand-300) 45%, white);
+  }
+
+  .route-options-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 4px;
+  }
+
+  .route-options-label {
+    margin: 0 0 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ui-muted);
+  }
+
+  .route-options-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ui-text);
+  }
+
+  .route-options-count {
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: color-mix(in oklab, white 75%, var(--color-brand-100));
+    color: var(--color-brand-700);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .route-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .route-option-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: left;
+    background: color-mix(in oklab, white 60%, var(--color-brand-50));
+    color: var(--ui-text);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .route-option-button:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-brand-400);
+    background: color-mix(in oklab, white 48%, var(--color-brand-50));
+  }
+
+  .route-option-button[data-active="true"] {
+    border-color: color-mix(in oklab, var(--color-brand-500) 75%, white);
+    background: linear-gradient(90deg, color-mix(in oklab, white 22%, var(--color-brand-100)), color-mix(in oklab, white 55%, var(--color-brand-50)));
+    color: var(--color-brand-700);
+  }
+
+  .route-option-swatch {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--color-brand-300);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-brand-50) 60%, white);
+  }
+
+  .route-option-swatch[data-active="true"] {
+    background: var(--color-brand-700);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-brand-100) 70%, white);
+  }
+
+  .route-option-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .route-option-eyebrow {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ui-muted);
+  }
+
+  .route-option-summary {
+    font-size: 0.96rem;
+    font-weight: 700;
+    line-height: 1.3;
   }
 
   .location-box {
@@ -241,11 +365,13 @@
 
   .route-stop-toggle {
     width: 100%;
+    min-height: 46px;
+    border-style: dashed;
   }
 
   .route-container {
     height: auto;
-    padding: 15px;
+    padding: 0;
 
   }
 
@@ -283,8 +409,27 @@
     position: relative;
   }
 
+  .coffeeShopCardHead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .coffeeShopCardMeta {
+    min-width: 0;
+  }
+
   .coffeeShopCard:hover {
     border-color: var(--ui-hover-border);
+  }
+
+  .coffeeShopCard[data-state=route] {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
   }
 
   .coffeeShopCard[data-state=true] {
@@ -321,10 +466,25 @@
 
   }
 
+  .coffeeShopCardRating[data-state=route] {
+    position: static;
+    margin-top: 4px;
+    color: var(--ui-muted);
+    font-size: 0.86rem;
+  }
+
   .coffeeShopCardRemainder {
     @apply mt-2 text-xs uppercase tracking-wide text-gray-500;
     position: relative;
     bottom: -10px;
+  }
+
+  .coffeeShopCardRemainder[data-state=route] {
+    position: static;
+    margin-top: 10px;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    color: var(--ui-muted);
   }
 
 
@@ -332,6 +492,12 @@
     @apply mt-3 h-px bg-gray-100;
     position: relative;
     bottom: -10px;
+  }
+
+  .coffeeShopCardDivider[data-state=route] {
+    position: static;
+    margin-top: 10px;
+    background: color-mix(in oklab, var(--ui-input-border) 72%, white);
   }
 
   .coffeeShopCardRemainder[data-state=true] {
@@ -351,10 +517,12 @@
     transform: 200ms ease
   }
 
-  .coffeeShopCardDelete {
-    position: absolute;
-    top: 45px;
-    left: 200px;
+  .coffeeShopCardInlineAction {
+    flex-shrink: 0;
+    align-self: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
   }
 
   .pin {
@@ -495,23 +663,28 @@
 
 
   .location-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     gap: 12px;
     align-items: flex-start;
     padding: 12px;
     border: 1px solid var(--ui-input-border);
-    border-radius: 12px;
-    background: white;
-    margin-bottom: 10px;
+    border-radius: 14px;
+    background: color-mix(in oklab, white 76%, var(--color-brand-50));
+    margin-bottom: 8px;
   }
 
   .drag-handle {
     user-select: none;
-    padding: 6px 8px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
     border-radius: 10px;
     border: 1px solid var(--ui-input-border);
-    position: relative;
-    top: 30px;
+    background: color-mix(in oklab, white 60%, var(--color-brand-50));
+    color: var(--ui-muted);
+    margin-top: 6px;
   }
 
   .row-content {
@@ -688,6 +861,23 @@
     transform: translateY(-1px);
   }
 
+  .route-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .route-action-primary {
+    flex: 1 1 auto;
+    min-height: 48px;
+  }
+
+  .route-action-secondary {
+    flex: 0 0 auto;
+    min-height: 48px;
+    white-space: nowrap;
+  }
+
 
   .input {
     @apply w-full rounded-lg border px-3 py-2 text-sm focus:border-[--color-brand-300] focus:outline-none focus:ring-2 focus:ring-[--color-brand-100];
@@ -712,6 +902,32 @@
     .no-scrollbar::-webkit-scrollbar {
       display: none;
       /* Chrome, Safari */
+    }
+  }
+
+  @media (max-width: 920px) {
+    .route-table-container {
+      left: 0;
+      right: 0;
+      top: auto;
+      bottom: 0;
+      padding: 12px;
+      justify-content: center;
+    }
+
+    .route-manager-shell,
+    .route-setup-builder,
+    .route-options-panel {
+      width: min(100%, 390px);
+    }
+
+    .route-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .route-action-secondary {
+      width: 100%;
     }
   }
 }

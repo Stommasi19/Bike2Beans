@@ -2,23 +2,17 @@ import type { RouteOptionDto } from "../../Data/RouteOptionDto";
 
 export type RouteGeoJson = {
     type: "Feature";
-    properties: Record<string, never>;
+    properties: Record<string, unknown>;
     geometry: {
         type: "LineString";
         coordinates: number[][];
     };
 };
 
-function getRouteCoordinates(routeOption: RouteOptionDto | undefined): number[][] {
+function getRouteCoordinates(routeOption: RouteOptionDto): number[][] {
     if (!routeOption) return [];
 
-    return (
-        routeOption.coordinates ??
-        routeOption.Coordinates ??
-        routeOption.geometry?.coordinates ??
-        routeOption.Geometry?.Coordinates ??
-        []
-    );
+    return routeOption.coordinates ?? [];
 }
 
 function normalizeRouteCoordinatePair(pair: number[]): number[] | null {
@@ -39,7 +33,7 @@ function normalizeRouteCoordinatePair(pair: number[]): number[] | null {
     return [first, second];
 }
 
-export function toRouteFeature(routeOption: RouteOptionDto | undefined): RouteGeoJson | null {
+export function toRouteFeature(routeOption: RouteOptionDto): RouteGeoJson | null {
     const coordinates = getRouteCoordinates(routeOption)
         .map(normalizeRouteCoordinatePair)
         .filter((coord): coord is number[] => coord !== null);
@@ -48,7 +42,10 @@ export function toRouteFeature(routeOption: RouteOptionDto | undefined): RouteGe
 
     return {
         type: "Feature",
-        properties: {},
+        properties: {
+            routeId: routeOption.id,
+            optionIndex: routeOption.optionIndex,
+        },
         geometry: {
             type: "LineString",
             coordinates,

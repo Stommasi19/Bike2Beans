@@ -1,19 +1,15 @@
-import { api } from "./client";
+import { api } from "./Client";
 
+export type AutocompleteSuggestion = {
+    text?: string | null;
+    Text?: string | null;
+};
 
-export const getAutocomplete = (text: string): Promise<any> => {
-    let timeout: number | undefined;
+export const getAutocomplete = async (text: string): Promise<AutocompleteSuggestion[]> => {
+    const response = await api.get<AutocompleteSuggestion[]>(
+        "Api/places/Autocomplete",
+        { params: { text } }
+    );
 
-    return new Promise((resolve) => {
-        clearTimeout(timeout);
-
-        timeout = window.setTimeout(async () => {
-            const response = await api.get(
-                "Api/places/Autocomplete",
-                { params: { text } }
-            );
-
-            resolve(response.data);
-        }, 1000);
-    });
+    return Array.isArray(response.data) ? response.data : [];
 };

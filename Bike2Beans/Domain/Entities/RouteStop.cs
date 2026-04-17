@@ -1,6 +1,7 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Bike2Beans.Domain.Entities;
 
@@ -8,21 +9,21 @@ namespace Bike2Beans.Domain.Entities;
 
 public class RouteStop
 {
-    public RouteStop(string Id, string PlaceId, string name, string address, double lat, double lng, LocationTypeEnum locationType)
+    public RouteStop(Guid id, string placeId, string name, string address, double lat, double lng, LocationTypeEnum locationType)
     {
-        this.Id = Id;
-        this.PlaceId = PlaceId;
+        this.Id = id;
+        this.PlaceId = placeId;
         this.Name = name;
         this.Address = address;
         this.Lat = lat;
         this.Lng = lng;
         this.LocationType = locationType;
     }
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    [BsonId(IdGenerator = typeof(GuidGenerator))]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid Id { get; set; }
 
-    [BsonElement("PlaceId")]
+    [BsonElement("placeId")]
     public string PlaceId { get; set; }
 
     [BsonElement("name")]
@@ -32,9 +33,9 @@ public class RouteStop
     public string Address { get; set; }
 
 
-    [BsonElement("Lat")]
+    [BsonElement("lat")]
     public double Lat { get; set; }
-    [BsonElement("Lng")]
+    [BsonElement("lng")]
     public double Lng { get; set; }
 
 
