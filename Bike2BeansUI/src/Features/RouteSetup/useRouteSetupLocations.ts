@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { getExternalAutocomplete } from "../../Api/ExternalAutocomplete";
 import { searchPlacesByText } from "../../Api/Places";
-import type { RouteDto } from "../../Data/RouteDto";
 import type { LocationChoice } from "./locationSearch";
-
-type Args = {
-    routeStops: RouteDto[];
-};
 
 type AutocompleteItem = {
     text?: string | null;
@@ -31,7 +26,63 @@ function normalizeSuggestions(items: AutocompleteItem[]): string[] {
     return output;
 }
 
-export function useRouteSetupLocations({ routeStops: _routeStops }: Args) {
+function useAutocompleteSuggestions(args: {
+    query: string;
+    isEnabled: boolean;
+    excludedSuggestion?: string;
+}) {
+    const { query, isEnabled, excludedSuggestion } = args;
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+
+    useEffect(() => {
+        const normalizedQuery = query.trim();
+        if (!isEnabled || normalizedQuery.length < 2) {
+            setSuggestions([]);
+            return;
+        }
+
+        let canceled = false;
+
+        const timer = setTimeout(async () => {
+            try {
+                const response = (await getExternalAutocomplete(normalizedQuery)) as AutocompleteItem[];
+                if (canceled) return;
+
+                const normalizedSuggestions = normalizeSuggestions(response);
+                const filteredSuggestions = excludedSuggestion
+                    ? normalizedSuggestions.filter(
+                        (suggestion) => suggestion.toLowerCase() !== excludedSuggestion.toLowerCase()
+                    )
+                    : normalizedSuggestions;
+
+                setSuggestions(filteredSuggestions);
+            } catch {
+                if (!canceled) {
+                    setSuggestions([]);
+                }
+            }
+        }, 250);
+
+        return () => {
+            canceled = true;
+            clearTimeout(timer);
+        };
+    }, [excludedSuggestion, isEnabled, query]);
+
+    return [suggestions, setSuggestions] as const;
+}
+
+async function resolveSuggestionToLocation(suggestion: string): Promise<LocationChoice | null> {
+    const places = await searchPlacesByText(suggestion, false);
+
+    if (!places?.locations?.length) {
+        return null;
+    }
+
+    return places.locations[0] as LocationChoice;
+}
+
+export function useRouteSetupLocations() {
     const [startLocation, setStartLocation] = useState<LocationChoice | null>(null);
     const [stopLocation, setStopLocation] = useState<LocationChoice | null>(null);
 
@@ -41,135 +92,86 @@ export function useRouteSetupLocations({ routeStops: _routeStops }: Args) {
     const [isEditingStart, setIsEditingStart] = useState(true);
     const [isEditingStop, setIsEditingStop] = useState(false);
 
-    const [startSuggestions, setStartSuggestions] = useState<string[]>([]);
-    const [stopSuggestions, setStopSuggestions] = useState<string[]>([]);
+    const [startSuggestions, setStartSuggestions] = useAutocompleteSuggestions({
+        query: startQuery,
+        isEnabled: isEditingStart,
+    });
+    const [stopSuggestions, setStopSuggestions] = useAutocompleteSuggestions({
+        query: stopQuery,
+        isEnabled: isEditingStop,
+        excludedSuggestion: startLocation?.name,
+    });
 
-    async function resolveSuggestionToLocation(suggestion: string): Promise<LocationChoice | null> {
-        const places = await searchPlacesByText(suggestion, false);
-        if (!places || places.length === 0) return null;
-        return places.locations[0] as LocationChoice;
+    function resetStartSearch(nextQuery = "") {
+        setStartQuery(nextQuery);
+        setStartSuggestions([]);
+    }
+
+    function resetStopSearch(nextQuery = "") {
+        setStopQuery(nextQuery);
+        setStopSuggestions([]);
+    }
+
+    function clearStopLocation() {
+        setStopLocation(null);
+        resetStopSearch();
+        setIsEditingStop(false);
     }
 
     async function selectStartSuggestion(suggestion: string) {
-        setStartQuery(suggestion);
-        setStartSuggestions([]);
+        resetStartSearch(suggestion);
 
         const location = await resolveSuggestionToLocation(suggestion);
         if (!location) return;
 
         setStartLocation(location);
-        setStartQuery("");
+        resetStartSearch();
         setIsEditingStart(false);
 
         if (stopLocation?.id === location.id) {
-            setStopLocation(null);
-            setStopQuery("");
-            setStopSuggestions([]);
-            setIsEditingStop(false);
+            clearStopLocation();
         }
     }
 
     async function selectStopSuggestion(suggestion: string) {
-        setStopQuery(suggestion);
-        setStopSuggestions([]);
+        resetStopSearch(suggestion);
 
         const location = await resolveSuggestionToLocation(suggestion);
         if (!location) return;
 
         setStopLocation(location);
-        setStopQuery("");
+        resetStopSearch();
         setIsEditingStop(false);
     }
 
     function beginStartEdit() {
-        setStartQuery(startLocation?.name ?? "");
+        resetStartSearch(startLocation?.name ?? "");
         setIsEditingStart(true);
     }
 
     function beginStopEdit() {
-        setStopQuery(stopLocation?.name ?? "");
+        resetStopSearch(stopLocation?.name ?? "");
         setIsEditingStop(true);
     }
 
     function cancelStartEdit() {
-        setStartQuery("");
-        setStartSuggestions([]);
+        resetStartSearch();
         setIsEditingStart(false);
     }
 
     function addStopLocation() {
-        setStopQuery("");
-        setStopSuggestions([]);
+        resetStopSearch();
         setIsEditingStop(true);
     }
 
     function removeStopLocation() {
-        setStopLocation(null);
-        setStopQuery("");
-        setStopSuggestions([]);
-        setIsEditingStop(false);
+        clearStopLocation();
     }
 
     function cancelStopEdit() {
-        setStopQuery("");
-        setStopSuggestions([]);
+        resetStopSearch();
         setIsEditingStop(false);
     }
-
-    useEffect(() => {
-        const query = startQuery.trim();
-        if (!isEditingStart || query.length < 2) {
-            setStartSuggestions([]);
-            return;
-        }
-
-        let canceled = false;
-
-        const timer = setTimeout(async () => {
-            try {
-                const response = (await getExternalAutocomplete(query)) as AutocompleteItem[];
-                if (canceled) return;
-                setStartSuggestions(normalizeSuggestions(response));
-            } catch {
-                if (!canceled) setStartSuggestions([]);
-            }
-        }, 250);
-
-        return () => {
-            canceled = true;
-            clearTimeout(timer);
-        };
-    }, [startQuery, isEditingStart]);
-
-    useEffect(() => {
-        const query = stopQuery.trim();
-        if (!isEditingStop || query.length < 2) {
-            setStopSuggestions([]);
-            return;
-        }
-
-        let canceled = false;
-
-        const timer = setTimeout(async () => {
-            try {
-                const response = (await getExternalAutocomplete(query)) as AutocompleteItem[];
-                if (canceled) return;
-
-                const filtered = normalizeSuggestions(response).filter(
-                    (suggestion) => suggestion.toLowerCase() !== (startLocation?.name ?? "").toLowerCase()
-                );
-
-                setStopSuggestions(filtered);
-            } catch {
-                if (!canceled) setStopSuggestions([]);
-            }
-        }, 250);
-
-        return () => {
-            canceled = true;
-            clearTimeout(timer);
-        };
-    }, [stopQuery, isEditingStop, startLocation?.name]);
 
     return {
         startLocation,

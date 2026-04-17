@@ -5,7 +5,7 @@ import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
 import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
-import { RouteGeoJson } from "../Features/Map/routeGeoJson";
+import { RouteOptionDto } from "../Data/RouteOptionDto";
 import { RouteSetupManager } from "./RouteSetupManager.web";
 import { searchPlacesByText, searchPlacesNearby } from "../Api/Places";
 
@@ -44,7 +44,8 @@ export function Home() {
     }
 
 
-    const [routePath, setRoutePath] = useState<RouteGeoJson | null>(null);
+    const [routeOptions, setRouteOptions] = useState<RouteOptionDto[]>([]);
+    const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
 
     const [userLocation, setUserLocation] = useState<{
         lat: number;
@@ -135,7 +136,8 @@ export function Home() {
                     shops={shops}
                     activeId={activeId}
                     setActiveId={setActiveId}
-                    routePath={routePath}
+                    routeOptions={routeOptions}
+                    selectedRouteId={selectedRouteId}
                     onViewportSettled={({ lat, lng, zoom }) => {
                         console.log("viewport settled", lat, lng, zoom);
                         setMapSearchCenter({ lat, lng });
@@ -143,8 +145,10 @@ export function Home() {
                 />
                 ) : (<MapView
                     shops={[]}
-                    activeId={"null"}
+                    activeId={activeId}
                     setActiveId={setActiveId}
+                    routeOptions={routeOptions}
+                    selectedRouteId={selectedRouteId}
                     onViewportSettled={({ lat, lng, zoom }) => {
                         console.log("viewport settled", lat, lng, zoom);
                         setMapSearchCenter({ lat, lng });
@@ -160,8 +164,10 @@ export function Home() {
                     <RouteSetupManager
                         routeStops={routeStops}
                         setRouteStops={setRouteStops}
-                        routePath={routePath}
-                        setRoutePath={setRoutePath} />
+                        routeOptions={routeOptions}
+                        setRouteOptions={setRouteOptions}
+                        selectedRouteId={selectedRouteId}
+                        setSelectedRouteId={setSelectedRouteId} />
                 )}
 
             </div>

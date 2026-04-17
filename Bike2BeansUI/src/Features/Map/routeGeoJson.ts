@@ -2,7 +2,7 @@ import type { RouteOptionDto } from "../../Data/RouteOptionDto";
 
 export type RouteGeoJson = {
     type: "Feature";
-    properties: Record<string, never>;
+    properties: Record<string, unknown>;
     geometry: {
         type: "LineString";
         coordinates: number[][];
@@ -12,11 +12,7 @@ export type RouteGeoJson = {
 function getRouteCoordinates(routeOption: RouteOptionDto): number[][] {
     if (!routeOption) return [];
 
-    return (
-
-        routeOption.Coordinates ?? []
-
-    );
+    return routeOption.coordinates ?? [];
 }
 
 function normalizeRouteCoordinatePair(pair: number[]): number[] | null {
@@ -46,7 +42,10 @@ export function toRouteFeature(routeOption: RouteOptionDto): RouteGeoJson | null
 
     return {
         type: "Feature",
-        properties: {},
+        properties: {
+            routeId: routeOption.id,
+            optionIndex: routeOption.optionIndex,
+        },
         geometry: {
             type: "LineString",
             coordinates,

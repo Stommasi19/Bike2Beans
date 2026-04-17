@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
-import { GetRoutes } from "../Api/RouteDetails";
+import { useEffect, useState } from "react";
+import { GetRoutes, type SavedRoutePreview } from "../Api/RouteDetails";
 
 export function SavedRoutes() {
-
-    const [routes, setRoutes] = React.useState([]);
+    const [routes, setRoutes] = useState<SavedRoutePreview[]>([]);
 
     useEffect(() => {
         GetRoutes()
             .then(setRoutes)
             .catch(console.error);
+    }, []);
 
-    }, [])
-
-    console.log("routes", routes)
     return (
         <div>
             <section className="panel center">
@@ -33,4 +30,3 @@ export function SavedRoutes() {
         </div>
     );
 }
-

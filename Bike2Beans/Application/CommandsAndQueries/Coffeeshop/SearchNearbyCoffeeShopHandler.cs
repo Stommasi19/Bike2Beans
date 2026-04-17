@@ -4,7 +4,6 @@ using Google.Api.Gax.Grpc;
 
 using MediatR;
 using Bike2Beans.Application.DTOs;
-using Bike2Beans.Application.CommandsAndQueries.Types;
 
 
 namespace Bike2Beans.Application.CommandsAndQueries.CoffeeshopLocaters;
