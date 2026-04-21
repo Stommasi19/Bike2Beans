@@ -17,10 +17,11 @@ public class UserRepository : IUserRepository
         var db = client.GetDatabase(settings.Value.DatabaseName);
         _user = db.GetCollection<User>("user");
     }
-    public Task<User> CreateUserAsync(User user, CancellationToken cancellationToken = default)
+
+    public async Task<User> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        return _user.InsertOneAsync(user, new InsertOneOptions(), cancellationToken)
-            .ContinueWith(t => user, cancellationToken);
+        await _user.InsertOneAsync(user, new InsertOneOptions(), cancellationToken);
+        return user;
     }
 
     public async Task DeleteUserAsync(string id, CancellationToken cancellationToken = default)
@@ -39,14 +40,35 @@ public class UserRepository : IUserRepository
     }
 
 
-    public async Task<User> PatchUserAsync(User user, CancellationToken cancellationToken = default)
+    public async Task<User> PatchUserAsync(
+        string id,
+        string email,
+        string? firstName,
+        string? lastName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var update = Builders<User>.Update
-            .Set(u => u.Email, user.Email)
-            .Set(u => u.FirstName, user.FirstName)
-            .Set(u => u.LastName, user.LastName);
+        var updates = new List<UpdateDefinition<User>>
+        {
+            Builders<User>.Update.Set(u => u.Email, email)
+        };
 
-        return await _user.FindOneAndUpdateAsync(u => u.Id == user.Id, update, new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }, cancellationToken);
+        if (firstName is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.FirstName, firstName));
+        }
+
+        if (lastName is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.LastName, lastName));
+        }
+
+        return await _user.FindOneAndUpdateAsync(
+            u => u.Id == id,
+            Builders<User>.Update.Combine(updates),
+            new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+            cancellationToken
+        );
     }
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default)

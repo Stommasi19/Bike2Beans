@@ -10,9 +10,11 @@ namespace Bike2Beans.Application.CommandsAndQueries.UserCnQ;
 
 public record PatchUserCommand
 (
-    User User
-
-    ) : IRequest<UserDto>;
+    string UserId,
+    string Email,
+    string? FirstName,
+    string? LastName
+) : IRequest<UserDto>;
 
 
 public class PatchUserHandler : IRequestHandler<PatchUserCommand, UserDto>
@@ -27,8 +29,13 @@ public class PatchUserHandler : IRequestHandler<PatchUserCommand, UserDto>
     }
     public async Task<UserDto> Handle(PatchUserCommand request, CancellationToken cancellationToken)
     {
-
-        var patchedUser = await _userRepository.PatchUserAsync(request.User, cancellationToken);
+        var patchedUser = await _userRepository.PatchUserAsync(
+            request.UserId,
+            request.Email,
+            request.FirstName,
+            request.LastName,
+            cancellationToken
+        );
         return _mapper.ToDto(patchedUser);
     }
 }
