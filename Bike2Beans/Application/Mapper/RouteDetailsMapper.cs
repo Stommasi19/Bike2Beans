@@ -37,7 +37,10 @@ public class RouteDetailsMapper : BaseMapper<RouteDetails, RouteDetailsDto>
             dto.EndLocation,
             dto.RouteStops.Select(_mapper.ToEntity).ToList(),
             dto.Mileage
-        );
+        )
+        {
+            Id = dto.Id
+        };
     }
     public override IEnumerable<RouteDetailsDto> ToDto(IEnumerable<RouteDetails> entities)
     {

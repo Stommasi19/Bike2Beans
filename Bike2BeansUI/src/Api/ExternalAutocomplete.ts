@@ -1,4 +1,4 @@
-import { api } from "./Client";
+import { api } from "./client";
 
 import type { AutocompleteSuggestion } from "./Autocomplete";
 

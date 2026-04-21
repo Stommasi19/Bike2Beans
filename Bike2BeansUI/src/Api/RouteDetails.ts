@@ -1,4 +1,4 @@
-import { api } from "./Client";
+import { api } from "./client";
 
 type RawSavedRoutePreview = {
     id?: string;

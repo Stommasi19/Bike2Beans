@@ -20,7 +20,7 @@ public class SearchCoffeeshopByIdHandler : IRequestHandler<SearchCoffeeshopByIdQ
         CancellationToken ct = default
         )
     {
-        var fieldMask = "id,displayName,formattedAddress,rating,userRatingCount,location,photos";
+        var fieldMask = "id,displayName,formattedAddress,rating,userRatingCount,location";
 
         var callSettings = CallSettings
         .FromHeader("X-Goog-FieldMask", fieldMask);
@@ -34,7 +34,7 @@ public class SearchCoffeeshopByIdHandler : IRequestHandler<SearchCoffeeshopByIdQ
 
         // TODO expandedcoffeeShopDto will be changing
         return new ExpandedCoffeeshopDto(
-            Guid.NewGuid(),
+            response.Id ?? query.Id,
             response.DisplayName?.Text ?? "",
             response.FormattedAddress ?? "",
             response.Rating,

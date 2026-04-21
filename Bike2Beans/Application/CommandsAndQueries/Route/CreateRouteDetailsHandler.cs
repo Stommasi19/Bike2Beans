@@ -25,7 +25,10 @@ public class CreateRouteDetailsHandler : IRequestHandler<CreateRouteDetailsComma
             cmd.EndLocation ?? null,
             cmd.Stops.Select(_mapper.ToEntity).ToList(),
             cmd.Mileage
-        );
+        )
+        {
+            UserId = cmd.UserId
+        };
         return await _repo.InsertRouteDetailsAsync(RouteDetails, ct);
     }
 }

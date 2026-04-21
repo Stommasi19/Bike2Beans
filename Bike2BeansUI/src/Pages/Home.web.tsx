@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react"
-import { GetCoffeeShops } from "../Api/Coffeeshops"
+import { useEffect, useRef, useState } from "react"
+import { GetCoffeeShops } from "../Api/coffeeShops"
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
@@ -7,21 +7,33 @@ import { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { RouteDto } from "../Data/RouteDto";
 import { RouteOptionDto } from "../Data/RouteOptionDto";
 import { RouteSetupManager } from "./RouteSetupManager.web";
-import { searchPlacesByText, searchPlacesNearby } from "../Api/Places";
+import { searchPlacesByText, searchPlacesNearby } from "../Api/places";
+
+type MapSearchCenter = {
+    lat: number;
+    lng: number;
+};
+
+function areCentersEqual(left: MapSearchCenter | null, right: MapSearchCenter | null) {
+    if (!left || !right) {
+        return false;
+    }
+
+    return left.lat === right.lat && left.lng === right.lng;
+}
 
 export function Home() {
     const STACK_MAX_PX = 660
-    const [shops, setShops] = useState<any[]>([])
+    const [shops, setShops] = useState<CoffeeshopDto[]>([])
     useEffect(() => {
         GetCoffeeShops()
             .then(setShops)
             .catch(console.error);
-
-
-
     }, []);
+
     const [activeId, setActiveId] = useState<string | null>(null);
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
     useEffect(() => {
         if (!activeId) return;
         const selectedShop = cardRefs.current[activeId];
@@ -32,9 +44,8 @@ export function Home() {
             inline: "nearest"
         })
     }, [activeId])
-    const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
-    const suppressNextMove = useRef(false);
 
+    const [routeStops, setRouteStops] = useState<RouteDto[]>([]);
 
     function addShop(shop: CoffeeshopDto) {
         setRouteStops(prev =>
@@ -42,7 +53,6 @@ export function Home() {
             { stopId: crypto.randomUUID(), shop }
             ])
     }
-
 
     const [routeOptions, setRouteOptions] = useState<RouteOptionDto[]>([]);
     const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
@@ -52,35 +62,51 @@ export function Home() {
         lng: number;
     } | null>(null);
 
-    const [mapSearchCenter, setMapSearchCenter] = useState<{
-        lat: number;
-        lng: number;
-    } | null>(null);
+    const [mapSearchCenter, setMapSearchCenter] = useState<MapSearchCenter | null>(null);
+    const [pendingMapSearchCenter, setPendingMapSearchCenter] = useState<MapSearchCenter | null>(null);
+    const [isSearchingArea, setIsSearchingArea] = useState(false);
+    const nearbySearchRequestId = useRef(0);
 
     useEffect(() => {
         if (!mapSearchCenter) return;
-        console.log("mapSearchCenter changed", mapSearchCenter);
 
-        const timeoutId = window.setTimeout(async () => {
+        const requestId = ++nearbySearchRequestId.current;
+        const abortController = new AbortController();
+        setIsSearchingArea(true);
+
+        void (async () => {
             try {
-                console.log("about to call nearby API", mapSearchCenter);
                 const nearby = await searchPlacesNearby(
                     mapSearchCenter.lat,
-                    mapSearchCenter.lng
+                    mapSearchCenter.lng,
+                    { signal: abortController.signal }
                 );
-                console.log("nearby response", nearby);
+
+                if (abortController.signal.aborted || requestId !== nearbySearchRequestId.current) {
+                    return;
+                }
+
                 setShops(nearby);
+                setPendingMapSearchCenter((current) =>
+                    areCentersEqual(current, mapSearchCenter) ? null : current
+                );
             } catch (error) {
+                if (abortController.signal.aborted || requestId !== nearbySearchRequestId.current) {
+                    return;
+                }
+
                 console.warn("nearby fetch failed", error);
+            } finally {
+                if (!abortController.signal.aborted && requestId === nearbySearchRequestId.current) {
+                    setIsSearchingArea(false);
+                }
             }
-        }, 2000);
+        })();
 
-        return () => window.clearTimeout(timeoutId);
-
+        return () => {
+            abortController.abort();
+        };
     }, [mapSearchCenter]);
-
-
-
 
     useEffect(() => {
         if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -97,13 +123,7 @@ export function Home() {
                     lat,
                     lng,
                 });
-                await searchPlacesNearby(lat, lng).then((nearby) => {
-                    console.log("nearby response", nearby);
-                    setShops(nearby);
-                })
-                    .catch((error) => {
-                        console.warn("nearby fetch failed", error);
-                    });
+                setMapSearchCenter({ lat, lng });
             },
             (error) => {
                 console.warn(error);
@@ -119,13 +139,17 @@ export function Home() {
     const getCoffeeshopFromAutocomplete = async (autocompleteResult: any) => {
         const result = await searchPlacesByText(autocompleteResult)
         const shop = result.locations[0]
-        console.log(shop)
+
+        if (!shop) {
+            return;
+        }
+
         setShops((prev: CoffeeshopDto[]) => {
             const isShopInList = prev.some((coffeeshop: CoffeeshopDto) => coffeeshop.placeId === shop.placeId)
             return isShopInList ? prev : [shop, ...prev]
         });
         setActiveId(shop.placeId)
-        suppressNextMove.current = false
+        setPendingMapSearchCenter(null)
     }
 
     return (
@@ -138,9 +162,13 @@ export function Home() {
                     setActiveId={setActiveId}
                     routeOptions={routeOptions}
                     selectedRouteId={selectedRouteId}
-                    onViewportSettled={({ lat, lng, zoom }) => {
-                        console.log("viewport settled", lat, lng, zoom);
-                        setMapSearchCenter({ lat, lng });
+                    onViewportSettled={({ lat, lng }) => {
+                        const nextCenter = { lat, lng };
+                        if (areCentersEqual(nextCenter, mapSearchCenter) || areCentersEqual(nextCenter, pendingMapSearchCenter)) {
+                            return;
+                        }
+
+                        setPendingMapSearchCenter(nextCenter);
                     }}
                 />
                 ) : (<MapView
@@ -149,11 +177,26 @@ export function Home() {
                     setActiveId={setActiveId}
                     routeOptions={routeOptions}
                     selectedRouteId={selectedRouteId}
-                    onViewportSettled={({ lat, lng, zoom }) => {
-                        console.log("viewport settled", lat, lng, zoom);
-                        setMapSearchCenter({ lat, lng });
+                    onViewportSettled={({ lat, lng }) => {
+                        const nextCenter = { lat, lng };
+                        if (areCentersEqual(nextCenter, mapSearchCenter) || areCentersEqual(nextCenter, pendingMapSearchCenter)) {
+                            return;
+                        }
+
+                        setPendingMapSearchCenter(nextCenter);
                     }} />)}
             </div>
+            {pendingMapSearchCenter ? (
+                <div className="absolute right-4 top-24 z-20">
+                    <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => setMapSearchCenter(pendingMapSearchCenter)}
+                    >
+                        {isSearchingArea ? "Searching..." : "Search this area"}
+                    </button>
+                </div>
+            ) : null}
             <div className=" absolute top-0 inset-x-0">
                 <Search
                     getCoffeeshopFromAutocomplete={getCoffeeshopFromAutocomplete}

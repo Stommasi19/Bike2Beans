@@ -18,7 +18,7 @@ public class GetAllRouteDetailsHandler : IRequestHandler<GetRouteDetailsQuery, L
     }
     public async Task<List<RouteDetailsDto>> Handle(GetRouteDetailsQuery query, CancellationToken ct)
     {
-        var details = await _repo.GetAllRouteDetailsAsync(ct);
+        var details = await _repo.GetAllRouteDetailsAsync(query.UserId, ct);
 
         return details.Select(d => new RouteDetailsDto(
             Id: d.Id,

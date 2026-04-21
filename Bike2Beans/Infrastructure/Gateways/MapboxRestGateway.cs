@@ -47,8 +47,8 @@ public sealed class MapboxRestGateway : IRouteProvider
             stopsstring += $";{startLocation[1]},{startLocation[0]}";
         }
 
-        var url = $"https://api.mapbox.com/directions/v5/mapbox/cycling/{stopsstring}" +
-           $"?alternatives=true&geometries=geojson&steps=true" +
+        var url = $"https://api.mapbox.com/optimized-trips/v1/mapbox/cycling/{stopsstring}" +
+           $"?roundtrip=true&source=first&destination=first&steps=true&geometries=geojson" +
            $"&access_token={_accessToken}";
 
         var response = await _http.GetAsync(url);

@@ -7,7 +7,7 @@ namespace Bike2Beans.Application.Interfaces;
 
 public interface IRouteRepository
 {
-    Task<RouteDetails> GetRouteDetailsByIdAsync(GetRouteDetailsByIdQuery query, CancellationToken ct);
+    Task<RouteDetails?> GetRouteDetailsByIdAsync(GetRouteDetailsByIdQuery query, CancellationToken ct);
     Task<RouteDetails> InsertRouteDetailsAsync(RouteDetails route, CancellationToken ct);
-    Task<List<RouteDetails>> GetAllRouteDetailsAsync(CancellationToken ct);
+    Task<List<RouteDetails>> GetAllRouteDetailsAsync(string userId, CancellationToken ct);
 }
