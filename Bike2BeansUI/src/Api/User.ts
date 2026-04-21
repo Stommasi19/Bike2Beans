@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { api } from "./Client";
+import { api } from "./client";
 
 type UserPayload = {
     email: string;

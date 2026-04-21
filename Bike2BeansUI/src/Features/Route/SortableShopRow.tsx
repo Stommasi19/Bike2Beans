@@ -1,15 +1,14 @@
-import { CoffeeShopDto } from "../../Data/CoffeeshopDto";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CoffeeShopCard } from "../CoffeeShop/CoffeeShopCards.web";
-import { RouteDto } from "../../Data/RouteDto";
+import type { RouteDto } from "../../Data/RouteDto";
 type Props = {
     routeStop: RouteDto;
     removeStop: (stopId: string) => void;
     reorderStops: (shops: RouteDto[]) => void;
 }
 
-export function SortableShopRow({ routeStop, removeStop, reorderStops }: Props) {
+export function SortableShopRow({ routeStop, removeStop, reorderStops: _reorderStops }: Props) {
     const active = "route"
     const {
         attributes,

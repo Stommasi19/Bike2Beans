@@ -1,22 +1,30 @@
-import Map, { Layer, Marker, Source } from "react-map-gl/mapbox";
-import { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import { useEffect, useRef } from "react";
-import { GetDistance } from '../Map/GetDistance'
-import { RouteGeoJson } from "./routeGeoJson";
-import { useFocusEffect } from "@react-navigation/native";
+import MapboxMap, {
+    Layer,
+    type MapRef,
+    Marker,
+    Source,
+} from "react-map-gl/mapbox";
+import type { CoffeeshopDto } from "../../Data/CoffeeshopDto";
+import type { RouteOptionDto } from "../../Data/RouteOptionDto";
+import { GetDistance } from "../Map/GetDistance";
 import { MapMover } from "./MapMover";
-
-
+import { toRouteFeature } from "./routeGeoJson";
 
 type Props = {
-    startLocation?: { lat: number, lng: number } | null,
-    onViewportSettled?: (viewport: { lat: number, lng: number, zoom: number }) => void;
-    shops: CoffeeshopDto[],
-    activeId: string | null,
-    setActiveId: (id: string) => void;
-    routePath?: RouteGeoJson | null
+    startLocation?: { lat: number; lng: number } | null;
+    onViewportSettled?: (viewport: {
+        lat: number;
+        lng: number;
+        zoom: number;
+    }) => void;
+    shops: CoffeeshopDto[];
+    activeId: string | null;
+    setActiveId: (id: string | null) => void;
+    routeOptions?: RouteOptionDto[];
+    selectedRouteId?: string | null;
+};
 
-}
 type MoveEndEvent = {
     viewState: {
         latitude: number;
@@ -33,30 +41,33 @@ type Viewport = {
 
 const VIEWPORT_SETTLE_DISTANCE_KM = 0.5;
 
-
-
-export function MapView({ onViewportSettled, startLocation, shops, activeId, setActiveId, routePath }: Props) {
-
-
-
+export function MapView({
+    onViewportSettled,
+    startLocation,
+    shops,
+    activeId,
+    setActiveId,
+    routeOptions = [],
+    selectedRouteId,
+}: Props) {
     const ROUTE_COLOR = "#9a6f4d";
     const ROUTE_CASE_COLOR = "#f6eee6";
     const ROUTE_DIRECTION_COLOR = "#6f4b33";
+    const ROUTE_SECONDARY_COLOR = "#c8a98c";
 
     const token = process.env.MAPBOX_ACCESS_TOKEN;
-    const mapRef = useRef<any>(null);
+    const mapRef = useRef<MapRef | null>(null);
     const lastSettledViewportRef = useRef<Viewport | null>(null);
-    const suppressedViewportRef = useRef<Viewport | null>(null);
-
+    const ignoreNextMoveEndRef = useRef(false);
 
     useEffect(() => {
         if (!startLocation) return;
         lastSettledViewportRef.current = {
             lat: startLocation.lat,
             lng: startLocation.lng,
-            zoom: 11.5
+            zoom: 11.5,
         };
-    }, [startLocation?.lat, startLocation?.lng])
+    }, [startLocation]);
 
     useEffect(() => {
         if (!startLocation) return;
@@ -65,12 +76,7 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
         const map = mapRef.current.getMap();
 
         const focusUserLocation = () => {
-            suppressedViewportRef.current = {
-                lat: startLocation.lat,
-                lng: startLocation.lng,
-                zoom: 11.5,
-            };
-
+            ignoreNextMoveEndRef.current = true;
             map.easeTo({
                 center: [startLocation.lng, startLocation.lat],
                 zoom: 11.5,
@@ -86,24 +92,22 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
         map.once("load", focusUserLocation);
     }, [startLocation]);
 
-
     useEffect(() => {
         if (!activeId) return;
         if (!mapRef.current) return;
 
-        const selected = shops.find((s) => s.placeId === activeId);
+        const selected = shops.find((shop) => shop.placeId === activeId);
         if (!selected) return;
 
         const map = mapRef.current.getMap();
         const center = map.getCenter();
-        MapMover(map, center, selected)
+        ignoreNextMoveEndRef.current = true;
+        MapMover(map, center, selected);
     }, [activeId, shops]);
-
 
     const rememberViewport = (viewport: Viewport) => {
         lastSettledViewportRef.current = viewport;
     };
-    const ignoreNextMoveEndRef = useRef(false);
 
     const handleMoveEnd = (event: MoveEndEvent) => {
         const nextViewport: Viewport = {
@@ -128,80 +132,111 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
             lastViewport.lat,
             lastViewport.lng,
             nextViewport.lat,
-            nextViewport.lng
+            nextViewport.lng,
         );
 
         if (distance <= VIEWPORT_SETTLE_DISTANCE_KM) return;
 
         rememberViewport(nextViewport);
         onViewportSettled?.(nextViewport);
-        if (shops.filter((shop) => shop.placeId !== activeId)) {
-            setActiveId("null")
-        }
     };
+
+    const selectedRoute =
+        routeOptions.find((routeOption) => routeOption.id === selectedRouteId) ??
+        routeOptions[0];
+    const selectedRouteFeature = selectedRoute
+        ? toRouteFeature(selectedRoute)
+        : null;
+    const secondaryRoutes = routeOptions.filter(
+        (routeOption) => routeOption.id !== selectedRoute?.id,
+    );
 
     if (!startLocation) {
         return <div style={{ height: "100vh", width: "100vw" }} />;
     }
+
     return (
         <div style={{ height: "100vh", width: "100vw" }}>
-            <Map
+            <MapboxMap
                 ref={mapRef}
                 mapboxAccessToken={token}
                 initialViewState={{
-                    latitude: startLocation?.lat,
-                    longitude: startLocation?.lng,
+                    latitude: startLocation.lat,
+                    longitude: startLocation.lng,
                     zoom: 13,
                 }}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
                 onMoveEnd={handleMoveEnd}
             >
+                <Marker
+                    latitude={startLocation.lat}
+                    longitude={startLocation.lng}
+                    anchor="center"
+                >
+                    <div
+                        title="Approximate location"
+                        style={{
+                            width: 16,
+                            height: 16,
+                            borderRadius: "9999px",
+                            background: "#2563eb",
+                            border: "3px solid white",
+                            boxShadow: "0 0 0 6px rgba(37, 99, 235, 0.2)",
+                        }}
+                    />
+                </Marker>
 
-                {startLocation ? (
+                {shops.map((shop) => (
                     <Marker
-                        latitude={startLocation.lat}
-                        longitude={startLocation.lng}
-                        anchor="center"
+                        key={shop.placeId}
+                        latitude={shop.lat}
+                        longitude={shop.lng}
+                        anchor="bottom"
                     >
-                        <div
-                            title="Approximate location"
-                            style={{
-                                width: 16,
-                                height: 16,
-                                borderRadius: "9999px",
-                                background: "#2563eb",
-                                border: "3px solid white",
-                                boxShadow: "0 0 0 6px rgba(37, 99, 235, 0.2)",
+                        <button
+                            type="button"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                setActiveId(shop.placeId);
                             }}
+                            className={shop.placeId === activeId ? "pin pin-active" : "pin"}
                         />
                     </Marker>
-                ) : null}
+                ))}
 
-                {
-                    shops.map((s) => (
-                        <Marker
-                            key={s.placeId}
-                            latitude={s.lat}
-                            longitude={s.lng}
-                            anchor="bottom"
+                {secondaryRoutes.map((routeOption) => {
+                    const routeFeature = toRouteFeature(routeOption);
+
+                    if (!routeFeature) return null;
+
+                    return (
+                        <Source
+                            key={routeOption.id}
+                            id={`route-source-${routeOption.id}`}
+                            type="geojson"
+                            data={routeFeature}
                         >
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveId(s.placeId);
+                            <Layer
+                                id={`route-line-${routeOption.id}`}
+                                type="line"
+                                paint={{
+                                    "line-color": ROUTE_SECONDARY_COLOR,
+                                    "line-width": 4,
+                                    "line-opacity": 0.9,
                                 }}
-                                className={s.placeId === activeId ? "pin pin-active" : "pin"}
-
                             />
-                        </Marker>
+                        </Source>
+                    );
+                })}
 
-                    ))
-                }
-                {routePath ? (
-                    <Source id="route-source" type="geojson" data={routePath}>
+                {selectedRouteFeature ? (
+                    <Source
+                        id={`route-source-${selectedRoute?.id}-selected`}
+                        type="geojson"
+                        data={selectedRouteFeature}
+                    >
                         <Layer
-                            id="route-line-case"
+                            id={`route-line-case-${selectedRoute?.id}`}
                             type="line"
                             paint={{
                                 "line-color": ROUTE_CASE_COLOR,
@@ -210,7 +245,7 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                             }}
                         />
                         <Layer
-                            id="route-line"
+                            id={`route-line-${selectedRoute?.id}`}
                             type="line"
                             paint={{
                                 "line-color": ROUTE_COLOR,
@@ -219,7 +254,7 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                             }}
                         />
                         <Layer
-                            id="route-direction"
+                            id={`route-direction-${selectedRoute?.id}`}
                             type="symbol"
                             layout={{
                                 "symbol-placement": "line",
@@ -237,9 +272,8 @@ export function MapView({ onViewportSettled, startLocation, shops, activeId, set
                             }}
                         />
                     </Source>
-
                 ) : null}
-            </Map>
-        </div >
+            </MapboxMap>
+        </div>
     );
 }

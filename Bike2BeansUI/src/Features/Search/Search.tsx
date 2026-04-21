@@ -1,9 +1,7 @@
 import { SearchResultCard } from "./SearchCard"
 import { SearchState } from "../../Data/SearchState"
 import { useEffect, useState } from "react"
-import { getAutocomplete } from "../../Api/Autocomplete"
-import { searchPlacesByText } from "../../Api/Places"
-import { CoffeeshopDto } from "../../Data/CoffeeshopDto"
+import { getAutocomplete, type AutocompleteSuggestion } from "../../Api/Autocomplete"
 
 type Props = {
     getCoffeeshopFromAutocomplete: (text: string | null) => void;
@@ -11,40 +9,44 @@ type Props = {
 
 export function Search({ getCoffeeshopFromAutocomplete }: Props) {
     var [searchState, setSearchState] = useState<SearchState>(SearchState.Idle)
-    const [autocompleteResults, setAutocompleteResults] = useState<{ text: string | null }[]>([]);
-
+    const [autocompleteResults, setAutocompleteResults] = useState<AutocompleteSuggestion[]>([]);
     const [query, setQuery] = useState("");
 
-    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setQuery(value);
-
-        if (value.trim().length <= 2) {
+    useEffect(() => {
+        const normalizedQuery = query.trim();
+        if (normalizedQuery.length <= 2) {
             setAutocompleteResults([]);
             setSearchState(SearchState.Idle);
-            return;
+            return undefined;
         }
 
-        try {
-            setTimeout(async () => {
-
+        let canceled = false;
+        const timer = setTimeout(async () => {
+            try {
                 setSearchState(SearchState.Loading);
-                const results = await getAutocomplete(value);
-                console.log(results)
+                const results = await getAutocomplete(normalizedQuery);
+                if (canceled) return;
 
                 setAutocompleteResults(results)
                 setSearchState(SearchState.Active)
-            }, 500);
-        } catch (error) {
-            console.error("Autocomplete failed:", error);
-            setAutocompleteResults([]);
-            setSearchState(SearchState.Idle);
-        }
+            } catch (error) {
+                if (canceled) return;
+
+                console.error("Autocomplete failed:", error);
+                setAutocompleteResults([]);
+                setSearchState(SearchState.Idle);
+            }
+        }, 500);
+
+        return () => {
+            canceled = true;
+            clearTimeout(timer);
+        };
+    }, [query]);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
     };
-
-
-
-
 
     return (
         <div className="searchbox" data-state={searchState}>
@@ -57,26 +59,27 @@ export function Search({ getCoffeeshopFromAutocomplete }: Props) {
                     onChange={handleSearch}
                     className="searchbar-input"
                 />
-                <button onClick={() => setSearchState(SearchState.Idle)}
+                <button
+                    type="button"
+                    onClick={() => setSearchState(SearchState.Idle)}
                     className="clear-search-button" >Clear</button>
             </form>
 
             <div className="searchbox-results-card">
-
-                {autocompleteResults.length > 0 ?
-                    (autocompleteResults.map((result, i) => (
+                {autocompleteResults.length > 0 ? (
+                    autocompleteResults.map((result) => (
                         <button
-                            key={i}
-                            onClick={() => getCoffeeshopFromAutocomplete(result.text)}
+                            type="button"
+                            key={result.text ?? result.Text ?? "suggestion"}
+                            onClick={() => getCoffeeshopFromAutocomplete(result.text ?? result.Text ?? null)}
                         >
                             <SearchResultCard
-                                key={i}
-                                text={result.text} />
+                                text={result.text ?? result.Text ?? ""} />
                         </button>
                     ))
-                    ) : (
-                        <SearchResultCard text={"... Searching"} />
-                    )}
+                ) : searchState === SearchState.Loading ? (
+                    <SearchResultCard text={"... Searching"} />
+                ) : null}
             </div>
 
         </div>

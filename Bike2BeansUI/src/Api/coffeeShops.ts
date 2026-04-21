@@ -1,4 +1,4 @@
-import { api } from "./Client";
+import { api } from "./client";
 
 export const GetCoffeeShops = async () => {
     const response = await api.get(`api/coffeeshops`)

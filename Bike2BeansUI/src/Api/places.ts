@@ -1,4 +1,4 @@
-import { api } from "./Client";
+import { api } from "./client";
 
 export const searchPlacesByText = async (text: string, coffeeOnly = true) => {
     if (!text.trim()) return [];

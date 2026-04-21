@@ -1,40 +1,46 @@
-import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { useState } from 'react';
-import { auth } from '../Firebase';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { type FormEvent, type MouseEvent, useState } from 'react';
+import { auth } from '../firebase';
 import { getFirebaseErrorMessage, Toast } from "../Components/Toast.web";
+
+function getErrorCode(error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+        return String(error.code);
+    }
+
+    return "unknown";
+}
 
 
 export function Login() {
     const [toast, setToast] = useState<string | null>(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setError("");
         setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
             window.location.href = "/home";
 
 
-        } catch (err: any) {
-            const message = getFirebaseErrorMessage(err.code);
+        } catch (error) {
+            const message = getFirebaseErrorMessage(getErrorCode(error));
             setToast(message);
         } finally {
             setLoading(false);
         }
     }
-    const handleGoogleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleGoogleSignIn = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         setLoading(true);
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
             window.location.href = "/home";
 
-        } catch (err: any) {
-            const message = getFirebaseErrorMessage(err.code);
+        } catch (error) {
+            const message = getFirebaseErrorMessage(getErrorCode(error));
             setToast(message);
         } finally {
             setLoading(false);
@@ -89,4 +95,3 @@ export function Login() {
         </div>
     );
 }
-

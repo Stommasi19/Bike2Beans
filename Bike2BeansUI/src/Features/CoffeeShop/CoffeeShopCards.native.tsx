@@ -1,10 +1,9 @@
-import React from "react";
 import { Pressable, Text, View } from "react-native";
-import type { CoffeeShopDto } from "../../Data/CoffeeshopDto";
+import type { CoffeeshopDto } from "../../Data/CoffeeshopDto";
 import { nativeStyles } from "../../theme/nativeStyles";
 
 type Props = {
-    shop: CoffeeShopDto;
+    shop: CoffeeshopDto;
     active?: boolean;
     onSelect?: () => void;
 };
@@ -26,4 +25,3 @@ export function CoffeeShopCard({ shop, active = false, onSelect }: Props) {
         </Pressable>
     );
 }
-
