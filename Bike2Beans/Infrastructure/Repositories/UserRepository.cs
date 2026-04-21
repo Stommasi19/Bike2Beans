@@ -40,39 +40,35 @@ public class UserRepository : IUserRepository
     }
 
 
-    public async Task<User> PatchUserAsync(User user, CancellationToken cancellationToken = default)
+    public async Task<User> PatchUserAsync(
+        string id,
+        string email,
+        string? firstName,
+        string? lastName,
+        CancellationToken cancellationToken = default
+    )
     {
-        var updates = new List<UpdateDefinition<User>>();
-
-        if (user.Email is not null)
+        var updates = new List<UpdateDefinition<User>>
         {
-            updates.Add(Builders<User>.Update.Set(u => u.Email, user.Email));
+            Builders<User>.Update.Set(u => u.Email, email)
+        };
+
+        if (firstName is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.FirstName, firstName));
         }
 
-        if (user.FirstName is not null)
+        if (lastName is not null)
         {
-            updates.Add(Builders<User>.Update.Set(u => u.FirstName, user.FirstName));
+            updates.Add(Builders<User>.Update.Set(u => u.LastName, lastName));
         }
-
-        if (user.LastName is not null)
-        {
-            updates.Add(Builders<User>.Update.Set(u => u.LastName, user.LastName));
-        }
-
-        if (updates.Count == 0)
-        {
-            return await _user.Find(u => u.Id == user.Id).FirstOrDefaultAsync(cancellationToken)
-                ?? throw new InvalidOperationException($"User with ID {user.Id} not found.");
-        }
-
-        var update = Builders<User>.Update.Combine(updates);
 
         return await _user.FindOneAndUpdateAsync(
-            u => u.Id == user.Id,
-            update,
+            u => u.Id == id,
+            Builders<User>.Update.Combine(updates),
             new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
             cancellationToken
-        ) ?? throw new InvalidOperationException($"User with ID {user.Id} not found.");
+        );
     }
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default)

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Bike2Beans.Application.CommandsAndQueries.UserCnQ;
 using Bike2Beans.Domain.Entities;
 using MediatR;
@@ -10,7 +11,9 @@ namespace Bike2Beans.Api.Controllers;
 [Route("api/users")]
 public class UserController : ControllerBase
 {
-    public sealed record CreateUserRequest(string FirstName, string LastName, string Email);
+    public sealed record CreateUserRequest(string FirstName, string LastName);
+    public sealed record UpdateUserRequest(string FirstName, string LastName);
+    public sealed record PatchUserRequest(string? FirstName, string? LastName);
 
     private readonly IMediator _mediator;
 
@@ -22,11 +25,12 @@ public class UserController : ControllerBase
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request, CancellationToken ct)
     {
         var firebaseUid = GetAuthenticatedUserId();
-        if (string.IsNullOrWhiteSpace(firebaseUid)) return Unauthorized();
+        var email = GetAuthenticatedUserEmail();
+        if (string.IsNullOrWhiteSpace(firebaseUid) || string.IsNullOrWhiteSpace(email)) return Unauthorized();
 
         var createCommand = new CreateUserCommand(
             firebaseUid,
-            request.Email,
+            email,
             request.FirstName,
             request.LastName
         );
@@ -48,24 +52,25 @@ public class UserController : ControllerBase
 
     [HttpPatch("update")]
     [Authorize]
-    public async Task<IActionResult> PatchUser([FromBody] User user, CancellationToken ct)
+    public async Task<IActionResult> PatchUser([FromBody] PatchUserRequest request, CancellationToken ct)
     {
         var firebaseUid = GetAuthenticatedUserId();
-        if (string.IsNullOrWhiteSpace(firebaseUid)) return Unauthorized();
-        user.Id = firebaseUid;
+        var email = GetAuthenticatedUserEmail();
+        if (string.IsNullOrWhiteSpace(firebaseUid) || string.IsNullOrWhiteSpace(email)) return Unauthorized();
 
-        var patchCommand = new PatchUserCommand(user);
+        var patchCommand = new PatchUserCommand(firebaseUid, email, request.FirstName, request.LastName);
         var patchedUser = await _mediator.Send(patchCommand, ct);
         return Ok(patchedUser);
     }
 
     [HttpPut("update")]
     [Authorize]
-    public async Task<IActionResult> UpdateUser([FromBody] User user, CancellationToken ct)
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request, CancellationToken ct)
     {
         var firebaseUid = GetAuthenticatedUserId();
-        if (string.IsNullOrWhiteSpace(firebaseUid)) return Unauthorized();
-        user.Id = firebaseUid;
+        var email = GetAuthenticatedUserEmail();
+        if (string.IsNullOrWhiteSpace(firebaseUid) || string.IsNullOrWhiteSpace(email)) return Unauthorized();
+        var user = new User(firebaseUid, email, request.FirstName, request.LastName);
 
         var updateCommand = new UpdateUserCommand(user);
         var updatedUser = await _mediator.Send(updateCommand, ct);
@@ -85,5 +90,10 @@ public class UserController : ControllerBase
     private string? GetAuthenticatedUserId()
     {
         return User.FindFirst("user_id")?.Value ?? User.FindFirst("sub")?.Value;
+    }
+
+    private string? GetAuthenticatedUserEmail()
+    {
+        return User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
     }
 }

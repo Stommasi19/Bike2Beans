@@ -12,6 +12,17 @@ function getErrorCode(error: unknown) {
     return "unknown";
 }
 
+function splitDisplayName(displayName: string | null, email: string | null) {
+    const fallbackName = email?.split("@")[0]?.trim() ?? "";
+    const normalizedName = displayName?.trim() || fallbackName;
+    const [firstName = "", ...rest] = normalizedName.split(/\s+/).filter(Boolean);
+
+    return {
+        firstName,
+        lastName: rest.join(" "),
+    };
+}
+
 export function Signup() {
     const [toast, setToast] = useState<string | null>(null);
     const [first, setFirst] = useState("");
@@ -24,7 +35,7 @@ export function Signup() {
         setLoading(true);
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            await CreateUser(first, last, email);
+            await CreateUser(first, last);
             window.location.href = "/home";
 
         } catch (error) {
@@ -38,7 +49,9 @@ export function Signup() {
         event.preventDefault();
         setLoading(true);
         try {
-            await signInWithPopup(auth, new GoogleAuthProvider());
+            const result = await signInWithPopup(auth, new GoogleAuthProvider());
+            const { firstName, lastName } = splitDisplayName(result.user.displayName, result.user.email);
+            await CreateUser(firstName, lastName);
             window.location.href = "/home";
 
         }
