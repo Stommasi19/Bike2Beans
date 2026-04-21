@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// auth 
+// auth
 builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
 

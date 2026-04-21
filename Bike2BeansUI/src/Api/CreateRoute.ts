@@ -1,8 +1,6 @@
-import { CoffeeshopDto } from "../Data/CoffeeshopDto";
-import { ExternalLocationDto } from "../Data/ExternalLocationDto";
 import { normalizeRouteOption, RouteOptionDto } from "../Data/RouteOptionDto";
 import type { RouteStopDto } from "../Data/RouteStopDto";
-import { api } from "./Client";
+import { api } from "./client";
 
 export type Props = {
     StartLocation: [number, number],
