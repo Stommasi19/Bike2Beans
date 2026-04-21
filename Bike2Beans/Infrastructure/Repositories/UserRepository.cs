@@ -17,10 +17,11 @@ public class UserRepository : IUserRepository
         var db = client.GetDatabase(settings.Value.DatabaseName);
         _user = db.GetCollection<User>("user");
     }
-    public Task<User> CreateUserAsync(User user, CancellationToken cancellationToken = default)
+
+    public async Task<User> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        return _user.InsertOneAsync(user, new InsertOneOptions(), cancellationToken)
-            .ContinueWith(t => user, cancellationToken);
+        await _user.InsertOneAsync(user, new InsertOneOptions(), cancellationToken);
+        return user;
     }
 
     public async Task DeleteUserAsync(string id, CancellationToken cancellationToken = default)
@@ -41,12 +42,37 @@ public class UserRepository : IUserRepository
 
     public async Task<User> PatchUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        var update = Builders<User>.Update
-            .Set(u => u.Email, user.Email)
-            .Set(u => u.FirstName, user.FirstName)
-            .Set(u => u.LastName, user.LastName);
+        var updates = new List<UpdateDefinition<User>>();
 
-        return await _user.FindOneAndUpdateAsync(u => u.Id == user.Id, update, new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After }, cancellationToken);
+        if (user.Email is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.Email, user.Email));
+        }
+
+        if (user.FirstName is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.FirstName, user.FirstName));
+        }
+
+        if (user.LastName is not null)
+        {
+            updates.Add(Builders<User>.Update.Set(u => u.LastName, user.LastName));
+        }
+
+        if (updates.Count == 0)
+        {
+            return await _user.Find(u => u.Id == user.Id).FirstOrDefaultAsync(cancellationToken)
+                ?? throw new InvalidOperationException($"User with ID {user.Id} not found.");
+        }
+
+        var update = Builders<User>.Update.Combine(updates);
+
+        return await _user.FindOneAndUpdateAsync(
+            u => u.Id == user.Id,
+            update,
+            new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After },
+            cancellationToken
+        ) ?? throw new InvalidOperationException($"User with ID {user.Id} not found.");
     }
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken = default)

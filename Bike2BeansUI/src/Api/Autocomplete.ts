@@ -1,4 +1,4 @@
-import { api } from "./Client";
+import { api } from "./client";
 
 export type AutocompleteSuggestion = {
     text?: string | null;
