@@ -1,3 +1,4 @@
+using Bike2Beans.Domain.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -18,9 +19,12 @@ public class RouteDetails
     }
 
 
-    [BsonId(IdGenerator = typeof(GuidGenerator))]
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid Id { get; set; }
+    [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+    [BsonSerializer(typeof(FlexibleRouteIdSerializer))]
+    public string Id { get; set; } = string.Empty;
+
+    [BsonElement("userId")]
+    public string? UserId { get; set; }
 
     [BsonElement("name")]
     public string? Name { get; set; }

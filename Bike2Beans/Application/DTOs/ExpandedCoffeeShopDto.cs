@@ -2,7 +2,7 @@ namespace Bike2Beans.Application.DTOs;
 
 public record ExpandedCoffeeshopDto
 (
-    Guid Id,
+    string Id,
     string Name,
     string? Address,
     double? Rating,

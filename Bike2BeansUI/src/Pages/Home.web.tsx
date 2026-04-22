@@ -9,6 +9,19 @@ import type { RouteDto } from "../Data/RouteDto";
 import type { RouteOptionDto } from "../Data/RouteOptionDto";
 import { RouteSetupManager } from "./RouteSetupManager.web";
 
+type MapSearchCenter = {
+    lat: number;
+    lng: number;
+};
+
+function areCentersEqual(left: MapSearchCenter | null, right: MapSearchCenter | null) {
+    if (!left || !right) {
+        return false;
+    }
+
+    return left.lat === right.lat && left.lng === right.lng;
+}
+
 export function Home() {
     const STACK_MAX_PX = 660;
     const [shops, setShops] = useState<CoffeeshopDto[]>([]);
@@ -20,12 +33,12 @@ export function Home() {
         lat: number;
         lng: number;
     } | null>(null);
-    const [mapSearchCenter, setMapSearchCenter] = useState<{
-        lat: number;
-        lng: number;
-    } | null>(null);
+    const [mapSearchCenter, setMapSearchCenter] = useState<MapSearchCenter | null>(null);
+    const [pendingMapSearchCenter, setPendingMapSearchCenter] = useState<MapSearchCenter | null>(null);
+    const [isSearchingArea, setIsSearchingArea] = useState(false);
 
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    const nearbySearchRequestId = useRef(0);
 
     useEffect(() => {
         GetCoffeeShops()
@@ -47,19 +60,42 @@ export function Home() {
     useEffect(() => {
         if (!mapSearchCenter) return;
 
-        const timeoutId = window.setTimeout(async () => {
+        const requestId = ++nearbySearchRequestId.current;
+        const abortController = new AbortController();
+        setIsSearchingArea(true);
+
+        void (async () => {
             try {
                 const nearby = await searchPlacesNearby(
                     mapSearchCenter.lat,
-                    mapSearchCenter.lng
+                    mapSearchCenter.lng,
+                    { signal: abortController.signal }
                 );
-                setShops(nearby);
-            } catch (error) {
-                console.warn("nearby fetch failed", error);
-            }
-        }, 2000);
 
-        return () => window.clearTimeout(timeoutId);
+                if (abortController.signal.aborted || requestId !== nearbySearchRequestId.current) {
+                    return;
+                }
+
+                setShops(nearby);
+                setPendingMapSearchCenter((current) =>
+                    areCentersEqual(current, mapSearchCenter) ? null : current
+                );
+            } catch (error) {
+                if (abortController.signal.aborted || requestId !== nearbySearchRequestId.current) {
+                    return;
+                }
+
+                console.warn("nearby fetch failed", error);
+            } finally {
+                if (!abortController.signal.aborted && requestId === nearbySearchRequestId.current) {
+                    setIsSearchingArea(false);
+                }
+            }
+        })();
+
+        return () => {
+            abortController.abort();
+        };
     }, [mapSearchCenter]);
 
     useEffect(() => {
@@ -74,13 +110,7 @@ export function Home() {
                 const lng = Number(coords.longitude.toFixed(3));
 
                 setUserLocation({ lat, lng });
-
-                try {
-                    const nearby = await searchPlacesNearby(lat, lng);
-                    setShops(nearby);
-                } catch (error) {
-                    console.warn("nearby fetch failed", error);
-                }
+                setMapSearchCenter({ lat, lng });
             },
             (error) => {
                 console.warn(error);
@@ -115,6 +145,7 @@ export function Home() {
             return isShopInList ? previousShops : [shop, ...previousShops];
         });
         setActiveId(shop.placeId);
+        setPendingMapSearchCenter(null);
     };
 
     return (
@@ -128,10 +159,29 @@ export function Home() {
                     routeOptions={routeOptions}
                     selectedRouteId={selectedRouteId}
                     onViewportSettled={({ lat, lng }) => {
-                        setMapSearchCenter({ lat, lng });
+                        const nextCenter = { lat, lng };
+                        if (
+                            areCentersEqual(nextCenter, mapSearchCenter) ||
+                            areCentersEqual(nextCenter, pendingMapSearchCenter)
+                        ) {
+                            return;
+                        }
+
+                        setPendingMapSearchCenter(nextCenter);
                     }}
                 />
             </div>
+            {pendingMapSearchCenter ? (
+                <div className="absolute right-4 top-24 z-20">
+                    <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => setMapSearchCenter(pendingMapSearchCenter)}
+                    >
+                        {isSearchingArea ? "Searching..." : "Search this area"}
+                    </button>
+                </div>
+            ) : null}
             <div className="absolute top-0 inset-x-0">
                 <Search getCoffeeshopFromAutocomplete={getCoffeeshopFromAutocomplete} />
             </div>

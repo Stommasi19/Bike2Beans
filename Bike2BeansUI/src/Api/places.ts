@@ -7,9 +7,15 @@ export const searchPlacesByText = async (text: string, coffeeOnly = true) => {
     });
     return data ?? [];
 };
-export const searchPlacesNearby = async (lat: number, lng: number) => {
+
+export const searchPlacesNearby = async (
+    lat: number,
+    lng: number,
+    options: { signal?: AbortSignal } = {}
+) => {
     const { data } = await api.get("Api/places/Nearby", {
         params: { Lat: lat, Lng: lng },
+        signal: options.signal,
     });
     return data ?? [];
 };

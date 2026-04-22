@@ -3,7 +3,7 @@ namespace Bike2Beans.Application.DTOs;
 
 
 public record RouteDetailsDto(
-    Guid Id,
+    string Id,
     string Name,
     List<double> StartLocation,
     List<double>? EndLocation,
