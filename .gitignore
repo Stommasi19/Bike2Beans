@@ -1,4 +1,5 @@
 .DS_Store
+/node_modules/
 /Bike2Beans/obj
 /Bike2Beans/bin
 Bike2Beans/.env
@@ -22,4 +23,3 @@ bike2beans-1d091-firebase-adminsdk-fbsvc-10200e5074.json
 /Bike2Beans/Api.IntegrationTests/bin
 /Bike2Beans/Application/obj
 /Bike2Beans/Api.IntegrationTests/obj
-
