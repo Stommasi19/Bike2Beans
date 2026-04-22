@@ -1,11 +1,11 @@
-// const BaseURL = process.env.BaseURL
-
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { Platform } from "react-native";
 import { auth } from "../firebase";
 
 const apiHost = Platform.OS === "android" ? "10.0.2.2" : "localhost";
-const apiBaseUrl = `http://${apiHost}:5165`;
+const configuredApiBaseUrl =
+    Platform.OS === "web" ? process.env.API_BASE_URL?.trim() : undefined;
+const apiBaseUrl = configuredApiBaseUrl || `http://${apiHost}:5165`;
 
 export const api = axios.create({
     baseURL: apiBaseUrl,

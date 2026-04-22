@@ -1,0 +1,8 @@
+.DS_Store
+.env
+**/bin
+**/obj
+**/.DS_Store
+Api.IntegrationTests
+Application.Tests
+bike2beans-1d091-firebase-adminsdk-fbsvc-177360d38b.json

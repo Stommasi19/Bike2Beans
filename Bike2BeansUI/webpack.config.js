@@ -81,6 +81,7 @@ module.exports = {
             template: path.resolve(__dirname, "public", "index.html"),
         }),
         new webpack.DefinePlugin({
+            "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL),
             "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(process.env.MAPBOX_ACCESS_TOKEN),
         }),
     ],
