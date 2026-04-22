@@ -1,1 +1,15 @@
-{}
+{
+  "name": "bikes2beans",
+  "private": true,
+  "workspaces": [
+    "Bike2BeansUI"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace Bike2BeansUI",
+    "dev": "npm run web --workspace Bike2BeansUI",
+    "start": "npm run start:web --workspace Bike2BeansUI"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
