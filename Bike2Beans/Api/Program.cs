@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// auth 
+// auth
 builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
 builder.Services.Configure<ApiCostGuardOptions>(
@@ -88,7 +88,6 @@ builder.Services.AddRateLimiter(options =>
             _ => CreatePolicy(apiCostGuards.RouteGenerationRequestsPerMinute)
         ));
 });
-
 
 builder.Services.AddGooglePlaces(builder.Configuration);
 builder.Services.AddMapbox(builder.Configuration);
