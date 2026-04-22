@@ -24,7 +24,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Mongo Settings
+var configuredCorsOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>()?
+    .Where(origin => !string.IsNullOrWhiteSpace(origin))
+    .Select(origin => origin.Trim())
+    .ToArray() ?? [];
+
+var envCorsOrigins = builder.Configuration["CORS_ALLOWED_ORIGINS"]?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    .Where(origin => !string.IsNullOrWhiteSpace(origin))
+    .ToArray() ?? [];
+
+var allowedCorsOrigins = envCorsOrigins.Length > 0
+    ? envCorsOrigins
+    : configuredCorsOrigins.Length > 0
+        ? configuredCorsOrigins
+        : ["http://localhost:3000"];
+
 var corsPolicyName = "Bike2BeansUI";
 
 builder.Services.AddCors(options =>
@@ -32,7 +49,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsPolicyName, policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000")
+            .WithOrigins(allowedCorsOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

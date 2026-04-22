@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "build": "webpack --mode production",
+    "build:web": "npm run build",
     "ios": "react-native run-ios",
     "lint": "biome lint App.tsx __tests__/App.test.tsx webpack.config.js jest.config.js",
     "start": "react-native start",
+    "start:web": "node scripts/serve-dist.js",
     "test": "jest",
-    "web": "webpack serve --config webpack.config.js",
-    "webpack": "webpack"
+    "web": "webpack serve --config webpack.config.js --mode development",
+    "webpack": "webpack --mode development"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
