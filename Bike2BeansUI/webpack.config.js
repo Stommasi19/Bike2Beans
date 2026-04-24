@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 require("dotenv").config();
 const webpack = require("webpack");
 
+const DEV_SERVER_PORT = Number.parseInt(process.env.PORT || "3000", 10);
 
 module.exports = {
     mode: "development",
@@ -14,9 +15,11 @@ module.exports = {
         publicPath: "/",
     },
     devServer: {
-        port: 3000,
+        allowedHosts: "all",
+        host: "0.0.0.0",
         historyApiFallback: true,
-        open: true,
+        open: false,
+        port: DEV_SERVER_PORT,
         hot: true,
     },
     module: {
