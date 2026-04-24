@@ -59,6 +59,19 @@ builder.Services.AddCors(options =>
 // auth
 builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
+var firebaseAdminServiceAccountJson =
+    Environment.GetEnvironmentVariable("FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON")
+    ?? builder.Configuration["FirebaseAdmin:ServiceAccountJson"];
+
+if (!string.IsNullOrWhiteSpace(firebaseAdminServiceAccountJson))
+{
+    builder.Services.AddFirebaseAdmin(builder.Configuration);
+}
+else
+{
+    Console.WriteLine("Firebase Admin SDK credentials not configured; skipping Firebase admin registration.");
+}
+
 builder.Services.Configure<ApiCostGuardOptions>(
     builder.Configuration.GetSection(ApiCostGuardOptions.SectionName)
 );
@@ -108,7 +121,6 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddGooglePlaces(builder.Configuration);
 builder.Services.AddMapbox(builder.Configuration);
-builder.Services.AddFirebaseAdmin(builder.Configuration);
 builder.Services.AddMongo(builder.Configuration);
 
 // // Services
