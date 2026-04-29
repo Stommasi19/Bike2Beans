@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { RouteDto } from "../Data/RouteDto";
 import type { CoffeeshopDto } from "../Data/CoffeeshopDto";
 import { LocationBox } from "../Features/Route/LocationBox";
@@ -121,6 +122,8 @@ export function RouteSetupManager({
     selectedRouteId,
     setSelectedRouteId,
 }: Props) {
+    const [isGeneratingRoute, setIsGeneratingRoute] = useState(false);
+    const [routeError, setRouteError] = useState<string | null>(null);
     const {
         startLocation,
         stopLocation,
@@ -245,9 +248,11 @@ export function RouteSetupManager({
     }
 
     async function handleSeeRoute() {
-        if (!startLocation) return;
+        if (!startLocation || isGeneratingRoute) return;
 
         try {
+            setIsGeneratingRoute(true);
+            setRouteError(null);
             setRouteOptions([]);
 
             const nextRouteOptions = await CreateRouteAndReturnPath(
@@ -257,13 +262,15 @@ export function RouteSetupManager({
 
             if (drawableRouteOptions.length === 0) {
                 clearRouteSelection();
-                console.warn("No drawable route geometry returned from API.");
+                setRouteError("No drawable route was returned. Try a different start or stop location.");
                 return;
             }
 
             selectPrimaryRoute(drawableRouteOptions);
         } catch (error) {
-            console.error(error);
+            setRouteError("Route generation failed. Please try again.");
+        } finally {
+            setIsGeneratingRoute(false);
         }
     }
 
@@ -277,16 +284,17 @@ export function RouteSetupManager({
                 </div>
                 {startLocation ? (
                     <div className="route-actions">
-                        <button className="btn btn-primary route-action-primary" onClick={handleSeeRoute}>
-                            Show Route
+                        <button className="btn btn-primary route-action-primary" onClick={handleSeeRoute} disabled={isGeneratingRoute}>
+                            {isGeneratingRoute ? "Finding route..." : "Show Route"}
                         </button>
                         {selectedRoutePath ? (
-                            <button className="btn btn-secondary route-action-secondary" onClick={handleDownloadGPX}>
+                            <button className="btn btn-secondary route-action-secondary" onClick={handleDownloadGPX} disabled={isGeneratingRoute}>
                                 Download GPX
                             </button>
                         ) : null}
                     </div>
                 ) : null}
+                {routeError ? <p className="form-error route-error" role="alert">{routeError}</p> : null}
                 {hasAlternateRoutes ? (
                     <section className="route-options-panel">
                         <div className="route-options-header">

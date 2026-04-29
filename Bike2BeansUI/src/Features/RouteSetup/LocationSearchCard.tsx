@@ -33,6 +33,8 @@ export function LocationSearchCard({
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
                 placeholder="Search for an address..."
+                autoComplete="off"
+                aria-label={`${label} search`}
             />
             {hasQuery ? (
                 <div className="route-location-results" role="listbox" aria-label={`${label} autocomplete results`}>
@@ -44,6 +46,7 @@ export function LocationSearchCard({
                                 type="button"
                                 key={suggestion}
                                 className="route-location-result"
+                                role="option"
                                 onClick={() => onSelectSuggestion(suggestion)}
                             >
                                 <span className="route-location-result-title">{suggestion}</span>

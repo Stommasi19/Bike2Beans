@@ -36,14 +36,22 @@ export function Home() {
     const [mapSearchCenter, setMapSearchCenter] = useState<MapSearchCenter | null>(null);
     const [pendingMapSearchCenter, setPendingMapSearchCenter] = useState<MapSearchCenter | null>(null);
     const [isSearchingArea, setIsSearchingArea] = useState(false);
+    const [isLoadingShops, setIsLoadingShops] = useState(true);
+    const [homeError, setHomeError] = useState<string | null>(null);
 
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const nearbySearchRequestId = useRef(0);
 
     useEffect(() => {
         GetCoffeeShops()
-            .then(setShops)
-            .catch(console.error);
+            .then((nextShops) => {
+                setShops(nextShops);
+                setHomeError(null);
+            })
+            .catch(() => {
+                setHomeError("Coffee shops could not be loaded. Search or move the map to try again.");
+            })
+            .finally(() => setIsLoadingShops(false));
     }, []);
 
     useEffect(() => {
@@ -77,6 +85,7 @@ export function Home() {
                 }
 
                 setShops(nearby);
+                setHomeError(null);
                 setPendingMapSearchCenter((current) =>
                     areCentersEqual(current, mapSearchCenter) ? null : current
                 );
@@ -85,7 +94,7 @@ export function Home() {
                     return;
                 }
 
-                console.warn("nearby fetch failed", error);
+                setHomeError("This area could not be searched. Please try again.");
             } finally {
                 if (!abortController.signal.aborted && requestId === nearbySearchRequestId.current) {
                     setIsSearchingArea(false);
@@ -133,19 +142,27 @@ export function Home() {
     const getCoffeeshopFromAutocomplete = async (autocompleteResult: string | null) => {
         if (!autocompleteResult) return;
 
-        const result = await searchPlacesByText(autocompleteResult);
-        const shop = result?.locations?.[0];
-        if (!shop) return;
+        try {
+            const result = await searchPlacesByText(autocompleteResult);
+            const shop = result?.locations?.[0];
+            if (!shop) {
+                setHomeError("No matching coffee shop was found for that search.");
+                return;
+            }
 
-        setShops((previousShops) => {
-            const isShopInList = previousShops.some(
-                (coffeeshop) => coffeeshop.placeId === shop.placeId
-            );
+            setShops((previousShops) => {
+                const isShopInList = previousShops.some(
+                    (coffeeshop) => coffeeshop.placeId === shop.placeId
+                );
 
-            return isShopInList ? previousShops : [shop, ...previousShops];
-        });
-        setActiveId(shop.placeId);
-        setPendingMapSearchCenter(null);
+                return isShopInList ? previousShops : [shop, ...previousShops];
+            });
+            setActiveId(shop.placeId);
+            setPendingMapSearchCenter(null);
+            setHomeError(null);
+        } catch {
+            setHomeError("Search failed. Please check your connection and try again.");
+        }
     };
 
     return (
@@ -185,6 +202,11 @@ export function Home() {
             <div className="absolute top-0 inset-x-0">
                 <Search getCoffeeshopFromAutocomplete={getCoffeeshopFromAutocomplete} />
             </div>
+            {homeError || isLoadingShops ? (
+                <div className="home-status-panel" role={homeError ? "alert" : "status"}>
+                    {homeError ?? "Loading coffee shops..."}
+                </div>
+            ) : null}
             <div className="route-table-container">
                 {routeStops.length > 0 ? (
                     <RouteSetupManager
@@ -221,6 +243,9 @@ export function Home() {
                                 />
                             </div>
                         ))}
+                        {!isLoadingShops && !homeError && shops.length === 0 ? (
+                            <div className="empty-card">No coffee shops found nearby.</div>
+                        ) : null}
                     </div>
                 </div>
             </div>
