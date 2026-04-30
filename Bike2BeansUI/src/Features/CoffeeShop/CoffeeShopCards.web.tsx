@@ -24,7 +24,7 @@ export function CoffeeShopCard({ shop, active = false, onSelect, addShop, remove
                     onClick: onSelect,
                 }
                 : {})}
-            className={"coffeeShopCard z-9999"}
+            className={"coffeeShopCard"}
             data-state={active}
             aria-label={canSelectCard ? `Show details for ${shop.name}` : undefined}
         >
@@ -61,6 +61,12 @@ export function CoffeeShopCard({ shop, active = false, onSelect, addShop, remove
                     </button>
                 ) : null}
             </div>
+            <div className="coffeeShopCardDivider" data-state={active} />
+
+
+            <div className="coffeeShopCardRemainder" data-state={active}>
+                {shop.address || "Address unavailable"}
+            </div>
             {active === true && (
                 <div className="coffeeShopCardAdd">
                     <button
@@ -77,13 +83,6 @@ export function CoffeeShopCard({ shop, active = false, onSelect, addShop, remove
                     </button>
                 </div>
             )}
-
-            <div className="coffeeShopCardDivider" data-state={active} />
-
-
-            <div className="coffeeShopCardRemainder" data-state={active}>
-                {shop.address || "Address unavailable"}
-            </div>
         </CardShell>
     );
 }

@@ -36,6 +36,11 @@
     --ui-output-bg: var(--color-latte-100);
     --ui-input-border: var(--color-latte-200);
     --ui-input-placeholder: color-mix(in oklab, #64748b 75%, var(--color-latte-300));
+    --z-map-controls: 20;
+    --z-map-dock: 24;
+    --z-map-route-builder: 28;
+    --z-dropdown: 32;
+    --z-navbar: 40;
   }
 
   /* @media (prefers-color-scheme: dark) {
@@ -106,26 +111,135 @@
   }
 
   .saved_route_card {
-    @apply rounded-lg border p-4 shadow-sm;
+    @apply rounded-lg border shadow-sm;
     border-color: var(--ui-input-border);
-    background: var(--ui-input-bg);
-    width: min(100%, 360px);
+    background: color-mix(in oklab, white 82%, var(--color-latte-50));
+    width: 100%;
     min-width: 0;
     overflow: hidden;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
   }
 
-  .saved_route_card img {
-    display: block;
+  .saved_route_card[data-active="true"] {
+    border-color: var(--color-latte-400);
+    box-shadow: 0 16px 36px rgba(47, 34, 24, 0.14);
+    transform: translateY(-2px);
+  }
+
+  .saved-route-map-button {
     width: 100%;
-    height: auto;
-    max-height: 220px;
-    object-fit: contain;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    padding: 0;
   }
 
-  .saved_route_card h1 {
-    max-width: 100%;
+  .saved-route-map-preview {
+    position: relative;
+    min-height: 210px;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(229, 240, 229, 0.92), rgba(251, 246, 241, 0.92)),
+      var(--ui-bg);
+  }
+
+  .saved-route-map-preview[data-active="true"] {
+    min-height: 230px;
+  }
+
+  .saved-route-map-preview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 28%, rgba(29, 127, 76, 0.13), transparent 18%),
+      radial-gradient(circle at 84% 78%, rgba(154, 111, 77, 0.16), transparent 22%);
+    pointer-events: none;
+  }
+
+  .saved-route-map-grid {
+    position: absolute;
+    inset: -24px;
+    background-image:
+      linear-gradient(rgba(104, 71, 50, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(104, 71, 50, 0.08) 1px, transparent 1px);
+    background-size: 34px 34px;
+    transform: rotate(-6deg);
+  }
+
+  .saved-route-map-road {
+    position: absolute;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 0 1px rgba(104, 71, 50, 0.08);
+  }
+
+  .saved-route-map-road-main {
+    width: 120%;
+    height: 18px;
+    left: -10%;
+    top: 58%;
+    transform: rotate(-12deg);
+  }
+
+  .saved-route-map-road-side {
+    width: 74%;
+    height: 12px;
+    left: 22%;
+    top: 32%;
+    transform: rotate(34deg);
+  }
+
+  .saved-route-map-line {
+    position: absolute;
+    inset: 14px 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 28px);
+    fill: none;
+    stroke: var(--color-brand-700);
+    stroke-linecap: round;
+    stroke-width: 8;
+    filter: drop-shadow(0 3px 0 rgba(246, 238, 230, 0.95));
+  }
+
+  .saved-route-map-pin {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 3px solid white;
+    box-shadow: 0 8px 18px rgba(47, 34, 24, 0.2);
+  }
+
+  .saved-route-map-pin-start {
+    left: 9%;
+    bottom: 22%;
+    background: #1d7f4c;
+  }
+
+  .saved-route-map-pin-end {
+    right: 8%;
+    top: 38%;
+    background: var(--color-brand-700);
+  }
+
+  .saved-route-details {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid var(--ui-input-border);
+  }
+
+  .saved-route-details h3 {
+    margin: 0;
+    color: var(--ui-text);
+    font-size: 1.15rem;
+    line-height: 1.2;
     overflow-wrap: anywhere;
-    text-align: center;
   }
 
   .center {
@@ -149,6 +263,7 @@
     padding: 16px;
     display: flex;
     justify-content: flex-end;
+    z-index: var(--z-map-route-builder);
   }
 
   .route-manager-shell {
@@ -251,7 +366,7 @@
 
   .route-option-button:hover {
     transform: translateY(-1px);
-    border-color: var(--color-brand-400);
+    border-color: var(--color-latte-400);
     background: color-mix(in oklab, white 48%, var(--color-brand-50));
   }
 
@@ -456,6 +571,11 @@
     background: var(--ui-bg);
     border-color: var(--ui-input-border);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    box-shadow: 0 10px 24px rgba(47, 34, 24, 0.08);
   }
 
   .coffeeShopCardHead {
@@ -487,8 +607,9 @@
     min-height: 160px;
     background-color: var(--color-latte-50);
     border-color: var(--color-latte-400);
-    transition: width 200ms ease,
-      height 200ms ease,
+    transition:
+      width 200ms ease,
+      min-height 200ms ease,
       background-color 200ms ease,
       border-color 200ms ease;
   }
@@ -510,8 +631,7 @@
 
   .coffeeShopCardRating {
     @apply mt-1 flex items-center gap-2 text-sm text-gray-600;
-    position: relative;
-    top: -2px;
+    position: static;
     min-width: 0;
     flex-wrap: wrap;
 
@@ -532,8 +652,7 @@
 
   .coffeeShopCardRemainder {
     @apply mt-2 text-xs uppercase tracking-wide text-gray-500;
-    position: relative;
-    bottom: -10px;
+    position: static;
     overflow-wrap: anywhere;
   }
 
@@ -548,8 +667,7 @@
 
   .coffeeShopCardDivider {
     @apply mt-3 h-px bg-gray-100;
-    position: relative;
-    bottom: -10px;
+    position: static;
   }
 
   .coffeeShopCardDivider[data-state=route] {
@@ -559,20 +677,16 @@
   }
 
   .coffeeShopCardRemainder[data-state=true] {
-    bottom: -50px;
-    transform: 200ms ease
+    margin-top: 0;
   }
 
 
   .coffeeShopCardDivider[data-state=true] {
-    bottom: -50px;
-    transform: 200ms ease
+    margin-top: 4px;
   }
 
   .coffeeShopCardAdd {
-    position: absolute;
-    top: 90px;
-    transform: 200ms ease
+    margin-top: 2px;
   }
 
   .coffeeShopCardInlineAction {
@@ -621,8 +735,8 @@
   .searchbox {
     position: relative;
     width: min(320px, calc(100vw - 24px));
-    margin: 12px;
-    z-index: 30;
+    margin: 0;
+    z-index: var(--z-dropdown);
   }
 
 
@@ -682,7 +796,7 @@
 
     opacity: 0;
     transform: translateY(-6px);
-    z-index: 35;
+    z-index: var(--z-dropdown);
 
     transition:
       max-height 0.25s ease,
@@ -796,6 +910,13 @@
     color: var(--ui-text);
   }
 
+  .login form,
+  .signup form {
+    width: 100%;
+    display: grid;
+    gap: 8px;
+  }
+
   .signup {
     width: min(100%, 550px);
     min-height: 500px;
@@ -867,7 +988,8 @@
 
 
   #navbar {
-    @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
+    @apply sticky top-0 border-b px-4 py-3 shadow-sm backdrop-blur;
+    z-index: var(--z-navbar);
     border-color: var(--ui-navbar-border);
     background: var(--ui-navbar-bg);
   }
@@ -997,10 +1119,8 @@
   }
 
   .home-status-panel {
-    position: absolute;
-    top: 72px;
-    left: 12px;
-    z-index: 25;
+    position: static;
+    z-index: auto;
     max-width: min(360px, calc(100vw - 24px));
     border: 1px solid var(--ui-panel-border);
     border-radius: 12px;
@@ -1023,8 +1143,75 @@
 
   .saved-routes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  .saved-routes-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
     gap: 16px;
+    padding: 4px 0 2px;
+  }
+
+  .saved-routes-header .section-title {
+    margin-bottom: 0;
+  }
+
+  .map-page {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .map-canvas {
+    position: absolute;
+    inset: 0;
+  }
+
+  .map-top-control-layer {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: var(--z-map-controls);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .map-top-control-layer > * {
+    pointer-events: auto;
+  }
+
+  .search-area-button {
+    min-height: 42px;
+    box-shadow: 0 10px 24px rgba(47, 34, 24, 0.12);
+  }
+
+  .coffee-card-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-map-dock);
+  }
+
+  .coffee-card-stack {
+    width: fit-content;
+    max-width: 100%;
+    padding: 0 0 12px 12px;
+  }
+
+  .coffee-card-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    border-radius: 16px;
   }
 
   @layer utilities {
@@ -1043,6 +1230,21 @@
   }
 
   @media (max-width: 920px) {
+    .map-top-control-layer {
+      flex-direction: column;
+      align-items: stretch;
+      right: auto;
+      max-width: min(360px, calc(100vw - 24px));
+      top: 12px;
+      left: 12px;
+      gap: 8px;
+    }
+
+    .search-area-button,
+    .home-status-panel {
+      width: 100%;
+    }
+
     .route-table-container {
       left: 0;
       right: 0;
@@ -1069,6 +1271,26 @@
   }
 
   @media (max-width: 640px) {
+    .coffee-card-stack {
+      width: 100%;
+      padding: 0 10px 10px;
+    }
+
+    .coffee-card-scroll {
+      align-items: stretch;
+    }
+
+    .coffeeShopCard,
+    .coffeeShopCard[data-state=true] {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .saved-routes-header {
+      display: grid;
+      align-items: start;
+    }
+
     .login,
     .signup {
       min-height: auto;
