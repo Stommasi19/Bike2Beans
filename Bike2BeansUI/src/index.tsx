@@ -23,14 +23,32 @@ const linking = {
 if (window.location.pathname === "/") {
     window.history.replaceState(null, "", "/login");
 }
+
+function WebAppShell() {
+    const [pathname, setPathname] = React.useState(window.location.pathname);
+    const isAuthRoute = pathname === "/login" || pathname === "/signup";
+
+    React.useEffect(() => {
+        const syncPathname = () => setPathname(window.location.pathname);
+        window.addEventListener("popstate", syncPathname);
+
+        return () => {
+            window.removeEventListener("popstate", syncPathname);
+        };
+    }, []);
+
+    return (
+        <div className="app-shell">
+            {!isAuthRoute ? <NavBar /> : null}
+            <main className="app-content">
+                <AppRoutes />
+            </main>
+        </div>
+    );
+}
+
 createRoot(document.getElementById("root")!).render(
     <NavigationContainer linking={linking}>
-        <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-            <NavBar />
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                <AppRoutes />
-            </div>
-        </div>
+        <WebAppShell />
     </NavigationContainer>
 );
-

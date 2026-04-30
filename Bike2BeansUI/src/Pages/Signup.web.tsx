@@ -30,12 +30,21 @@ export function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const canSubmit =
+        first.trim().length > 0 &&
+        last.trim().length > 0 &&
+        email.trim().length > 0 &&
+        password.length >= 6 &&
+        !loading;
+
     const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!canSubmit) return;
+
         setLoading(true);
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            await CreateUser(first, last);
+            await createUserWithEmailAndPassword(auth, email.trim(), password);
+            await CreateUser(first.trim(), last.trim());
             window.location.href = "/home";
 
         } catch (error) {
@@ -47,6 +56,8 @@ export function Signup() {
     }
     const handleGoogleSignUp = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+        if (loading) return;
+
         setLoading(true);
         try {
             const result = await signInWithPopup(auth, new GoogleAuthProvider());
@@ -78,50 +89,70 @@ export function Signup() {
 
                 <form onSubmit={handleSignUp}>
                     <div className="signin">
-                        <span className="loginText">First Name</span>
+                        <label className="loginText" htmlFor="firstname">First Name</label>
                         <input className="input"
                             type="text"
                             name="first name"
                             id="firstname"
                             placeholder="First Name"
+                            autoComplete="given-name"
+                            maxLength={80}
+                            required
+                            disabled={loading}
+                            value={first}
                             onChange={(e) => setFirst(e.target.value)}
                         />
                     </div><div className="signin">
-                        <span className="loginText">Last Name</span>
+                        <label className="loginText" htmlFor="lastname">Last Name</label>
                         <input className="input"
                             type="text"
                             name="lastname"
                             id="lastname"
                             placeholder="Last Name"
+                            autoComplete="family-name"
+                            maxLength={80}
+                            required
+                            disabled={loading}
+                            value={last}
                             onChange={(e) => setLast(e.target.value)}
                         />
                     </div>
 
                     <div className="signin">
-                        <span className="loginText">Email</span>
+                        <label className="loginText" htmlFor="email">Email</label>
                         <input className="input"
                             type="email"
                             name="email"
                             id="email"
                             placeholder="Email"
+                            autoComplete="email"
+                            inputMode="email"
+                            required
+                            disabled={loading}
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="signin">
-                        <span className="loginText">Password</span>
+                        <label className="loginText" htmlFor="password">Password</label>
                         <input className="input"
                             type="password" name="password"
                             id="password"
                             placeholder="password"
+                            autoComplete="new-password"
+                            minLength={6}
+                            required
+                            disabled={loading}
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
                     <div className="loginbtn">
-                        <button className="btn-primary" type="submit">
+                        <button className="btn-primary" type="submit" disabled={!canSubmit}>
                             {loading ? "Signing Up..." : "Sign Up"}
                         </button>
 
-                        <button className="btn" type="button" onClick={handleGoogleSignUp}>
+                        <button className="btn" type="button" onClick={handleGoogleSignUp} disabled={loading}>
                             Sign Up With Google
                         </button>
                     </div>

@@ -36,6 +36,11 @@
     --ui-output-bg: var(--color-latte-100);
     --ui-input-border: var(--color-latte-200);
     --ui-input-placeholder: color-mix(in oklab, #64748b 75%, var(--color-latte-300));
+    --z-map-controls: 20;
+    --z-map-dock: 24;
+    --z-map-route-builder: 28;
+    --z-dropdown: 32;
+    --z-navbar: 40;
   }
 
   /* @media (prefers-color-scheme: dark) {
@@ -74,6 +79,12 @@
     @apply min-h-screen;
   }
 
+  button:disabled,
+  input:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
   a {
     @apply transition-colors duration-200;
   }
@@ -85,12 +96,150 @@
 }
 
 @layer components {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .app-content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+  }
 
   .saved_route_card {
-    @apply rounded-lg border p-4 shadow-sm;
+    @apply rounded-lg border shadow-sm;
     border-color: var(--ui-input-border);
-    background: var(--ui-input-bg);
-    width: 360px;
+    background: color-mix(in oklab, white 82%, var(--color-latte-50));
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .saved_route_card[data-active="true"] {
+    border-color: var(--color-latte-400);
+    box-shadow: 0 16px 36px rgba(47, 34, 24, 0.14);
+    transform: translateY(-2px);
+  }
+
+  .saved-route-map-button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    padding: 0;
+  }
+
+  .saved-route-map-preview {
+    position: relative;
+    min-height: 210px;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(229, 240, 229, 0.92), rgba(251, 246, 241, 0.92)),
+      var(--ui-bg);
+  }
+
+  .saved-route-map-preview[data-active="true"] {
+    min-height: 230px;
+  }
+
+  .saved-route-map-preview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 28%, rgba(29, 127, 76, 0.13), transparent 18%),
+      radial-gradient(circle at 84% 78%, rgba(154, 111, 77, 0.16), transparent 22%);
+    pointer-events: none;
+  }
+
+  .saved-route-map-grid {
+    position: absolute;
+    inset: -24px;
+    background-image:
+      linear-gradient(rgba(104, 71, 50, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(104, 71, 50, 0.08) 1px, transparent 1px);
+    background-size: 34px 34px;
+    transform: rotate(-6deg);
+  }
+
+  .saved-route-map-road {
+    position: absolute;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 0 1px rgba(104, 71, 50, 0.08);
+  }
+
+  .saved-route-map-road-main {
+    width: 120%;
+    height: 18px;
+    left: -10%;
+    top: 58%;
+    transform: rotate(-12deg);
+  }
+
+  .saved-route-map-road-side {
+    width: 74%;
+    height: 12px;
+    left: 22%;
+    top: 32%;
+    transform: rotate(34deg);
+  }
+
+  .saved-route-map-line {
+    position: absolute;
+    inset: 14px 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 28px);
+    fill: none;
+    stroke: var(--color-brand-700);
+    stroke-linecap: round;
+    stroke-width: 8;
+    filter: drop-shadow(0 3px 0 rgba(246, 238, 230, 0.95));
+  }
+
+  .saved-route-map-pin {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 3px solid white;
+    box-shadow: 0 8px 18px rgba(47, 34, 24, 0.2);
+  }
+
+  .saved-route-map-pin-start {
+    left: 9%;
+    bottom: 22%;
+    background: #1d7f4c;
+  }
+
+  .saved-route-map-pin-end {
+    right: 8%;
+    top: 38%;
+    background: var(--color-brand-700);
+  }
+
+  .saved-route-details {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid var(--ui-input-border);
+  }
+
+  .saved-route-details h3 {
+    margin: 0;
+    color: var(--ui-text);
+    font-size: 1.15rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
   .center {
@@ -114,17 +263,20 @@
     padding: 16px;
     display: flex;
     justify-content: flex-end;
+    z-index: var(--z-map-route-builder);
   }
 
   .route-manager-shell {
-    width: 390px;
+    width: min(390px, calc(100vw - 24px));
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
   .route-setup-builder {
-    width: 390px;
+    width: min(390px, calc(100vw - 24px));
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -143,7 +295,8 @@
   }
 
   .route-options-panel {
-    width: 390px;
+    width: min(390px, calc(100vw - 24px));
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -157,6 +310,7 @@
     justify-content: space-between;
     gap: 10px;
     padding: 0 4px;
+    min-width: 0;
   }
 
   .route-options-label {
@@ -173,6 +327,7 @@
     font-size: 1rem;
     font-weight: 700;
     color: var(--ui-text);
+    overflow-wrap: anywhere;
   }
 
   .route-options-count {
@@ -211,7 +366,7 @@
 
   .route-option-button:hover {
     transform: translateY(-1px);
-    border-color: var(--color-brand-400);
+    border-color: var(--color-latte-400);
     background: color-mix(in oklab, white 48%, var(--color-brand-50));
   }
 
@@ -239,6 +394,7 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
+    min-width: 0;
   }
 
   .route-option-eyebrow {
@@ -253,6 +409,7 @@
     font-size: 0.96rem;
     font-weight: 700;
     line-height: 1.3;
+    overflow-wrap: anywhere;
   }
 
   .location-box {
@@ -278,6 +435,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 8px;
+    min-width: 0;
   }
 
   .route-location-card-label {
@@ -285,6 +443,7 @@
     font-size: 0.86rem;
     font-weight: 700;
     color: var(--ui-muted);
+    overflow-wrap: anywhere;
   }
 
   .route-location-input {
@@ -327,11 +486,13 @@
     font-weight: 700;
     color: var(--ui-text);
     line-height: 1.35;
+    overflow-wrap: anywhere;
   }
 
   .route-location-result-address {
     font-size: 0.8rem;
     color: var(--ui-muted);
+    overflow-wrap: anywhere;
   }
 
   .route-location-empty {
@@ -349,6 +510,7 @@
     font-weight: 700;
     color: var(--ui-text);
     line-height: 1.25;
+    overflow-wrap: anywhere;
   }
 
   .route-location-card-actions {
@@ -404,9 +566,16 @@
     padding: 0.75rem 1rem;
     transition: all 200ms ease;
     width: 305px;
+    max-width: calc(100vw - 20px);
+    min-width: 0;
     background: var(--ui-bg);
     border-color: var(--ui-input-border);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    box-shadow: 0 10px 24px rgba(47, 34, 24, 0.08);
   }
 
   .coffeeShopCardHead {
@@ -414,6 +583,7 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
+    min-width: 0;
   }
 
   .coffeeShopCardMeta {
@@ -433,19 +603,25 @@
   }
 
   .coffeeShopCard[data-state=true] {
-    width: 355px;
-    height: 160px;
+    width: min(355px, calc(100vw - 20px));
+    min-height: 160px;
     background-color: var(--color-latte-50);
     border-color: var(--color-latte-400);
-    transition: width 200ms ease,
-      height 200ms ease,
+    transition:
+      width 200ms ease,
+      min-height 200ms ease,
       background-color 200ms ease,
       border-color 200ms ease;
   }
 
   .coffeeShopCardTitle {
     @apply text-base font-semibold tracking-tight;
-    color: var(--ui-text)
+    color: var(--ui-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
   }
 
   .coffeeShopCardTitle[data-state=true] {
@@ -455,8 +631,9 @@
 
   .coffeeShopCardRating {
     @apply mt-1 flex items-center gap-2 text-sm text-gray-600;
-    position: relative;
-    top: -2px;
+    position: static;
+    min-width: 0;
+    flex-wrap: wrap;
 
   }
 
@@ -475,8 +652,8 @@
 
   .coffeeShopCardRemainder {
     @apply mt-2 text-xs uppercase tracking-wide text-gray-500;
-    position: relative;
-    bottom: -10px;
+    position: static;
+    overflow-wrap: anywhere;
   }
 
   .coffeeShopCardRemainder[data-state=route] {
@@ -490,8 +667,7 @@
 
   .coffeeShopCardDivider {
     @apply mt-3 h-px bg-gray-100;
-    position: relative;
-    bottom: -10px;
+    position: static;
   }
 
   .coffeeShopCardDivider[data-state=route] {
@@ -501,20 +677,16 @@
   }
 
   .coffeeShopCardRemainder[data-state=true] {
-    bottom: -50px;
-    transform: 200ms ease
+    margin-top: 0;
   }
 
 
   .coffeeShopCardDivider[data-state=true] {
-    bottom: -50px;
-    transform: 200ms ease
+    margin-top: 4px;
   }
 
   .coffeeShopCardAdd {
-    position: absolute;
-    top: 90px;
-    transform: 200ms ease
+    margin-top: 2px;
   }
 
   .coffeeShopCardInlineAction {
@@ -562,7 +734,9 @@
 
   .searchbox {
     position: relative;
-    width: 320px;
+    width: min(320px, calc(100vw - 24px));
+    margin: 0;
+    z-index: var(--z-dropdown);
   }
 
 
@@ -571,6 +745,7 @@
   .searchbar {
     width: 100%;
     padding: 10px 14px;
+    padding-right: 78px;
 
     border-radius: 16px;
     background: white;
@@ -594,6 +769,7 @@
     position: absolute;
     right: 8px;
     border-radius: 15px;
+    min-height: 30px;
   }
 
   .clear-search-button:hover {
@@ -620,6 +796,7 @@
 
     opacity: 0;
     transform: translateY(-6px);
+    z-index: var(--z-dropdown);
 
     transition:
       max-height 0.25s ease,
@@ -634,6 +811,22 @@
     padding: 10px 14px;
     cursor: pointer;
     transition: background 0.15s ease;
+    overflow-wrap: anywhere;
+  }
+
+  .searchbox-result-button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+  }
+
+  .searchbox-message {
+    margin: 0;
+    padding: 10px 14px;
+    color: #7f1d1d;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
   }
 
   .searchbox-result:hover {
@@ -690,19 +883,22 @@
   .row-content {
     display: grid;
     gap: 4px;
+    min-width: 0;
   }
 
   .login-page {
-    min-height: 85vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: large;
+    padding: 24px 12px;
   }
 
   .login {
-    width: 500px;
-    height: 400px;
+    width: min(100%, 500px);
+    min-height: 400px;
     background-color: var(--ui-input-bg);
     border-radius: 20px;
     border: 1px solid var(--ui-input-border);
@@ -714,9 +910,16 @@
     color: var(--ui-text);
   }
 
+  .login form,
+  .signup form {
+    width: 100%;
+    display: grid;
+    gap: 8px;
+  }
+
   .signup {
-    width: 550px;
-    height: 500px;
+    width: min(100%, 550px);
+    min-height: 500px;
     background-color: var(--ui-input-bg);
     border-radius: 20px;
     border: 1px solid var(--ui-input-border);
@@ -725,13 +928,14 @@
     justify-content: center;
     align-items: center;
     color: var(--ui-text);
+    padding: 20px;
   }
 
   .loginText {
-    position: relative;
-    right: -10px;
+    display: block;
+    margin: 0 0 6px 10px;
     color: var(--ui-text);
-    gap: 30px;
+    overflow-wrap: anywhere;
   }
 
   .signInInput {
@@ -751,7 +955,8 @@
 
   .loginbtn {
     display: flex;
-    gap: 40px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
 
@@ -765,7 +970,9 @@
   .noAccount {
     position: relative;
     bottom: -20px;
-    text-decoration: italic;
+    font-style: italic;
+    display: block;
+    overflow-wrap: anywhere;
   }
 
   .link {
@@ -773,7 +980,7 @@
     text-decoration: underline;
   }
 
-  .link :hover {
+  .link:hover {
     color: var(--ui-link-hover-bg);
 
   }
@@ -781,7 +988,8 @@
 
 
   #navbar {
-    @apply sticky top-0 z-40 border-b px-4 py-3 shadow-sm backdrop-blur;
+    @apply sticky top-0 border-b px-4 py-3 shadow-sm backdrop-blur;
+    z-index: var(--z-navbar);
     border-color: var(--ui-navbar-border);
     background: var(--ui-navbar-bg);
   }
@@ -807,6 +1015,8 @@
 
   .page-shell {
     @apply mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-6;
+    min-width: 0;
+    overflow: auto;
   }
 
   .panel {
@@ -819,11 +1029,13 @@
   .section-title {
     @apply mb-3 text-xl font-semibold;
     color: var(--ui-text);
+    overflow-wrap: anywhere;
   }
 
   .muted {
     @apply text-sm;
     color: var(--ui-muted);
+    overflow-wrap: anywhere;
   }
 
   .btn {
@@ -865,6 +1077,7 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    min-width: 0;
   }
 
   .route-action-primary {
@@ -884,10 +1097,121 @@
     border-color: var(--ui-input-border);
     background: var(--ui-input-bg);
     color: var(--ui-text);
+    min-width: 0;
   }
 
   .input::placeholder {
     color: var(--ui-input-placeholder);
+  }
+
+  .form-error {
+    margin: 0;
+    color: #7f1d1d;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .route-error {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #fee2e2;
+  }
+
+  .home-status-panel {
+    position: static;
+    z-index: auto;
+    max-width: min(360px, calc(100vw - 24px));
+    border: 1px solid var(--ui-panel-border);
+    border-radius: 12px;
+    background: color-mix(in oklab, white 86%, var(--color-latte-50));
+    color: var(--ui-text);
+    padding: 10px 12px;
+    box-shadow: 0 8px 20px rgba(47, 34, 24, 0.12);
+    overflow-wrap: anywhere;
+  }
+
+  .empty-card {
+    width: min(305px, calc(100vw - 20px));
+    border: 1px dashed var(--ui-input-border);
+    border-radius: 12px;
+    background: var(--ui-panel-bg);
+    color: var(--ui-muted);
+    padding: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .saved-routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  .saved-routes-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 4px 0 2px;
+  }
+
+  .saved-routes-header .section-title {
+    margin-bottom: 0;
+  }
+
+  .map-page {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .map-canvas {
+    position: absolute;
+    inset: 0;
+  }
+
+  .map-top-control-layer {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: var(--z-map-controls);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .map-top-control-layer > * {
+    pointer-events: auto;
+  }
+
+  .search-area-button {
+    min-height: 42px;
+    box-shadow: 0 10px 24px rgba(47, 34, 24, 0.12);
+  }
+
+  .coffee-card-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-map-dock);
+  }
+
+  .coffee-card-stack {
+    width: fit-content;
+    max-width: 100%;
+    padding: 0 0 12px 12px;
+  }
+
+  .coffee-card-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    border-radius: 16px;
   }
 
   @layer utilities {
@@ -906,6 +1230,21 @@
   }
 
   @media (max-width: 920px) {
+    .map-top-control-layer {
+      flex-direction: column;
+      align-items: stretch;
+      right: auto;
+      max-width: min(360px, calc(100vw - 24px));
+      top: 12px;
+      left: 12px;
+      gap: 8px;
+    }
+
+    .search-area-button,
+    .home-status-panel {
+      width: 100%;
+    }
+
     .route-table-container {
       left: 0;
       right: 0;
@@ -928,6 +1267,63 @@
 
     .route-action-secondary {
       width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .coffee-card-stack {
+      width: 100%;
+      padding: 0 10px 10px;
+    }
+
+    .coffee-card-scroll {
+      align-items: stretch;
+    }
+
+    .coffeeShopCard,
+    .coffeeShopCard[data-state=true] {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .saved-routes-header {
+      display: grid;
+      align-items: start;
+    }
+
+    .login,
+    .signup {
+      min-height: auto;
+      align-items: stretch;
+    }
+
+    .login h1,
+    .signup h1 {
+      font-size: 1.55rem;
+      text-align: center;
+    }
+
+    .signin {
+      width: 100%;
+    }
+
+    .loginbtn {
+      flex-direction: column;
+    }
+
+    .loginbtn > button {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }
