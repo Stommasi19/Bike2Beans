@@ -4,8 +4,7 @@ import { RouteDto } from "../Data/RouteDto";
 export type RootStackParamList = {
     Login: undefined;
     Signup: undefined;
-    Home: undefined;
+    Home: { routeStops?: RouteDto[]; routeEditNotice?: string } | undefined;
     RouteSetup: { routeStops: RouteDto[] } | undefined;
     SavedRoutes: undefined;
 };
-
