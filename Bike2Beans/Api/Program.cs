@@ -150,7 +150,6 @@ app.UseCors(corsPolicyName);
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();
-app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 app.MapControllers();
 
 app.Run();

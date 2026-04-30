@@ -5,7 +5,6 @@ const path = require("node:path");
 const DIST_DIR = path.resolve(__dirname, "..", "dist");
 const INDEX_FILE = path.join(DIST_DIR, "index.html");
 const PORT = Number.parseInt(process.env.PORT || "3000", 10);
-const HOST = process.env.HOST || "0.0.0.0";
 
 const MIME_TYPES = {
     ".css": "text/css; charset=utf-8",
@@ -27,24 +26,14 @@ function sendFile(response, filePath, method) {
     const extension = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[extension] || "application/octet-stream";
 
+    response.writeHead(200, { "Content-Type": contentType });
+
     if (method === "HEAD") {
-        response.writeHead(200, { "Content-Type": contentType });
         response.end();
         return;
     }
 
-    const stream = fs.createReadStream(filePath);
-    stream.on("open", () => {
-        response.writeHead(200, { "Content-Type": contentType });
-    });
-    stream.on("error", (error) => {
-        console.error(`Failed to read ${filePath}:`, error);
-        if (!response.headersSent) {
-            response.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
-        }
-        response.end("Internal Server Error");
-    });
-    stream.pipe(response);
+    fs.createReadStream(filePath).pipe(response);
 }
 
 function sendNotFound(response) {
@@ -74,12 +63,6 @@ const server = http.createServer((request, response) => {
     }
 
     const requestUrl = new URL(request.url || "/", "http://127.0.0.1");
-    if (requestUrl.pathname === "/health") {
-        response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-        response.end(JSON.stringify({ status: "ok" }));
-        return;
-    }
-
     const assetPath = toSafeAssetPath(requestUrl.pathname);
     if (!assetPath) {
         sendNotFound(response);
@@ -99,22 +82,6 @@ const server = http.createServer((request, response) => {
     sendFile(response, INDEX_FILE, method);
 });
 
-if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
-    console.error(`Invalid PORT value: ${process.env.PORT}`);
-    process.exit(1);
-}
-
-if (!fs.existsSync(INDEX_FILE)) {
-    console.error(`Missing production bundle: ${INDEX_FILE}`);
-    console.error("Run `npm run build` before starting the production server.");
-    process.exit(1);
-}
-
-server.listen(PORT, HOST, () => {
-    console.log(`Serving Bike2BeansUI from ${DIST_DIR} on ${HOST}:${PORT}`);
-});
-
-server.on("error", (error) => {
-    console.error(`Failed to start Bike2BeansUI on ${HOST}:${PORT}:`, error);
-    process.exit(1);
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Serving Bike2BeansUI from ${DIST_DIR} on port ${PORT}`);
 });
