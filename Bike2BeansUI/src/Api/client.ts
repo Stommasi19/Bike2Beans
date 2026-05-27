@@ -1,4 +1,4 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from "axios";
 import { Platform } from "react-native";
 import { auth } from "../firebase";
 
@@ -34,7 +34,7 @@ async function getAuthorizationHeader() {
     return { Authorization: `Bearer ${idToken}` };
 }
 
-function withAuthorizationHeader(
+export function withAuthorizationHeader(
     config: InternalAxiosRequestConfig,
     authorization?: string
 ): InternalAxiosRequestConfig {
@@ -47,10 +47,9 @@ function withAuthorizationHeader(
         return config;
     }
 
-    config.headers = {
-        ...config.headers,
-        Authorization: authorization,
-    };
+    const headers = AxiosHeaders.from(config.headers);
+    headers.set("Authorization", authorization);
+    config.headers = headers;
 
     return config;
 }
