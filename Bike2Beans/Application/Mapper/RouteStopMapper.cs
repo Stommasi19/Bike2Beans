@@ -30,7 +30,7 @@ public class RouteStopMapper : BaseMapper<RouteStop, RouteStopDto>
             id: dto.Id,
             placeId: dto.PlaceId,
             name: dto.Name,
-            address: dto.Address,
+            address: dto.Address ?? string.Empty,
             lat: dto.Lat,
             lng: dto.Lng,
             locationType: dto.LocationType

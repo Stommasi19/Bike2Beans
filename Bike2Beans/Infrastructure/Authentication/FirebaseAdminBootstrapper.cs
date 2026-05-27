@@ -46,7 +46,7 @@ public static class FirebaseAdminBootstrapper
                 Console.WriteLine($"[FIREBASE INIT] File exists: {File.Exists(credsPath)}");
                 try
                 {
-                    cred = GoogleCredential.FromFile(credsPath);
+                    cred = CredentialFactory.FromFile<ServiceAccountCredential>(credsPath).ToGoogleCredential();
                     Console.WriteLine("[FIREBASE INIT] Successfully loaded credentials from file");
                 }
                 catch (Exception ex)
@@ -85,4 +85,3 @@ public static class FirebaseAdminBootstrapper
         }
     }
 }
-

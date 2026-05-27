@@ -48,7 +48,7 @@ public static class FirebaseAdminServiceExtension
             {
                 return FirebaseApp.Create(new AppOptions
                 {
-                    Credential = GoogleCredential.FromJson(options.ServiceAccountJson)
+                    Credential = CredentialFactory.FromJson<ServiceAccountCredential>(options.ServiceAccountJson).ToGoogleCredential()
                 });
             }
         });

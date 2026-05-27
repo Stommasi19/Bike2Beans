@@ -19,10 +19,10 @@ public class RouteDetailsMapper : BaseMapper<RouteDetails, RouteDetailsDto>
         if (entity == null) throw new ArgumentNullException(nameof(entity));
         return new RouteDetailsDto(
             entity.Id,
-            entity.Name,
+            entity.Name ?? string.Empty,
             entity.StartLocation,
             entity.EndLocation,
-            entity.RouteStops.Select(_mapper.ToDto).ToList(),
+            (entity.RouteStops ?? []).Select(_mapper.ToDto).ToList(),
             entity.Mileage ?? 0
         );
     }
@@ -35,7 +35,7 @@ public class RouteDetailsMapper : BaseMapper<RouteDetails, RouteDetailsDto>
             dto.Name,
             dto.StartLocation,
             dto.EndLocation,
-            dto.RouteStops.Select(_mapper.ToEntity).ToList(),
+            (dto.RouteStops ?? []).Select(_mapper.ToEntity).ToList(),
             dto.Mileage
         )
         {

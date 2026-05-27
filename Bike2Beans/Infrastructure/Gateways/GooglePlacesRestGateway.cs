@@ -79,7 +79,7 @@ public sealed class GooglePlacesRestGateway : ILocationProvider
         var returnResponse = new LocationPaginatedResponse
         {
             NextPageToken = googleTextSearchResponse.NextPageToken,
-            Locations = googleTextSearchResponse.Places.Select(loc => new CoffeeshopDto(
+            Locations = (googleTextSearchResponse.Places ?? []).Select(loc => new CoffeeshopDto(
                 Id: null,
                 PlaceId: loc.Id,
                 Name: loc.DisplayName?.Text ?? "",
