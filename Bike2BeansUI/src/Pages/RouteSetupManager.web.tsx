@@ -8,6 +8,7 @@ import { SelectedLocationCard } from "../Features/RouteSetup/SelectedLocationCar
 import { useRouteSetupLocations } from "../Features/RouteSetup/useRouteSetupLocations";
 import { CreateRouteAndReturnPath } from "../Api/CreateRoute";
 import { type RouteGeoJson, toRouteFeature } from "../Features/Map/routeGeoJson";
+import { convertGeoJSONToGPX } from "../Features/Route/gpx";
 import type { RouteOptionDto } from "../Data/RouteOptionDto";
 import { RouteStopLocationType, type RouteStopDto as RouteStopPayloadDto } from "../Data/RouteStopDto";
 
@@ -25,14 +26,6 @@ type StopLocationSectionMode = "hidden" | "add" | "search" | "selected";
 
 function getSelectedRoute(routeOptions: RouteOptionDto[], selectedRouteId: string | null) {
     return routeOptions.find((routeOption) => routeOption.id === selectedRouteId) ?? routeOptions[0] ?? null;
-}
-
-function convertGeoJSONToGPX(route: RouteGeoJson) {
-    const togpx = require("togpx") as (geojson: unknown, options?: unknown) => string;
-
-    return togpx(route, {
-        creator: "Bike2Beans",
-    });
 }
 
 function downloadRouteAsGpx(route: RouteGeoJson) {
