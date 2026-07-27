@@ -1,9 +1,11 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "DOCKERFILE"
+    "builder": "DOCKERFILE",
+    "buildCommand": null
   },
   "deploy": {
+    "preDeployCommand": null,
     "startCommand": "sh -c \"ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080} dotnet Api.dll\"",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 120
