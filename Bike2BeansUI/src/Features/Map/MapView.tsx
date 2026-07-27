@@ -13,6 +13,7 @@ import { toRouteFeature } from "./routeGeoJson";
 
 type Props = {
     startLocation?: { lat: number; lng: number } | null;
+    mapCenter?: { lat: number; lng: number } | null;
     onViewportSettled?: (viewport: {
         lat: number;
         lng: number;
@@ -39,11 +40,16 @@ type Viewport = {
     zoom: number;
 };
 
+const DEFAULT_MAP_CENTER = {
+    lat: 47.674,
+    lng: -122.1215,
+};
 const VIEWPORT_SETTLE_DISTANCE_KM = 0.5;
 
 export function MapView({
     onViewportSettled,
     startLocation,
+    mapCenter: providedMapCenter,
     shops,
     activeId,
     setActiveId,
@@ -59,6 +65,9 @@ export function MapView({
     const mapRef = useRef<MapRef | null>(null);
     const lastSettledViewportRef = useRef<Viewport | null>(null);
     const ignoreNextMoveEndRef = useRef(false);
+    const mapCenter = startLocation ?? providedMapCenter ?? DEFAULT_MAP_CENTER;
+    const visibleShops = Array.isArray(shops) ? shops : [];
+    const visibleRouteOptions = Array.isArray(routeOptions) ? routeOptions : [];
 
     useEffect(() => {
         if (!startLocation) return;
@@ -96,14 +105,14 @@ export function MapView({
         if (!activeId) return;
         if (!mapRef.current) return;
 
-        const selected = shops.find((shop) => shop.placeId === activeId);
+        const selected = visibleShops.find((shop) => shop.placeId === activeId);
         if (!selected) return;
 
         const map = mapRef.current.getMap();
         const center = map.getCenter();
         ignoreNextMoveEndRef.current = true;
         MapMover(map, center, selected);
-    }, [activeId, shops]);
+    }, [activeId, visibleShops]);
 
     const rememberViewport = (viewport: Viewport) => {
         lastSettledViewportRef.current = viewport;
@@ -142,51 +151,50 @@ export function MapView({
     };
 
     const selectedRoute =
-        routeOptions.find((routeOption) => routeOption.id === selectedRouteId) ??
-        routeOptions[0];
+        visibleRouteOptions.find((routeOption) => routeOption.id === selectedRouteId) ??
+        visibleRouteOptions[0];
     const selectedRouteFeature = selectedRoute
         ? toRouteFeature(selectedRoute)
         : null;
-    const secondaryRoutes = routeOptions.filter(
+    const secondaryRoutes = visibleRouteOptions.filter(
         (routeOption) => routeOption.id !== selectedRoute?.id,
     );
 
-    if (!startLocation) {
-        return <div style={{ height: "100vh", width: "100vw" }} />;
-    }
-
     return (
-        <div style={{ height: "100vh", width: "100vw" }}>
+        <div style={{ height: "100%", width: "100%" }}>
             <MapboxMap
                 ref={mapRef}
                 mapboxAccessToken={token}
                 initialViewState={{
-                    latitude: startLocation.lat,
-                    longitude: startLocation.lng,
+                    latitude: mapCenter.lat,
+                    longitude: mapCenter.lng,
                     zoom: 13,
                 }}
                 mapStyle="mapbox://styles/mapbox/streets-v12"
                 onMoveEnd={handleMoveEnd}
+                onError={(event) => console.error("Mapbox error", event.error)}
             >
-                <Marker
-                    latitude={startLocation.lat}
-                    longitude={startLocation.lng}
-                    anchor="center"
-                >
-                    <div
-                        title="Approximate location"
-                        style={{
-                            width: 16,
-                            height: 16,
-                            borderRadius: "9999px",
-                            background: "#2563eb",
-                            border: "3px solid white",
-                            boxShadow: "0 0 0 6px rgba(37, 99, 235, 0.2)",
-                        }}
-                    />
-                </Marker>
+                {startLocation ? (
+                    <Marker
+                        latitude={startLocation.lat}
+                        longitude={startLocation.lng}
+                        anchor="center"
+                    >
+                        <div
+                            title="Approximate location"
+                            style={{
+                                width: 16,
+                                height: 16,
+                                borderRadius: "9999px",
+                                background: "#2563eb",
+                                border: "3px solid white",
+                                boxShadow: "0 0 0 6px rgba(37, 99, 235, 0.2)",
+                            }}
+                        />
+                    </Marker>
+                ) : null}
 
-                {shops.map((shop) => (
+                {visibleShops.map((shop) => (
                     <Marker
                         key={shop.placeId}
                         latitude={shop.lat}

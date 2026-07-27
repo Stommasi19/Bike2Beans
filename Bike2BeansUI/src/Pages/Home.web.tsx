@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { GetCoffeeShops } from "../Api/coffeeShops";
 import { searchPlacesByText, searchPlacesNearby } from "../Api/places";
 import { CoffeeShopCard } from "../Features/CoffeeShop/CoffeeShopCards.web";
+import { GetDistance } from "../Features/Map/GetDistance";
 import { MapView } from "../Features/Map/MapView";
 import { Search } from "../Features/Search/Search";
 import type { CoffeeshopDto } from "../Data/CoffeeshopDto";
@@ -16,12 +17,33 @@ type MapSearchCenter = {
     lng: number;
 };
 
+const SEARCH_THIS_AREA_DISTANCE_KM = 1.609344;
+const IP_LOCATION_URL = "https://ipapi.co/json/";
+
 function areCentersEqual(left: MapSearchCenter | null, right: MapSearchCenter | null) {
     if (!left || !right) {
         return false;
     }
 
     return left.lat === right.lat && left.lng === right.lng;
+}
+
+async function getApproximateIpLocation(): Promise<MapSearchCenter | null> {
+    try {
+        const response = await fetch(IP_LOCATION_URL);
+        if (!response.ok) return null;
+
+        const data = await response.json() as {
+            latitude?: number | string;
+            longitude?: number | string;
+        };
+        const lat = Number(data.latitude);
+        const lng = Number(data.longitude);
+
+        return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
+    } catch {
+        return null;
+    }
 }
 
 export function Home() {
@@ -37,7 +59,9 @@ export function Home() {
         lat: number;
         lng: number;
     } | null>(null);
+    const [approximateLocation, setApproximateLocation] = useState<MapSearchCenter | null>(null);
     const [mapSearchCenter, setMapSearchCenter] = useState<MapSearchCenter | null>(null);
+    const [lastSearchCenter, setLastSearchCenter] = useState<MapSearchCenter | null>(null);
     const [pendingMapSearchCenter, setPendingMapSearchCenter] = useState<MapSearchCenter | null>(null);
     const [isSearchingArea, setIsSearchingArea] = useState(false);
     const [isLoadingShops, setIsLoadingShops] = useState(true);
@@ -45,6 +69,7 @@ export function Home() {
 
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const nearbySearchRequestId = useRef(0);
+    const visibleShops = Array.isArray(shops) ? shops : [];
 
     useEffect(() => {
         if (route.params?.routeStops) {
@@ -99,6 +124,7 @@ export function Home() {
                 }
 
                 setShops(nearby);
+                setLastSearchCenter(mapSearchCenter);
                 setHomeError(null);
                 setPendingMapSearchCenter((current) =>
                     areCentersEqual(current, mapSearchCenter) ? null : current
@@ -122,8 +148,18 @@ export function Home() {
     }, [mapSearchCenter]);
 
     useEffect(() => {
+        let canceled = false;
+
+        const useApproximateLocation = async () => {
+            const location = await getApproximateIpLocation();
+            if (canceled || !location) return;
+
+            setApproximateLocation(location);
+            setMapSearchCenter(location);
+        };
+
         if (typeof navigator === "undefined" || !navigator.geolocation) {
-            console.warn("Geolocation is not available in this browser context.");
+            void useApproximateLocation();
             return;
         }
 
@@ -135,8 +171,8 @@ export function Home() {
                 setUserLocation({ lat, lng });
                 setMapSearchCenter({ lat, lng });
             },
-            (error) => {
-                console.warn(error);
+            () => {
+                void useApproximateLocation();
             },
             {
                 enableHighAccuracy: false,
@@ -144,6 +180,10 @@ export function Home() {
                 maximumAge: 300000,
             }
         );
+
+        return () => {
+            canceled = true;
+        };
     }, []);
 
     function addShop(shop: CoffeeshopDto) {
@@ -165,11 +205,12 @@ export function Home() {
             }
 
             setShops((previousShops) => {
-                const isShopInList = previousShops.some(
+                const previousVisibleShops = Array.isArray(previousShops) ? previousShops : [];
+                const isShopInList = previousVisibleShops.some(
                     (coffeeshop) => coffeeshop.placeId === shop.placeId
                 );
 
-                return isShopInList ? previousShops : [shop, ...previousShops];
+                return isShopInList ? previousVisibleShops : [shop, ...previousVisibleShops];
             });
             setActiveId(shop.placeId);
             setPendingMapSearchCenter(null);
@@ -184,21 +225,27 @@ export function Home() {
             <div className="map-canvas">
                 <MapView
                     startLocation={userLocation}
+                    mapCenter={approximateLocation}
                     shops={shops}
                     activeId={activeId}
                     setActiveId={setActiveId}
                     routeOptions={routeOptions}
                     selectedRouteId={selectedRouteId}
                     onViewportSettled={({ lat, lng }) => {
-                        const nextCenter = { lat, lng };
-                        if (
-                            areCentersEqual(nextCenter, mapSearchCenter) ||
-                            areCentersEqual(nextCenter, pendingMapSearchCenter)
-                        ) {
-                            return;
-                        }
+                        if (!lastSearchCenter) return;
 
-                        setPendingMapSearchCenter(nextCenter);
+                        const distanceFromLastSearch = GetDistance(
+                            lastSearchCenter.lat,
+                            lastSearchCenter.lng,
+                            lat,
+                            lng
+                        );
+
+                        setPendingMapSearchCenter(
+                            distanceFromLastSearch > SEARCH_THIS_AREA_DISTANCE_KM
+                                ? { lat, lng }
+                                : null
+                        );
                     }}
                 />
             </div>
@@ -208,6 +255,7 @@ export function Home() {
                     <button
                         type="button"
                         className="btn-secondary search-area-button"
+                        disabled={isSearchingArea}
                         onClick={() => setMapSearchCenter(pendingMapSearchCenter)}
                     >
                         {isSearchingArea ? "Searching..." : "Search this area"}
@@ -235,7 +283,7 @@ export function Home() {
                         style={{ maxHeight: STACK_MAX_PX }}
                         className="coffee-card-scroll no-scrollbar"
                     >
-                        {shops.map((shop) => (
+                        {visibleShops.map((shop) => (
                             <div
                                 ref={(node) => {
                                     cardRefs.current[shop.placeId] = node;
@@ -250,7 +298,7 @@ export function Home() {
                                 />
                             </div>
                         ))}
-                        {!isLoadingShops && !homeError && shops.length === 0 ? (
+                        {!isLoadingShops && !homeError && visibleShops.length === 0 ? (
                             <div className="empty-card">No coffee shops found nearby.</div>
                         ) : null}
                     </div>
