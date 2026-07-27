@@ -7,7 +7,7 @@ Bike2Beans has two deployable services:
 
 ## Web Service
 
-Use the repository root or `Bike2BeansUI` as the Railway service root.
+Use `Bike2BeansUI` as the Railway service root.
 
 Required Railway settings:
 
@@ -28,7 +28,8 @@ The production build intentionally fails if either variable is missing. Without 
 
 Recommended Railway settings:
 
-- Build with `Bike2Beans/Dockerfile`
+- Service root: `Bike2Beans`
+- Build with `Dockerfile`
 - Healthcheck path: `/health`
 - Public networking target port: match the app log, usually `8080`
 
