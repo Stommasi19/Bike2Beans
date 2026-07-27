@@ -18,11 +18,6 @@ public class MapboxController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ApiCostGuardOptions _apiCostGuards;
 
-    public MapboxController(IMediator mediator)
-        : this(mediator, Options.Create(new ApiCostGuardOptions()))
-    {
-    }
-
     public MapboxController(IMediator mediator, IOptions<ApiCostGuardOptions> apiCostGuards)
     {
         _mediator = mediator;

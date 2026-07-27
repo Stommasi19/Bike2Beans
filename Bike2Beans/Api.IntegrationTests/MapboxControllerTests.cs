@@ -51,7 +51,10 @@ public class MapboxControllerTests
     public async Task GenerateRoute_ReturnsBadRequest_WhenStartCoordinatesAreInvalid()
     {
         var mediator = new RecordingMediator();
-        var controller = new MapboxController(mediator);
+        var controller = new MapboxController(
+            mediator,
+            Options.Create(new ApiCostGuardOptions())
+        );
         var request = new MapboxController.GenerateRouteRequest
         {
             StartLocation = [47.61],
@@ -74,7 +77,10 @@ public class MapboxControllerTests
             new(Guid.NewGuid(), 0, 4500, 900, "LineString", [[-122.33, 47.61], [-122.34, 47.62]])
         };
         mediator.Register<RouteGenerationCommand, List<RouteOptionDto>>((_, _) => expected);
-        var controller = new MapboxController(mediator);
+        var controller = new MapboxController(
+            mediator,
+            Options.Create(new ApiCostGuardOptions())
+        );
         var request = new MapboxController.GenerateRouteRequest
         {
             StartLocation = [47.61, -122.33],

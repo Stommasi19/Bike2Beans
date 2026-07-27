@@ -18,11 +18,6 @@ public class PlacesController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ApiCostGuardOptions _apiCostGuards;
 
-    public PlacesController(IMediator mediator)
-        : this(mediator, Options.Create(new ApiCostGuardOptions()))
-    {
-    }
-
     public PlacesController(IMediator mediator, IOptions<ApiCostGuardOptions> apiCostGuards)
     {
         _mediator = mediator;

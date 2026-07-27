@@ -69,6 +69,7 @@ export function Home() {
 
     const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const nearbySearchRequestId = useRef(0);
+    const visibleShops = Array.isArray(shops) ? shops : [];
 
     useEffect(() => {
         if (route.params?.routeStops) {
@@ -204,11 +205,12 @@ export function Home() {
             }
 
             setShops((previousShops) => {
-                const isShopInList = previousShops.some(
+                const previousVisibleShops = Array.isArray(previousShops) ? previousShops : [];
+                const isShopInList = previousVisibleShops.some(
                     (coffeeshop) => coffeeshop.placeId === shop.placeId
                 );
 
-                return isShopInList ? previousShops : [shop, ...previousShops];
+                return isShopInList ? previousVisibleShops : [shop, ...previousVisibleShops];
             });
             setActiveId(shop.placeId);
             setPendingMapSearchCenter(null);
@@ -281,7 +283,7 @@ export function Home() {
                         style={{ maxHeight: STACK_MAX_PX }}
                         className="coffee-card-scroll no-scrollbar"
                     >
-                        {shops.map((shop) => (
+                        {visibleShops.map((shop) => (
                             <div
                                 ref={(node) => {
                                     cardRefs.current[shop.placeId] = node;
@@ -296,7 +298,7 @@ export function Home() {
                                 />
                             </div>
                         ))}
-                        {!isLoadingShops && !homeError && shops.length === 0 ? (
+                        {!isLoadingShops && !homeError && visibleShops.length === 0 ? (
                             <div className="empty-card">No coffee shops found nearby.</div>
                         ) : null}
                     </div>
