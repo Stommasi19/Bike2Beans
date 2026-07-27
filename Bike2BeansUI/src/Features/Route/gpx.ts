@@ -2,11 +2,11 @@ import type { RouteGeoJson } from "../Map/routeGeoJson";
 
 function escapeXml(value: string) {
     return value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&apos;");
+        .split("&").join("&amp;")
+        .split("<").join("&lt;")
+        .split(">").join("&gt;")
+        .split('"').join("&quot;")
+        .split("'").join("&apos;");
 }
 
 export function convertGeoJSONToGPX(route: RouteGeoJson, name = "Bike2Beans route") {

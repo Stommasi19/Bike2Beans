@@ -1,4 +1,5 @@
 import { api } from "./client";
+import { toCoffeeShopList } from "./coffeeShops";
 
 export const searchPlacesByText = async (text: string, coffeeOnly = true) => {
     if (!text.trim()) return [];
@@ -17,5 +18,5 @@ export const searchPlacesNearby = async (
         params: { Lat: lat, Lng: lng },
         signal: options.signal,
     });
-    return data ?? [];
+    return toCoffeeShopList(data);
 };
